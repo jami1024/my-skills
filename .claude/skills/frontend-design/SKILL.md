@@ -1,3 +1,8 @@
+---
+name: frontend-design
+description: 创建独特、生产级的前端界面，避免通用 AI 美学。用于设计网站、落地页、仪表板、React 组件等 UI 界面。触发词：UI 设计、前端设计、界面美化、落地页、landing page
+---
+
 # Frontend Design 前端设计最佳实践
 
 **版本**: v1.0.0

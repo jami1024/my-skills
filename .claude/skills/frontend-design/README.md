@@ -1,6 +1,8 @@
 # Frontend Design Skill
 
-创建独特、生产级的前端界面，避免通用的 AI 美学风格。
+**版本**: v2.0.0
+
+创建独特、生产级的前端界面，避免通用的 AI 美学风格。包含丰富的字体配对库、行业配色方案、交付前检查清单和专业 UI 规则。
 
 ## 快速开始
 
@@ -18,6 +20,36 @@
 ```
 /frontend-design
 ```
+
+### 快速激活示例
+
+只需一句话即可激活 skill 并开始设计：
+
+```
+Build a landing page for my SaaS product
+```
+
+```
+为我的电商网站设计一个商品详情页
+```
+
+```
+Design a dashboard with glassmorphism style
+```
+
+```
+Create a portfolio website with dark mode
+```
+
+```
+设计一个美容 SPA 的预约页面，风格优雅柔和
+```
+
+**AI 会自动：**
+1. 识别产品类型和行业
+2. 搜索匹配的设计风格、配色、字体
+3. 应用专业 UI 规则
+4. 生成符合最佳实践的代码
 
 ### 使用示例
 
@@ -94,6 +126,14 @@
 "使用 react-best-practices 实现这个页面的数据获取和状态管理"
 ```
 
+## v2.0.0 新特性
+
+- **字体配对库** - 按场景分类的 12+ 专业字体配对，含 Google Fonts 导入代码
+- **行业配色方案** - SaaS、电商、医疗、金融、美容、教育等行业专属配色
+- **交付前检查清单** - 视觉质量、交互、明暗模式、响应式、可访问性
+- **专业 UI 规则** - 避免常见错误（emoji 图标、cursor-pointer、对比度等）
+- **UI 风格详解** - 玻璃拟态、新拟态、新野蛮主义、Bento Grid 完整代码
+
 ## 核心理念
 
 ### 避免 AI 通用美学
@@ -120,8 +160,10 @@
 | 最大化主义 | 创意机构、娱乐平台 |
 | 复古未来 | 游戏、音乐、科技 |
 | 奢华精致 | 奢侈品、高端服务 |
-| 野蛮主义 | 实验性项目、艺术 |
-| 编辑杂志 | 媒体、出版、博客 |
+| 玻璃拟态 | 现代 SaaS、金融仪表板 |
+| 新野蛮主义 | Gen Z 品牌、创意机构 |
+| Bento Grid | 仪表板、产品展示 |
+| 赛博朋克 | 游戏、加密、开发者工具 |
 
 ## 与其他 Skill 协同
 
@@ -142,6 +184,19 @@
 .claude/skills/frontend-design/
 ├── SKILL.md              # 完整设计指南
 ├── README.md             # 快速开始（本文件）
+├── scripts/
+│   ├── search.py         # 搜索入口
+│   └── core.py           # BM25 搜索引擎
+├── data/
+│   ├── styles.csv        # 57+ UI 风格
+│   ├── colors.csv        # 95+ 配色方案
+│   ├── typography.csv    # 56+ 字体配对
+│   ├── charts.csv        # 24+ 图表类型
+│   ├── landing.csv       # 落地页模式
+│   ├── products.csv      # 产品类型推荐
+│   ├── ux-guidelines.csv # 98+ UX 指南
+│   ├── prompts.csv       # AI 提示词
+│   └── stacks/           # 10 种技术栈指南
 └── templates/
     └── design-brief.md   # 设计简报模板
 ```

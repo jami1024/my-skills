@@ -153,7 +153,7 @@ HTTP/gRPC  业务逻辑  数据访问  数据模型
 // internal/myapp/biz/v1/user/user.go
 package user
 
-//go:generate mockgen -destination mock_user.go -package user myproject/internal/myapp/biz/v1/user UserBiz
+//go:generate mockgen -destination mock_user.go -package user go.uber.org/mock/mockgen myproject/internal/myapp/biz/v1/user UserBiz
 
 import (
     "context"
@@ -1017,9 +1017,9 @@ run: build
 ## install-tools: 安装开发工具
 install-tools:
 	@echo "Installing tools..."
-	@$(GOGET) github.com/google/wire/cmd/wire@latest
-	@$(GOGET) github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-	@$(GOGET) github.com/golang/mock/mockgen@latest
+	@go install github.com/google/wire/cmd/wire@latest
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	@go install go.uber.org/mock/mockgen@latest
 
 ## help: 显示帮助信息
 help: Makefile
@@ -1043,7 +1043,7 @@ import (
     "context"
     "testing"
 
-    "github.com/golang/mock/gomock"
+    "go.uber.org/mock/gomock"
     "github.com/stretchr/testify/assert"
 
     "myproject/internal/myapp/model"

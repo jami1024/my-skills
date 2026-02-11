@@ -313,7 +313,7 @@ python3 .claude/skills/frontend-design/scripts/search.py "layout responsive" --s
 ```tsx
 import { motion } from "framer-motion"
 
-const container = {
+const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -321,16 +321,16 @@ const container = {
   }
 }
 
-const item = {
+const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0 }
 }
 
 function AnimatedList({ items }) {
   return (
-    <motion.ul variants={container} initial="hidden" animate="show">
+    <motion.ul variants={containerVariants} initial="hidden" animate="show">
       {items.map((item) => (
-        <motion.li key={item.id} variants={item}>
+        <motion.li key={item.id} variants={itemVariants}>
           {item.name}
         </motion.li>
       ))}

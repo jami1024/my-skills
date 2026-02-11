@@ -84,22 +84,22 @@ project_name/
 
 ```python
 # schemas/user.py
-from pydantic import BaseModel, EmailStr, Field, validator
-from typing import Optional
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 from datetime import datetime
 
 class UserBase(BaseModel):
     """基础用户 schema，包含共享属性"""
     email: EmailStr
     username: str = Field(..., min_length=3, max_length=50)
-    full_name: Optional[str] = None
+    full_name: str | None = None
 
 class UserCreate(UserBase):
     """创建用户时的 schema"""
     password: str = Field(..., min_length=8)
 
-    @validator('password')
-    def validate_password_strength(cls, v):
+    @field_validator('password')
+    @classmethod
+    def validate_password_strength(cls, v: str) -> str:
         # 自定义验证逻辑
         if not any(char.isdigit() for char in v):
             raise ValueError('密码必须包含数字')
@@ -107,22 +107,23 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     """更新用户时的 schema - 所有字段可选"""
-    email: Optional[EmailStr] = None
-    username: Optional[str] = None
-    full_name: Optional[str] = None
+    email: EmailStr | None = None
+    username: str | None = None
+    full_name: str | None = None
 
 class UserInDB(UserBase):
     """数据库中的用户 schema"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     is_active: bool
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True  # 允许从 ORM 模型创建
-
 class UserResponse(UserBase):
     """API 响应 schema - 不包含敏感信息"""
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     is_active: bool
 ```
@@ -131,8 +132,9 @@ class UserResponse(UserBase):
 
 - 使用 `EmailStr`、`HttpUrl` 等内置类型进行验证
 - 使用 `Field()` 添加约束和文档
-- 使用 `@validator` 进行复杂验证
-- 使用 `Config.from_attributes = True` 从 ORM 模型创建实例
+- 使用 `@field_validator` 进行复杂验证（Pydantic v2 写法，需要 `@classmethod` 装饰器）
+- 使用 `model_config = ConfigDict(from_attributes=True)` 从 ORM 模型创建实例
+- 使用 Python 3.10+ 的 `str | None` 代替 `Optional[str]`
 - 为不同操作创建不同的 schema（Create、Update、Response）
 
 ## 异步/同步路由指南
@@ -188,12 +190,11 @@ def good_example():
 
 ```python
 # db/session.py
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from app.core.config import settings
 
 engine = create_async_engine(settings.DATABASE_URL, echo=True)
-async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 async def get_db() -> AsyncSession:
     """数据库会话依赖"""
@@ -519,9 +520,8 @@ async def custom_exception_handler(request: Request, exc: CustomException):
 ```python
 # tests/conftest.py
 import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from app.main import app
 from app.db.session import get_db
 from app.db.base import Base
@@ -532,30 +532,42 @@ TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 async def test_db():
     """测试数据库"""
     engine = create_async_engine(TEST_DATABASE_URL)
-    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    async with async_session() as session:
+    session_factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    async with session_factory() as session:
         yield session
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
+    await engine.dispose()
+
 @pytest.fixture
-def client(test_db):
-    """测试客户端"""
-    def override_get_db():
+async def client(test_db):
+    """异步测试客户端（使用 httpx）"""
+    async def override_get_db():
         yield test_db
 
     app.dependency_overrides[get_db] = override_get_db
-    return TestClient(app)
+
+    async with AsyncClient(
+        transport=ASGITransport(app=app),
+        base_url="http://test"
+    ) as ac:
+        yield ac
+
+    app.dependency_overrides.clear()
 
 # tests/api/v1/test_users.py
-def test_create_user(client):
+import pytest
+
+@pytest.mark.anyio
+async def test_create_user(client):
     """测试创建用户"""
-    response = client.post(
+    response = await client.post(
         "/api/v1/users/",
         json={
             "email": "test@example.com",
@@ -573,17 +585,30 @@ def test_create_user(client):
 
 ```python
 # main.py
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.api.v1.endpoints import users, posts
+from app.db.session import engine
 
 settings = get_settings()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """应用生命周期管理（替代已废弃的 on_event）"""
+    # 启动时执行
+    print("Application starting up...")
+    yield
+    # 关闭时执行
+    await engine.dispose()
+    print("Application shutting down...")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    openapi_url=f"{settings.API_V1_PREFIX}/openapi.json"
+    openapi_url=f"{settings.API_V1_PREFIX}/openapi.json",
+    lifespan=lifespan,
 )
 
 # CORS
@@ -608,6 +633,68 @@ async def health_check():
     return {"status": "healthy"}
 ```
 
+## 分页模式
+
+```python
+# schemas/common.py
+from pydantic import BaseModel, Field
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
+
+class PaginationParams(BaseModel):
+    """分页参数"""
+    page: int = Field(1, ge=1, description="页码")
+    page_size: int = Field(20, ge=1, le=100, description="每页数量")
+
+    @property
+    def offset(self) -> int:
+        return (self.page - 1) * self.page_size
+
+class PaginatedResponse(BaseModel, Generic[T]):
+    """通用分页响应"""
+    items: list[T]
+    total: int
+    page: int
+    page_size: int
+    pages: int
+
+# services/user_service.py
+@staticmethod
+async def list_users(
+    db: AsyncSession,
+    params: PaginationParams,
+) -> PaginatedResponse[UserResponse]:
+    """分页获取用户列表"""
+    # 查询总数
+    count_stmt = select(func.count()).select_from(User)
+    total = (await db.execute(count_stmt)).scalar_one()
+
+    # 分页查询
+    stmt = select(User).offset(params.offset).limit(params.page_size)
+    result = await db.execute(stmt)
+    users = result.scalars().all()
+
+    return PaginatedResponse(
+        items=users,
+        total=total,
+        page=params.page,
+        page_size=params.page_size,
+        pages=(total + params.page_size - 1) // params.page_size,
+    )
+
+# api/v1/endpoints/users.py
+@router.get("/", response_model=PaginatedResponse[UserResponse])
+async def list_users(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+):
+    """分页获取用户列表"""
+    params = PaginationParams(page=page, page_size=page_size)
+    return await UserService.list_users(db, params)
+```
+
 ## 快速开始清单
 
 创建新 FastAPI 项目时，按以下步骤进行：
@@ -629,11 +716,12 @@ async def health_check():
 ## 常见陷阱及避免方法
 
 1. ❌ **在异步路由中使用阻塞操作** → 使用同步路由或 `asyncio.to_thread()`
-2. ❌ **过度使用 Pydantic 进行复杂验证** → 使用依赖进行数据库验证
-3. ❌ **在依赖中进行繁重的初始化** → 使用 `@lru_cache` 或启动事件
+2. ❌ **使用 Pydantic v1 写法** → 使用 `@field_validator` 代替 `@validator`，`model_config` 代替 `class Config`
+3. ❌ **使用已废弃的 `on_event`** → 使用 `lifespan` 上下文管理器
 4. ❌ **不使用服务层** → 将业务逻辑从路由中分离
 5. ❌ **忽略依赖缓存** → 理解 FastAPI 会在请求范围内缓存依赖
 6. ❌ **混淆 SQLAlchemy 模型和 Pydantic schema** → 明确分离关注点
+7. ❌ **使用 `sqlalchemy.orm.sessionmaker`** → 使用 `sqlalchemy.ext.asyncio.async_sessionmaker`
 
 ## 参考资源
 
@@ -653,14 +741,14 @@ async def health_check():
 ```
 需求分析 → 技术设计 → 任务分解 → 代码实现 → 测试验证
     ↓           ↓           ↓           ↓           ↓
-判断文档化   创建设计    TodoWrite    实现+测试    Review
+判断文档化   创建设计    TaskCreate    实现+测试    Review
 ```
 
 ### 实现步骤
 
 1. **需求分析** - 理解要实现的功能
 2. **技术设计** - 设计 API、数据模型、服务层
-3. **任务分解** - 使用 TodoWrite 创建任务清单
+3. **任务分解** - 使用 TaskCreate 创建任务清单
 4. **代码实现** - 按 Schema → Model → Service → Endpoint → Test 顺序实现
 5. **测试验证** - 运行测试并验证功能
 

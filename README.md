@@ -1,9 +1,10 @@
-# My Skills - Claude Code 最佳实践 Skills 集合
+# My Skills - Claude Code Skills 集合
 
-一个为 Claude Code 设计的开发最佳实践 Skills 仓库，包含 FastAPI、Golang、React 三个技术栈的完整开发指南，以及前端设计、开发流程、文档协作等通用 Skill。
+一个为 Claude Code 设计的开发最佳实践 Skills 仓库，包含 FastAPI、Golang、React 三个技术栈的完整开发指南，以及前端设计、开发流程、文档协作、学习文档生成等 Skill。
 
 ## 特性
 
+### 开发最佳实践
 - **FastAPI Best Practices** - Python 后端开发最佳实践（Pydantic v2 + async SQLAlchemy）
 - **Golang Best Practices** - Go 后端开发最佳实践（Clean Architecture + Wire DI）
 - **React Best Practices** - React 前端开发最佳实践（Vite + TanStack Query + Zustand + shadcn/ui）
@@ -11,12 +12,21 @@
 - **Development Workflow** - 通用软件开发流程（需求分析、代码审查、CI/CD、分支策略）
 - **Doc Co-Authoring** - 三阶段结构化文档协作编写流程
 
-每个 Skill 都提供：
+### 学习文档生成
+- **Learning Docs** - 技术学习文档生成（融合三种文档方法论）
+
+开发 Skills 提供：
 - 完整的项目结构和架构设计指南
 - 开发工作流程和规范
 - 一键初始化脚本（技术栈 Skill）
 - 文档模板（需求、设计、ADR、评审清单）
 - 详细的代码示例和最佳实践
+
+Learning Docs Skill 提供：
+- 项目驱动的动手教程（tutorial-docs 方法论）
+- 排错指南和 FAQ（technical-writer 方法论）
+- 速查参考表和设计哲学解析（diataxis 方法论）
+- 完整的模板和参考示例
 
 ## 快速开始
 
@@ -46,6 +56,7 @@ Skills 会在对话中自动激活，当你提到相关关键词时：
 | Frontend Design | "UI 设计"、"落地页"、"界面美化"、"landing page" |
 | Development Workflow | "开发流程"、"需求分析"、"代码审查"、"CI/CD"、"分支策略" |
 | Doc Co-Authoring | "写文档"、"设计文档"、"ADR"、"技术 spec" |
+| Learning Docs | "学习文档"、"学习教程"、"入门教程"、"帮我学" |
 
 ### 初始化新项目
 
@@ -104,6 +115,12 @@ bash .claude/skills/react-best-practices/init-project.sh my-react-app
 │   │   └── stacks/             # 10+ 技术栈指南
 │   ├── scripts/                # 设计数据库搜索脚本
 │   └── templates/              # 设计简报模板
+│
+├── learning-docs/              # 技术学习文档生成
+│   ├── SKILL.md                # 生成规范和写作原则
+│   └── references/
+│       ├── example-go-interface.md # 参考示例
+│       └── template.md         # 通用文档模板
 │
 ├── development-workflow/       # 通用开发流程指南
 │   └── SKILL.md                # 六步流程 + CI/CD + 分支策略

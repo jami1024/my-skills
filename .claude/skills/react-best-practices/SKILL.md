@@ -1,3 +1,8 @@
+---
+name: react-best-practices
+description: 当用户需要创建 React 项目、构建前端应用、组织 React 代码结构时使用。触发词：React、前端项目、React 架构、shadcn/ui、前端开发
+---
+
 # React + shadcn/ui 最佳实践指南
 
 **版本**: v1.0.0

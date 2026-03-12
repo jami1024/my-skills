@@ -1,32 +1,25 @@
 # My Skills - Claude Code Skills 集合
 
-一个为 Claude Code 设计的开发最佳实践 Skills 仓库，包含 FastAPI、Golang、React 三个技术栈的完整开发指南，以及前端设计、开发流程、文档协作、学习文档生成等 Skill。
+一个为 Claude Code 设计的 Skills 仓库，涵盖开发最佳实践、学习文档生成、会话交接与项目归档等场景，帮助你高效开发和沉淀知识。
 
-## 特性
+## Skills 一览
 
-### 开发最佳实践
+### 开发最佳实践（4 个）
 - **FastAPI Best Practices** - Python 后端开发最佳实践（Pydantic v2 + async SQLAlchemy）
 - **Golang Best Practices** - Go 后端开发最佳实践（Clean Architecture + Wire DI）
 - **React Best Practices** - React 前端开发最佳实践（Vite + TanStack Query + Zustand + shadcn/ui）
 - **Frontend Design** - 前端 UI 设计指南，反 AI 通用美学，含可搜索设计数据库
+
+### 学习文档生成（1 个）
+- **Learning Docs** - 技术学习文档生成（融合 tutorial-docs + technical-writer + diataxis 三种方法论）
+
+### 会话交接与归档（2 个）
+- **Handoff Summary** - 会话交接总结生成（支持通用交接 + 代码交接两种模式）
+- **Project Archive** - 项目技术归档（项目归档 / 功能归档 / 文档更新三种模式，语言无关）
+
+### 辅助 Skills（2 个）
 - **Development Workflow** - 通用软件开发流程（需求分析、代码审查、CI/CD、分支策略）
 - **Doc Co-Authoring** - 三阶段结构化文档协作编写流程
-
-### 学习文档生成
-- **Learning Docs** - 技术学习文档生成（融合三种文档方法论）
-
-开发 Skills 提供：
-- 完整的项目结构和架构设计指南
-- 开发工作流程和规范
-- 一键初始化脚本（技术栈 Skill）
-- 文档模板（需求、设计、ADR、评审清单）
-- 详细的代码示例和最佳实践
-
-Learning Docs Skill 提供：
-- 项目驱动的动手教程（tutorial-docs 方法论）
-- 排错指南和 FAQ（technical-writer 方法论）
-- 速查参考表和设计哲学解析（diataxis 方法论）
-- 完整的模板和参考示例
 
 ## 快速开始
 
@@ -54,9 +47,11 @@ Skills 会在对话中自动激活，当你提到相关关键词时：
 | Golang | "Golang"、"Go 项目"、"Go 应用" |
 | React | "React"、"前端项目"、"shadcn/ui" |
 | Frontend Design | "UI 设计"、"落地页"、"界面美化"、"landing page" |
+| Learning Docs | "学习文档"、"学习教程"、"入门教程"、"帮我学"、"生成教程" |
+| Handoff Summary | "交接总结"、"交接"、"hand-off"、"会话总结"、"代码交接" |
+| Project Archive | "项目归档"、"技术归档"、"功能归档"、"补功能文档"、"同步文档" |
 | Development Workflow | "开发流程"、"需求分析"、"代码审查"、"CI/CD"、"分支策略" |
 | Doc Co-Authoring | "写文档"、"设计文档"、"ADR"、"技术 spec" |
-| Learning Docs | "学习文档"、"学习教程"、"入门教程"、"帮我学" |
 
 ### 初始化新项目
 
@@ -122,6 +117,12 @@ bash .claude/skills/react-best-practices/init-project.sh my-react-app
 │       ├── example-go-interface.md # 参考示例
 │       └── template.md         # 通用文档模板
 │
+├── handoff-summary/            # 会话交接总结生成
+│   └── SKILL.md                # 通用交接 + 代码交接两种模式
+│
+├── project-archive/            # 项目技术归档
+│   └── SKILL.md                # 项目归档 / 功能归档 / 文档更新三种模式
+│
 ├── development-workflow/       # 通用开发流程指南
 │   └── SKILL.md                # 六步流程 + CI/CD + 分支策略
 │
@@ -160,10 +161,13 @@ fastapi  golang     react       ← 技术栈 Skill
                       ↓
                frontend-design  ← UI 设计 Skill
 
-doc-coauthoring ← 所有 Skill 共享文档模板
+doc-coauthoring  ← 所有 Skill 共享文档模板
+learning-docs    ← 为任意技术栈生成学习文档
+handoff-summary  ← 会话结束时生成交接总结
+project-archive  ← 阶段完成时生成技术归档
 ```
 
-典型协同场景：
+典型使用场景：
 
 ```bash
 # 1. 需求分析（development-workflow + doc-coauthoring）
@@ -177,6 +181,15 @@ doc-coauthoring ← 所有 Skill 共享文档模板
 
 # 4. 全栈项目（多 Skill 联动）
 "帮我搭建一个完整的博客系统，后端用 FastAPI，前端用 React"
+
+# 5. 学习新技术（learning-docs）
+"帮我生成一份 Go 接口的学习文档"
+
+# 6. 会话交接（handoff-summary）
+"生成交接总结，让下一个会话接手"
+
+# 7. 项目归档（project-archive）
+"这个功能开发完了，帮我做一次技术归档"
 ```
 
 ## 文档模板
@@ -191,6 +204,13 @@ doc-coauthoring ← 所有 Skill 共享文档模板
 | `architecture-review-checklist.md` | 架构评审清单 |
 
 ## 更新日志
+
+### 2026-03-12
+
+- 新增 **Handoff Summary** Skill —— 会话交接总结生成（通用交接 + 代码交接两种模式）
+- 新增 **Project Archive** Skill —— 项目技术归档（项目归档 / 功能归档 / 文档更新三种模式，语言无关）
+- 精简已有 Skill 文档，移除冗余内容
+- Learning Docs Skill 增加去 AI 痕迹写作规范
 
 ### 2026-02-11
 

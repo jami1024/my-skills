@@ -225,36 +225,18 @@ async def valid_user_id(
         )
     return user
 
-async def valid_post_id(
-    post_id: int,
-    db: AsyncSession = Depends(get_db)
-) -> Post:
-    """验证文章 ID"""
-    post = await db.get(Post, post_id)
-    if not post:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Post {post_id} not found"
-        )
-    return post
+# ✅ 同理创建 valid_post_id 等验证依赖，模式相同
 
-# 使用依赖
+# 使用依赖 — 自动验证，失败直接返回 404
 @router.put("/users/{user_id}/posts/{post_id}")
 async def update_post(
     post_data: PostUpdate,
-    user: User = Depends(valid_user_id),  # 自动验证
-    post: Post = Depends(valid_post_id),  # 自动验证
+    user: User = Depends(valid_user_id),
+    post: Post = Depends(valid_post_id),
     db: AsyncSession = Depends(get_db)
 ):
-    """
-    valid_user_id 和 valid_post_id 会自动执行
-    如果验证失败，会自动返回 404
-    """
-    # 直接使用已验证的 user 和 post
     if post.author_id != user.id:
         raise HTTPException(status_code=403, detail="Not authorized")
-
-    # 更新逻辑...
     return post
 ```
 
@@ -329,7 +311,6 @@ class UserService:
         if result.scalar_one_or_none():
             raise ValueError("Email already registered")
 
-        # 创建用户
         user = User(
             email=user_data.email,
             username=user_data.username,
@@ -341,35 +322,16 @@ class UserService:
         return user
 
     @staticmethod
-    async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
-        """通过 ID 获取用户"""
-        return await db.get(User, user_id)
-
-    @staticmethod
-    async def list_users(
-        db: AsyncSession,
-        skip: int = 0,
-        limit: int = 100
-    ) -> list[User]:
-        """获取用户列表"""
-        stmt = select(User).offset(skip).limit(limit)
-        result = await db.execute(stmt)
-        return result.scalars().all()
-
-    @staticmethod
-    async def update_user(
-        db: AsyncSession,
-        user: User,
-        user_data: UserUpdate
-    ) -> User:
-        """更新用户"""
+    async def update_user(db: AsyncSession, user: User, user_data: UserUpdate) -> User:
+        """更新用户 — model_dump(exclude_unset=True) 只更新传入的字段"""
         update_data = user_data.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(user, field, value)
-
         await db.commit()
         await db.refresh(user)
         return user
+
+    # ✅ 同理实现 get_user_by_id、list_users、delete_user 等
 ```
 
 ## 路由端点模式
@@ -378,10 +340,6 @@ class UserService:
 # api/v1/endpoints/users.py
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.session import get_db
-from app.schemas.user import UserCreate, UserResponse, UserUpdate
-from app.services.user_service import UserService
-from app.api.v1.dependencies import valid_user_id
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -390,13 +348,7 @@ async def create_user(
     user_data: UserCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    """
-    创建新用户
-
-    - **email**: 有效的邮箱地址
-    - **username**: 3-50 字符
-    - **password**: 至少 8 字符，包含数字
-    """
+    """创建新用户 — Service 层处理业务逻辑，Handler 只做绑定和调用"""
     try:
         user = await UserService.create_user(db, user_data)
         return user
@@ -405,32 +357,10 @@ async def create_user(
 
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user(user: User = Depends(valid_user_id)):
-    """
-    通过 ID 获取用户
-
-    依赖 valid_user_id 自动验证用户是否存在
-    """
+    """通过 ID 获取用户 — 依赖 valid_user_id 自动验证"""
     return user
 
-@router.get("/", response_model=list[UserResponse])
-async def list_users(
-    skip: int = 0,
-    limit: int = 100,
-    db: AsyncSession = Depends(get_db)
-):
-    """获取用户列表"""
-    users = await UserService.list_users(db, skip, limit)
-    return users
-
-@router.put("/{user_id}", response_model=UserResponse)
-async def update_user(
-    user_data: UserUpdate,
-    user: User = Depends(valid_user_id),
-    db: AsyncSession = Depends(get_db)
-):
-    """更新用户信息"""
-    updated_user = await UserService.update_user(db, user, user_data)
-    return updated_user
+# ✅ 同理实现 list_users、update_user、delete_user
 ```
 
 ## 配置管理
@@ -732,65 +662,20 @@ async def list_users(
 
 ---
 
-## 开发工作流程
+**详细参考：**
+- 完整开发工作规范 → [development-workflow.md](development-workflow.md)
+- 架构设计和技术选型 → [architecture-design.md](architecture-design.md)
+- 一键初始化项目 → `init-project.sh`
 
-在使用此 skill 开发 FastAPI 项目时，请遵循以下工作流程：
+**实现顺序：** Schema → Model → Service → Endpoint → Test
 
-### 核心工作流
-
-```
-需求分析 → 技术设计 → 任务分解 → 代码实现 → 测试验证
-    ↓           ↓           ↓           ↓           ↓
-判断文档化   创建设计    TaskCreate    实现+测试    Review
-```
-
-### 实现步骤
-
-1. **需求分析** - 理解要实现的功能
-2. **技术设计** - 设计 API、数据模型、服务层
-3. **任务分解** - 使用 TaskCreate 创建任务清单
-4. **代码实现** - 按 Schema → Model → Service → Endpoint → Test 顺序实现
-5. **测试验证** - 运行测试并验证功能
-
-### 实现顺序
-
-```
-Schema（API 契约）
-  ↓
-Model（数据存储）
-  ↓
-Service（业务逻辑）
-  ↓
-Endpoint（HTTP 接口）
-  ↓
-Test（功能验证）
-```
-
-### 完成标准
-
+**完成标准：**
 - [ ] 功能实现且测试通过
 - [ ] 无硬编码密钥或配置
 - [ ] 有适当的错误处理
 - [ ] 通过 lint 和类型检查
 - [ ] API 文档自动生成
 - [ ] 有单元测试覆盖
-
-### 详细工作流文档
-
-更多详细的开发规范、文档模板、代码审查清单等，请参考：
-- **[development-workflow.md](development-workflow.md)** - 完整的开发工作规范
-- **[architecture-design.md](architecture-design.md)** - 架构设计指南和技术选型
-
-### 架构设计支持
-
-当需要架构设计或技术选型时，可以参考：
-- SOLID 架构原则
-- 分层架构模式（API、Service、Model、Database）
-- 技术选型决策框架（数据库、缓存、消息队列）
-- 常见架构决策点（认证、API版本、文件上传）
-- 性能和可扩展性考虑
-- 安全架构设计
-- 架构评审清单
 
 ---
 
@@ -799,8 +684,6 @@ Test（功能验证）
 - 自动应用推荐的项目结构
 - 使用正确的异步/同步模式
 - 实现依赖注入模式
-- 创建清晰分离的层次结构
+- 创建清晰分离的层次结构（API → Service → Model）
 - 编写可测试和可维护的代码
-- 遵循开发工作流程和规范
 - 应用 SOLID 架构原则
-- 提供技术选型建议和架构评审

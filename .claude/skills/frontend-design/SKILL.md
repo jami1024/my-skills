@@ -5,20 +5,9 @@ description: 创建独特、生产级的前端界面，避免通用 AI 美学。
 
 # Frontend Design 前端设计最佳实践
 
-**版本**: v2.0.0
-**更新日期**: 2026-01-06
+创建独特、生产级的前端界面，避免通用 AI 美学。适用于 Web 组件、页面、落地页、仪表板等任何需要设计的 UI。
 
-创建独特、生产级的前端界面，具有高设计质量。避免通用的 AI 美学风格。
-
----
-
-## 🎯 何时使用
-
-当用户要求构建以下内容时使用此 skill：
-- Web 组件、页面、应用程序
-- 网站、落地页、仪表板
-- React 组件、HTML/CSS 布局
-- 任何需要美化的 Web UI
+React 工程实践（架构、状态管理、性能、测试）请配合 **react-best-practices skill**。
 
 ## 🎨 设计思维
 
@@ -58,22 +47,7 @@ description: 创建独特、生产级的前端界面，避免通用 AI 美学。
 
 ## 🔍 设计数据库搜索
 
-此 skill 包含可搜索的设计数据库，支持通过 Python 脚本动态查询。
-
-### 前置要求
-
-```bash
-# 检查 Python 是否已安装
-python3 --version
-
-# macOS 安装
-brew install python3
-
-# Ubuntu/Debian 安装
-sudo apt update && sudo apt install python3
-```
-
-### 搜索命令
+通过 `search.py` 查询内置设计数据库，获取字体、配色、风格等推荐。
 
 ```bash
 python3 .claude/skills/frontend-design/scripts/search.py "<关键词>" --domain <领域> [-n <结果数量>]
@@ -83,199 +57,65 @@ python3 .claude/skills/frontend-design/scripts/search.py "<关键词>" --domain 
 
 | 领域 | 用途 | 示例关键词 |
 |------|------|-----------|
-| `style` | UI 风格、效果 | glassmorphism, minimalism, dark mode, brutalism |
-| `typography` | 字体配对、Google Fonts | elegant, playful, professional, modern |
-| `color` | 按行业的配色方案 | saas, ecommerce, healthcare, beauty, fintech |
-| `product` | 产品类型推荐 | SaaS, e-commerce, portfolio, healthcare |
-| `landing` | 落地页结构、CTA 策略 | hero, testimonial, pricing, social-proof |
-| `chart` | 图表类型推荐 | trend, comparison, timeline, funnel, pie |
-| `ux` | 最佳实践、反模式 | animation, accessibility, z-index, loading |
-| `prompt` | AI 提示词、CSS 关键词 | (风格名称) |
+| `style` | UI 风格、效果 | glassmorphism, minimalism, brutalism |
+| `typography` | 字体配对、Google Fonts | elegant, playful, professional |
+| `color` | 按行业的配色方案 | saas, ecommerce, healthcare, fintech |
+| `product` | 产品类型推荐 | SaaS, e-commerce, portfolio |
+| `landing` | 落地页结构、CTA 策略 | hero, testimonial, pricing |
+| `chart` | 图表类型推荐 | trend, comparison, funnel |
+| `ux` | 最佳实践、反模式 | animation, accessibility, loading |
 
-### 技术栈搜索
-
-```bash
-python3 .claude/skills/frontend-design/scripts/search.py "<关键词>" --stack <技术栈>
-```
-
-可用技术栈：`html-tailwind` (默认)、`react`、`nextjs`、`vue`、`nuxtjs`、`nuxt-ui`、`svelte`、`swiftui`、`react-native`、`flutter`
-
-### 使用示例
-
-```bash
-# 1. 搜索产品类型推荐
-python3 .claude/skills/frontend-design/scripts/search.py "beauty spa wellness" --domain product
-
-# 2. 搜索 UI 风格
-python3 .claude/skills/frontend-design/scripts/search.py "elegant minimal" --domain style
-
-# 3. 搜索字体配对
-python3 .claude/skills/frontend-design/scripts/search.py "luxury premium" --domain typography
-
-# 4. 搜索行业配色
-python3 .claude/skills/frontend-design/scripts/search.py "fintech banking" --domain color
-
-# 5. 搜索 UX 指南
-python3 .claude/skills/frontend-design/scripts/search.py "animation" --domain ux
-
-# 6. 搜索技术栈指南
-python3 .claude/skills/frontend-design/scripts/search.py "layout responsive" --stack html-tailwind
-```
+技术栈搜索：`--stack react|nextjs|vue|svelte|html-tailwind|swiftui|flutter` 等
 
 ### 推荐搜索顺序
 
-1. **Product** - 获取产品类型的风格推荐
-2. **Style** - 获取详细风格指南
-3. **Typography** - 获取字体配对
-4. **Color** - 获取行业配色方案
-5. **Landing** - 获取落地页结构（如适用）
-6. **UX** - 获取最佳实践
-7. **Stack** - 获取技术栈特定指南
+Product → Style → Typography → Color → Landing（如适用）→ UX → Stack
 
 ---
 
 ## 🎨 美学指南
 
-### 1. 字体配对库
+### 1. 字体配对（快速参考）
 
-#### 高端奢华
+> 完整字体库通过 `search.py --domain typography` 查询
 
-| 场景 | 标题字体 | 正文字体 | Google Fonts 导入 |
-|------|---------|---------|------------------|
-| 奢侈品牌 | Playfair Display | Inter | `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap');` |
-| 时尚杂志 | Cormorant Garamond | Libre Baskerville | `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap');` |
-| 珠宝品牌 | Cormorant | Montserrat | `@import url('https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');` |
+| 风格 | 标题字体 | 正文字体 | 适用场景 |
+|------|---------|---------|----------|
+| 高端奢华 | Playfair Display | Libre Baskerville | 奢侈品、时尚杂志 |
+| 现代科技 | Plus Jakarta Sans | Plus Jakarta Sans | SaaS、科技创业 |
+| 开发者 | JetBrains Mono | IBM Plex Sans | 开发者工具、技术文档 |
+| 创意冲击 | Bebas Neue | Source Sans 3 | 活动、营销页面 |
+| 时尚前卫 | Syne | Manrope | 创意机构、设计工作室 |
+| 友好亲和 | Fredoka | Nunito | 儿童产品、教育 |
+| 健康养生 | Lora | Raleway | 健康、生活方式 |
 
-#### 现代科技
+**❌ 避免**: Inter、Roboto、Arial、系统字体（太通用，典型 AI 美学）
 
-| 场景 | 标题字体 | 正文字体 | Google Fonts 导入 |
-|------|---------|---------|------------------|
-| SaaS 产品 | Plus Jakarta Sans | Plus Jakarta Sans | `@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');` |
-| 科技创业 | Space Grotesk | DM Sans | `@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');` |
-| 开发者工具 | JetBrains Mono | IBM Plex Sans | `@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');` |
+### 2. 行业配色方案（快速参考）
 
-#### 创意艺术
-
-| 场景 | 标题字体 | 正文字体 | Google Fonts 导入 |
-|------|---------|---------|------------------|
-| 冲击力标题 | Bebas Neue | Source Sans 3 | `@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');` |
-| 时尚前卫 | Syne | Manrope | `@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700&display=swap');` |
-| 几何现代 | Outfit | Work Sans | `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&display=swap');` |
-
-#### 友好亲和
-
-| 场景 | 标题字体 | 正文字体 | Google Fonts 导入 |
-|------|---------|---------|------------------|
-| 儿童产品 | Fredoka | Nunito | `@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');` |
-| 健康养生 | Lora | Raleway | `@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Raleway:wght@300;400;500;600;700&display=swap');` |
-| 柔和圆润 | Varela Round | Nunito Sans | `@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&family=Varela+Round&display=swap');` |
-
-#### ❌ 避免的字体
-- Inter、Roboto、Arial、系统字体（太通用）
-- 过度使用的 Space Grotesk（除非真正适合）
-- 任何"安全"但无特色的选择
-
-### 2. 行业配色方案
-
-#### SaaS / 科技
+> 完整行业配色通过 `search.py --domain color` 查询
 
 ```css
+/* SaaS / 科技 — 专业蓝 */
 :root {
-  /* 专业蓝 */
   --color-primary: #0066FF;
   --color-secondary: #1A1A2E;
   --color-accent: #00D4FF;
   --color-surface: #FAFBFC;
   --color-text: #1F2937;
-  --color-muted: #6B7280;
 }
 
-/* 或者深色主题 */
+/* 美容 / SPA — 优雅柔和 */
 :root {
-  --color-primary: #6366F1;
-  --color-secondary: #0F0F23;
-  --color-accent: #22D3EE;
-  --color-surface: #1E1E3F;
-  --color-text: #F8FAFC;
-  --color-muted: #94A3B8;
-}
-```
-
-#### 电商 / 零售
-
-```css
-:root {
-  /* 温暖购物 */
-  --color-primary: #FF6B35;
-  --color-secondary: #1A1A2E;
-  --color-accent: #4ADE80;
-  --color-surface: #FFFBF5;
-  --color-text: #1F2937;
-  --color-cta: #FF3D00;
-}
-```
-
-#### 健康 / 医疗
-
-```css
-:root {
-  /* 信任安心 */
-  --color-primary: #0D9488;
-  --color-secondary: #134E4A;
-  --color-accent: #2DD4BF;
-  --color-surface: #F0FDFA;
-  --color-text: #1F2937;
-  --color-success: #10B981;
-}
-```
-
-#### 金融 / 理财
-
-```css
-:root {
-  /* 稳重信赖 */
-  --color-primary: #003366;
-  --color-secondary: #0A1628;
-  --color-accent: #FFD700;
-  --color-surface: #F8FAFC;
-  --color-text: #1E293B;
-  --color-success: #22C55E;
-  --color-danger: #EF4444;
-}
-```
-
-#### 美容 / SPA
-
-```css
-:root {
-  /* 优雅柔和 */
   --color-primary: #D4A574;
   --color-secondary: #2D2D2D;
   --color-accent: #E8C5A8;
   --color-surface: #FDF8F4;
   --color-text: #3D3D3D;
-  --color-muted: #8B7355;
 }
 ```
 
-#### 教育 / 学习
-
-```css
-:root {
-  /* 活力成长 */
-  --color-primary: #4F46E5;
-  --color-secondary: #1E1B4B;
-  --color-accent: #F59E0B;
-  --color-surface: #F5F3FF;
-  --color-text: #1F2937;
-  --color-success: #10B981;
-}
-```
-
-#### ❌ 避免的配色
-- 白色背景上的紫色渐变（典型 AI 美学）
-- 平均分布的调色板（无主次之分）
-- 过于保守、无特色的配色
+**❌ 避免**: 紫色渐变 + 白色背景（典型 AI 美学）、平均分布无主次的调色板
 
 ### 3. 动效与交互
 
@@ -341,18 +181,12 @@ function AnimatedList({ items }) {
 
 ### 4. 空间构图
 
-#### ✅ 打破常规的布局
 ```css
 /* 不对称网格 */
 .asymmetric-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  grid-template-rows: auto auto;
   gap: 2rem;
-}
-
-.asymmetric-grid .feature {
-  grid-row: span 2;
 }
 
 /* 对角线流动 */
@@ -362,54 +196,26 @@ function AnimatedList({ items }) {
 }
 
 /* 重叠元素 */
-.overlap-container {
-  position: relative;
-}
-
 .overlap-image {
   position: absolute;
   top: -2rem;
   right: -2rem;
   z-index: 10;
 }
-
-/* Bento Grid */
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-
-.bento-grid .large {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.bento-grid .wide {
-  grid-column: span 2;
-}
 ```
 
 ### 5. 背景与视觉细节
 
-#### 渐变网格
 ```css
+/* 渐变网格 */
 .gradient-mesh {
   background:
     radial-gradient(at 40% 20%, hsla(28,100%,74%,1) 0px, transparent 50%),
     radial-gradient(at 80% 0%, hsla(189,100%,56%,1) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, hsla(355,100%,93%,1) 0px, transparent 50%),
-    radial-gradient(at 80% 50%, hsla(340,100%,76%,1) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, hsla(22,100%,77%,1) 0px, transparent 50%);
-}
-```
-
-#### 噪点纹理
-```css
-.noise-texture {
-  position: relative;
+    radial-gradient(at 0% 50%, hsla(355,100%,93%,1) 0px, transparent 50%);
 }
 
+/* 噪点纹理 */
 .noise-texture::before {
   content: "";
   position: absolute;
@@ -417,23 +223,6 @@ function AnimatedList({ items }) {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   opacity: 0.05;
   pointer-events: none;
-}
-```
-
-#### 玻璃拟态
-```css
-.glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-}
-
-/* 浅色模式下需要调整 */
-.glass-card-light {
-  background: rgba(255, 255, 255, 0.8); /* 更高不透明度 */
-  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 ```
 
@@ -535,12 +324,13 @@ function AnimatedList({ items }) {
 
 ---
 
-## 🎯 UI 风格详解
+## 🎯 UI 风格速查
+
+> 详细风格指南通过 `search.py --domain style` 查询
 
 ### 玻璃拟态 (Glassmorphism)
 
 ```css
-/* 核心样式 */
 .glass {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -548,55 +338,27 @@ function AnimatedList({ items }) {
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
 }
-
-/* 需要丰富背景才能显示效果 */
-.glass-container {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+/* 浅色模式：提高不透明度 bg-white/80，边框用 rgba(0,0,0,0.1) */
 ```
 
-**适用**: 现代 SaaS、金融仪表板、高端企业
-**注意**: 需要足够对比度，浅色模式下增加不透明度
-
-### 新拟态 (Neumorphism)
-
-```css
-.neu-card {
-  background: #e0e5ec;
-  border-radius: 16px;
-  box-shadow:
-    9px 9px 16px rgba(163,177,198,0.6),
-    -9px -9px 16px rgba(255,255,255, 0.5);
-}
-
-.neu-button:active {
-  box-shadow:
-    inset 5px 5px 10px rgba(163,177,198,0.6),
-    inset -5px -5px 10px rgba(255,255,255,0.5);
-}
-```
-
-**适用**: 健康应用、冥想、健身追踪器
-**注意**: 对比度较低，不适合需要严格可访问性的场景
+**适用**: 现代 SaaS、金融仪表板 | **注意**: 需要丰富背景 + 足够对比度
 
 ### 新野蛮主义 (Neubrutalism)
 
 ```css
 .neubrutalism-card {
   background: #FFEB3B;
-  border: 3px solid #000000;
-  box-shadow: 4px 4px 0 #000000;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
   border-radius: 0;
 }
-
-.neubrutalism-button:hover {
+.neubrutalism-card:hover {
   transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 #000000;
+  box-shadow: 2px 2px 0 #000;
 }
 ```
 
-**适用**: Gen Z 品牌、创业公司、创意机构、Figma/Notion 风格
-**注意**: 对传统企业可能过于活泼
+**适用**: Gen Z 品牌、创意机构 | **注意**: 对传统企业可能过于活泼
 
 ### Bento Grid
 
@@ -606,53 +368,43 @@ function AnimatedList({ items }) {
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
+.bento-card { border-radius: 24px; padding: 24px; }
+.bento-card.large { grid-column: span 2; grid-row: span 2; }
+.bento-card.wide { grid-column: span 2; }
+```
 
-.bento-card {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
+**适用**: 仪表板、产品页面、Apple 风格 | **注意**: 不适合密集数据表格
 
-.bento-card.large {
-  grid-column: span 2;
-  grid-row: span 2;
-}
+### 新拟态 (Neumorphism)
 
-.bento-card.wide {
-  grid-column: span 2;
+```css
+.neu-card {
+  background: #e0e5ec;
+  box-shadow: 9px 9px 16px rgba(163,177,198,0.6), -9px -9px 16px rgba(255,255,255,0.5);
 }
 ```
 
-**适用**: 仪表板、产品页面、作品集、Apple 风格营销
-**注意**: 不适合密集数据表格或文字繁重内容
-
----
-
-## 🔗 与 React Skill 协同
-
-```
-# 1. 初始化项目（react-best-practices）
-"创建一个 React + TypeScript + shadcn/ui 项目"
-
-# 2. 设计 UI（frontend-design）
-"使用 frontend-design skill 为用户列表页设计 UI，
-品牌：现代 SaaS，受众：专业人士，
-感觉：专业、创新，审美：精致极简"
-
-# 3. 继续开发（react-best-practices）
-"添加用户详情页，包括数据获取和状态管理"
-```
+**适用**: 健康应用、冥想 | **注意**: 对比度较低，可访问性受限
 
 ---
 
 ## 参考资源
 
 - [Awwwards](https://www.awwwards.com/) - 优秀网站设计灵感
-- [Dribbble](https://dribbble.com/) - UI 设计灵感
 - [Google Fonts](https://fonts.google.com/) - 字体选择
 - [Coolors](https://coolors.co/) - 配色方案生成
 - [Motion](https://motion.dev/) - React 动画库
-- [Heroicons](https://heroicons.com/) - SVG 图标
-- [Lucide](https://lucide.dev/) - SVG 图标
+- [Heroicons](https://heroicons.com/) / [Lucide](https://lucide.dev/) - SVG 图标
 - [Simple Icons](https://simpleicons.org/) - 品牌 Logo SVG
+
+---
+
+**使用此 skill 时，Claude 将：**
+- 在编码前先确定美学方向（风格、字体、配色）
+- 使用 `search.py` 查询设计数据库获取推荐
+- 避免 AI 通用美学（Inter 字体、紫色渐变、预测性布局）
+- 选择有意图性的字体配对和行业配色
+- 使用 SVG 图标（Heroicons/Lucide），不用 emoji
+- 确保明暗模式对比度和可访问性
+- 交付前执行检查清单验证
+- 每个设计决策都有明确理由

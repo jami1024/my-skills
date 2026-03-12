@@ -5,197 +5,48 @@ description: 当用户需要创建 React 项目、构建前端应用、组织 Re
 
 # React + shadcn/ui 最佳实践指南
 
-**版本**: v1.0.0
-**更新日期**: 2025-12-24
+本文档是 React + shadcn/ui 开发的核心实践指南，专注于架构、状态管理、性能和测试。
 
-本文档是 React + shadcn/ui 开发的核心实践指南。
+## 📋 开发工作流
 
----
+通用开发流程（需求分析、技术设计、代码审查等）请参考 **development-workflow skill**。
+UI 设计和视觉实现（字体、配色、布局、动效）请配合 **frontend-design skill**。
 
-## 🤝 与 frontend-design skill 协同
+本文档专注于 **React 特定** 的开发实践。
 
-本 skill 专注于 **React 工程实践**（架构、状态管理、性能、测试）。
+## 核心原则
 
-对于 **UI 设计和视觉实现**（字体、配色、布局、动效），建议配合使用 **frontend-design skill**。
+1. **Feature-Based 架构** - 按功能模块组织代码，而非技术层
+2. **类型安全** - TypeScript 全链路类型覆盖
+3. **状态分离** - 服务端状态（TanStack Query）与客户端状态（Zustand）分离
+4. **组件化优先** - 小而专注的组件，Props 驱动
 
-### 何时使用 frontend-design
+## 项目结构
 
-- ✅ 创建新页面或组件，需要设计独特的 UI
-- ✅ 需要选择字体、配色、审美方向
-- ✅ 实现页面动效和交互动画
-- ✅ 定制 shadcn/ui 组件的视觉样式
-- ✅ 避免通用 AI 美学（Inter 字体、紫色渐变等）
-
-### 协同提示词示例
-
-```
-# 初始化项目（react-best-practices）
-"创建一个 React + TypeScript + shadcn/ui 项目"
-
-# 设计 UI（frontend-design）
-"使用 frontend-design skill 为用户列表页设计 UI，
-品牌：现代 SaaS，受众：专业人士，
-感觉：专业、创新，审美：精致极简"
-
-# 继续开发（react-best-practices）
-"添加用户详情页，包括数据获取和状态管理"
-```
-
----
-
-## 目录
-
-1. [项目初始化](#项目初始化)
-2. [目录结构](#目录结构)
-3. [组件开发](#组件开发)
-4. [状态管理](#状态管理)
-5. [数据获取](#数据获取)
-6. [表单处理](#表单处理)
-7. [路由管理](#路由管理)
-8. [样式规范](#样式规范)
-9. [性能优化](#性能优化)
-10. [测试策略](#测试策略)
-
----
-
-## 项目初始化
-
-### 使用 Vite 创建项目
-
-```bash
-# 创建项目
-npm create vite@latest my-app -- --template react-ts
-cd my-app
-npm install
-
-# 安装 Tailwind CSS
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-
-# 安装 shadcn/ui
-npx shadcn-ui@latest init
-
-# 安装核心依赖
-npm install react-router-dom @tanstack/react-query zustand
-npm install react-hook-form @hookform/resolvers zod
-npm install axios
-npm install -D @types/node
-```
-
-### 配置文件
-
-**tsconfig.json**:
-```json
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
-}
-```
-
-**vite.config.ts**:
-```ts
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
-
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-})
-```
-
----
-
-## 目录结构
-
-### Feature-Based 架构
+> 完整初始化命令和配置文件见 `init-project.sh`
 
 ```
 src/
-├── api/                      # API 客户端
-│   ├── client.ts            # Axios 配置
-│   └── types.ts             # API 通用类型
+├── api/                      # API 客户端（Axios 配置 + 通用类型）
 ├── components/              # 全局组件
 │   ├── ui/                 # shadcn/ui 组件
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   └── ...
-│   ├── layout/             # 布局组件
-│   │   ├── header.tsx
-│   │   ├── sidebar.tsx
-│   │   └── footer.tsx
-│   └── common/             # 通用组件
-│       ├── loading.tsx
-│       ├── error-fallback.tsx
-│       └── empty-state.tsx
-├── features/               # 功能模块
-│   ├── auth/
-│   │   ├── api/           # 认证 API
-│   │   ├── components/    # 认证组件
-│   │   ├── hooks/         # 认证 Hooks
-│   │   ├── stores/        # 认证状态
-│   │   ├── types/         # 认证类型
-│   │   └── pages/         # 认证页面
-│   └── users/
-│       ├── api/
-│       │   └── user-api.ts
-│       ├── components/
-│       │   ├── user-list.tsx
-│       │   ├── user-form.tsx
-│       │   └── user-card.tsx
-│       ├── hooks/
-│       │   ├── use-users.ts
-│       │   └── use-user-form.ts
-│       ├── types/
-│       │   └── user.ts
-│       └── pages/
-│           ├── user-list-page.tsx
-│           └── user-detail-page.tsx
+│   ├── layout/             # 布局组件（header/sidebar/footer）
+│   └── common/             # 通用组件（loading/error-fallback）
+├── features/               # 功能模块（核心）
+│   └── users/              # 示例模块
+│       ├── api/            # 模块 API
+│       ├── components/     # 模块组件
+│       ├── hooks/          # 模块 Hooks
+│       ├── types/          # 模块类型
+│       └── pages/          # 模块页面
 ├── hooks/                  # 全局 Hooks
-│   ├── use-toast.ts
-│   ├── use-theme.ts
-│   └── use-media-query.ts
-├── lib/                    # 工具库
-│   └── utils.ts
-├── stores/                 # 全局状态
-│   ├── auth-store.ts
-│   └── theme-store.ts
+├── lib/                    # 工具库（cn 等）
+├── stores/                 # 全局状态（Zustand）
 ├── types/                  # 全局类型
-│   └── common.ts
-├── utils/                  # 工具函数
-│   ├── format.ts
-│   └── validation.ts
 ├── App.tsx
 ├── main.tsx
 └── router.tsx
 ```
-
----
 
 ## 组件开发
 
@@ -214,14 +65,6 @@ interface UserCardProps {
 }
 
 export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
-  const handleEdit = () => {
-    onEdit?.(user)
-  }
-
-  const handleDelete = () => {
-    onDelete?.(user.id)
-  }
-
   return (
     <Card>
       <CardHeader>
@@ -230,12 +73,8 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
       <CardContent>
         <p className="text-sm text-muted-foreground">{user.email}</p>
         <div className="mt-4 flex gap-2">
-          <Button onClick={handleEdit} variant="outline" size="sm">
-            编辑
-          </Button>
-          <Button onClick={handleDelete} variant="destructive" size="sm">
-            删除
-          </Button>
+          <Button onClick={() => onEdit?.(user)} variant="outline" size="sm">编辑</Button>
+          <Button onClick={() => onDelete?.(user.id)} variant="destructive" size="sm">删除</Button>
         </div>
       </CardContent>
     </Card>
@@ -245,43 +84,20 @@ export function UserCard({ user, onEdit, onDelete }: UserCardProps) {
 
 ### 组件规范
 
-#### 1. 命名规范
-
 ```tsx
-// ✅ 好的命名
+// ✅ 命名：组件 PascalCase，Hooks use 前缀，回调 on 前缀
 export function UserList() {}
-export function UserDetailPage() {}
 export function useUserQuery() {}
+interface Props { onUserClick?: (user: User) => void }
 
-// ❌ 不好的命名
-export function List() {}
-export function page() {}
-export function useData() {}
-```
-
-#### 2. Props 类型定义
-
-```tsx
-// ✅ 使用 interface 定义 Props
+// ✅ Props 用 interface 定义，可选属性用 ?
 interface UserListProps {
   users: User[]
   loading?: boolean
   onUserClick?: (user: User) => void
 }
 
-// ✅ 可选的 Props 使用 ?
-// ✅ 回调函数命名以 on 开头
-```
-
-#### 3. 组件拆分原则
-
-```tsx
-// ❌ 不好：一个组件做太多事情
-function UserPage() {
-  // 100+ 行代码
-}
-
-// ✅ 好：拆分为多个小组件
+// ✅ 拆分大组件为多个小组件
 function UserPage() {
   return (
     <div>
@@ -300,36 +116,18 @@ function UserPage() {
 
 ### TanStack Query（服务端状态）
 
-用于管理服务端数据（API 调用、缓存）。
-
-**配置**:
 ```tsx
-// src/main.tsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
+// src/main.tsx — 配置
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 分钟
-      retry: 3,
-    },
+    queries: { staleTime: 5 * 60 * 1000, retry: 3 },
   },
 })
 
-root.render(
-  <QueryClientProvider client={queryClient}>
-    <App />
-  </QueryClientProvider>
-)
-```
-
-**使用示例**:
-```tsx
 // src/features/users/hooks/use-users.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { userApi } from '../api/user-api'
-import { User } from '../types/user'
 
+// ✅ useQuery 用于读取数据
 export function useUsers() {
   return useQuery({
     queryKey: ['users'],
@@ -341,50 +139,25 @@ export function useUser(id: string) {
   return useQuery({
     queryKey: ['users', id],
     queryFn: () => userApi.getById(id),
-    enabled: !!id,
+    enabled: !!id,  // 条件查询
   })
 }
 
+// ✅ useMutation 用于写操作，成功后 invalidate 缓存
 export function useCreateUser() {
   const queryClient = useQueryClient()
-
   return useMutation({
     mutationFn: userApi.create,
     onSuccess: () => {
-      // 重新获取列表数据
       queryClient.invalidateQueries({ queryKey: ['users'] })
     },
   })
 }
 
-export function useUpdateUser() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<User> }) =>
-      userApi.update(id, data),
-    onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
-      queryClient.invalidateQueries({ queryKey: ['users', id] })
-    },
-  })
-}
-
-export function useDeleteUser() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: userApi.delete,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
-    },
-  })
-}
+// ✅ 同理实现 useUpdateUser、useDeleteUser，模式相同
 ```
 
 ### Zustand（客户端状态）
-
-用于管理客户端状态（主题、用户信息等）。
 
 ```tsx
 // src/stores/auth-store.ts
@@ -406,32 +179,16 @@ export const useAuthStore = create<AuthState>()(
       login: (user, token) => set({ user, token }),
       logout: () => set({ user: null, token: null }),
     }),
-    {
-      name: 'auth-storage',
-    }
+    { name: 'auth-storage' }
   )
 )
-
-// 使用
-function UserProfile() {
-  const { user, logout } = useAuthStore()
-
-  if (!user) return <div>请登录</div>
-
-  return (
-    <div>
-      <p>{user.name}</p>
-      <button onClick={logout}>退出</button>
-    </div>
-  )
-}
 ```
 
 ---
 
 ## 数据获取
 
-### API 客户端配置
+### API 客户端
 
 ```tsx
 // src/api/client.ts
@@ -443,19 +200,14 @@ export const apiClient = axios.create({
   timeout: 10000,
 })
 
-// 请求拦截器
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = useAuthStore.getState().token
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => Promise.reject(error)
-)
+// 请求拦截器 — 自动附加 token
+apiClient.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
-// 响应拦截器
+// 响应拦截器 — 401 自动登出
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
@@ -468,37 +220,7 @@ apiClient.interceptors.response.use(
 )
 ```
 
-### API 服务层
-
-```tsx
-// src/features/users/api/user-api.ts
-import { apiClient } from '@/api/client'
-import { User, CreateUserDto, UpdateUserDto } from '../types/user'
-
-export const userApi = {
-  getAll: async (): Promise<User[]> => {
-    return apiClient.get('/users')
-  },
-
-  getById: async (id: string): Promise<User> => {
-    return apiClient.get(`/users/${id}`)
-  },
-
-  create: async (data: CreateUserDto): Promise<User> => {
-    return apiClient.post('/users', data)
-  },
-
-  update: async (id: string, data: UpdateUserDto): Promise<User> => {
-    return apiClient.put(`/users/${id}`, data)
-  },
-
-  delete: async (id: string): Promise<void> => {
-    return apiClient.delete(`/users/${id}`)
-  },
-}
-```
-
-### 类型定义
+### API 服务层 + 类型定义
 
 ```tsx
 // src/features/users/types/user.ts
@@ -518,10 +240,15 @@ export interface CreateUserDto {
   role?: 'admin' | 'user'
 }
 
-export interface UpdateUserDto {
-  name?: string
-  email?: string
-  role?: 'admin' | 'user'
+// ✅ 同理定义 UpdateUserDto（Partial 模式）
+
+// src/features/users/api/user-api.ts
+export const userApi = {
+  getAll: async (): Promise<User[]> => apiClient.get('/users'),
+  getById: async (id: string): Promise<User> => apiClient.get(`/users/${id}`),
+  create: async (data: CreateUserDto): Promise<User> => apiClient.post('/users', data),
+  update: async (id: string, data: Partial<User>): Promise<User> => apiClient.put(`/users/${id}`, data),
+  delete: async (id: string): Promise<void> => apiClient.delete(`/users/${id}`),
 }
 ```
 
@@ -536,16 +263,7 @@ export interface UpdateUserDto {
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 
 const formSchema = z.object({
   name: z.string().min(2, "名称至少 2 个字符").max(50),
@@ -564,17 +282,13 @@ interface UserFormProps {
 export function UserForm({ onSubmit, defaultValues, loading }: UserFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      ...defaultValues,
-    },
+    defaultValues: { name: "", email: "", password: "", ...defaultValues },
   })
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* ✅ 每个字段用 FormField 包裹，模式相同 */}
         <FormField
           control={form.control}
           name="name"
@@ -588,34 +302,7 @@ export function UserForm({ onSubmit, defaultValues, loading }: UserFormProps) {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>邮箱</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="请输入邮箱" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>密码</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="请输入密码" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* ✅ email、password 字段同理，只改 name/label/placeholder */}
 
         <Button type="submit" disabled={loading}>
           {loading ? "提交中..." : "提交"}
@@ -626,15 +313,10 @@ export function UserForm({ onSubmit, defaultValues, loading }: UserFormProps) {
 }
 ```
 
-### 表单使用示例
+### 表单使用
 
 ```tsx
 // src/features/users/pages/create-user-page.tsx
-import { UserForm } from "../components/user-form"
-import { useCreateUser } from "../hooks/use-users"
-import { useNavigate } from "react-router-dom"
-import { useToast } from "@/hooks/use-toast"
-
 export function CreateUserPage() {
   const navigate = useNavigate()
   const { toast } = useToast()
@@ -643,18 +325,11 @@ export function CreateUserPage() {
   const handleSubmit = (values: FormValues) => {
     createUser(values, {
       onSuccess: () => {
-        toast({
-          title: "成功",
-          description: "用户创建成功",
-        })
+        toast({ title: "成功", description: "用户创建成功" })
         navigate("/users")
       },
       onError: (error) => {
-        toast({
-          variant: "destructive",
-          title: "错误",
-          description: error.message,
-        })
+        toast({ variant: "destructive", title: "错误", description: error.message })
       },
     })
   }
@@ -741,37 +416,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
 ## 样式规范
 
-### Tailwind CSS 使用规范
-
 ```tsx
-// ✅ 好的做法
-<div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-  <h2 className="text-xl font-bold text-gray-900">标题</h2>
-  <Button variant="outline" size="sm">操作</Button>
-</div>
-
-// ❌ 避免过长的 className
-<div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-200">
-  {/* 过长，难以阅读 */}
-</div>
-
-// ✅ 提取为组件或使用 cn 工具
-const cardClass = cn(
-  "flex items-center justify-between p-4",
-  "bg-white rounded-lg shadow-md",
-  "hover:shadow-lg transition-shadow duration-200",
-  "border border-gray-200"
-)
-
-<div className={cardClass}>
-  {/* ... */}
-</div>
-```
-
-### cn 工具函数
-
-```tsx
-// src/lib/utils.ts
+// src/lib/utils.ts — cn 工具函数
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -779,122 +425,77 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// 使用
-<Button
-  className={cn(
-    "bg-primary",
-    isActive && "bg-primary-dark",
-    disabled && "opacity-50 cursor-not-allowed"
-  )}
-/>
+// ✅ 使用 cn 组合条件样式
+<Button className={cn("bg-primary", isActive && "bg-primary-dark", disabled && "opacity-50")} />
+
+// ✅ 过长的 className 用 cn 拆分
+const cardClass = cn(
+  "flex items-center justify-between p-4",
+  "bg-white rounded-lg shadow-md",
+  "hover:shadow-lg transition-shadow"
+)
 ```
 
 ---
 
 ## 性能优化
 
-### 1. React.memo
+### 1. memo / useMemo / useCallback
 
 ```tsx
-// ✅ 使用 memo 优化列表项
-export const UserCard = React.memo(({ user, onEdit, onDelete }: UserCardProps) => {
-  return (
-    <Card>
-      {/* ... */}
-    </Card>
-  )
+// ✅ memo 优化列表项（避免父组件重渲染导致子组件重渲染）
+export const UserCard = React.memo(({ user, onEdit }: UserCardProps) => {
+  return <Card>{/* ... */}</Card>
 })
-```
 
-### 2. useMemo / useCallback
-
-```tsx
 function UserList({ users }: UserListProps) {
-  // ✅ 缓存计算结果
-  const sortedUsers = useMemo(() => {
-    return [...users].sort((a, b) => a.name.localeCompare(b.name))
-  }, [users])
+  // ✅ useMemo 缓存计算结果
+  const sortedUsers = useMemo(
+    () => [...users].sort((a, b) => a.name.localeCompare(b.name)),
+    [users]
+  )
 
-  // ✅ 缓存回调函数
+  // ✅ useCallback 缓存回调（配合 memo 子组件使用才有意义）
   const handleUserClick = useCallback((user: User) => {
     console.log(user)
   }, [])
 
-  return (
-    <div>
-      {sortedUsers.map(user => (
-        <UserCard key={user.id} user={user} onClick={handleUserClick} />
-      ))}
-    </div>
-  )
+  return sortedUsers.map(user => (
+    <UserCard key={user.id} user={user} onClick={handleUserClick} />
+  ))
 }
 ```
 
-### 3. 代码分割
+### 2. 代码分割
 
 ```tsx
-// ✅ 使用 React.lazy 懒加载
+// ✅ React.lazy 懒加载页面级组件
 const UserDetailPage = React.lazy(() => import('./pages/user-detail-page'))
 
-// 在路由中使用
-{
-  path: ':id',
-  element: (
-    <Suspense fallback={<Loading />}>
-      <UserDetailPage />
-    </Suspense>
-  ),
-}
+// 路由中配合 Suspense
+{ path: ':id', element: <Suspense fallback={<Loading />}><UserDetailPage /></Suspense> }
 ```
 
-### 4. 虚拟滚动
+### 3. 虚拟滚动（大列表）
 
 ```tsx
+// ✅ 使用 @tanstack/react-virtual 处理长列表
 import { useVirtualizer } from '@tanstack/react-virtual'
 
-function UserList({ users }: { users: User[] }) {
-  const parentRef = useRef<HTMLDivElement>(null)
+const virtualizer = useVirtualizer({
+  count: users.length,
+  getScrollElement: () => parentRef.current,
+  estimateSize: () => 80,
+})
 
-  const virtualizer = useVirtualizer({
-    count: users.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 80,
-  })
-
-  return (
-    <div ref={parentRef} className="h-[600px] overflow-auto">
-      <div
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          position: 'relative',
-        }}
-      >
-        {virtualizer.getVirtualItems().map((virtualRow) => (
-          <div
-            key={virtualRow.key}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: `${virtualRow.size}px`,
-              transform: `translateY(${virtualRow.start}px)`,
-            }}
-          >
-            <UserCard user={users[virtualRow.index]} />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+// 只渲染可见区域的 virtualizer.getVirtualItems()
 ```
 
 ---
 
 ## 测试策略
 
-### 单元测试（Vitest + React Testing Library）
+### Vitest + React Testing Library
 
 ```tsx
 // src/features/users/components/user-card.test.tsx
@@ -902,19 +503,14 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { UserCard } from './user-card'
 
-describe('UserCard', () => {
-  const mockUser = {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@example.com',
-    role: 'user' as const,
-    createdAt: '2024-01-01',
-    updatedAt: '2024-01-01',
-  }
+const mockUser = {
+  id: '1', name: 'John Doe', email: 'john@example.com',
+  role: 'user' as const, createdAt: '2024-01-01', updatedAt: '2024-01-01',
+}
 
+describe('UserCard', () => {
   it('renders user information', () => {
     render(<UserCard user={mockUser} />)
-
     expect(screen.getByText('John Doe')).toBeInTheDocument()
     expect(screen.getByText('john@example.com')).toBeInTheDocument()
   })
@@ -922,53 +518,62 @@ describe('UserCard', () => {
   it('calls onEdit when edit button is clicked', () => {
     const onEdit = vi.fn()
     render(<UserCard user={mockUser} onEdit={onEdit} />)
-
     fireEvent.click(screen.getByText('编辑'))
     expect(onEdit).toHaveBeenCalledWith(mockUser)
   })
 
-  it('calls onDelete when delete button is clicked', () => {
-    const onDelete = vi.fn()
-    render(<UserCard user={mockUser} onDelete={onDelete} />)
-
-    fireEvent.click(screen.getByText('删除'))
-    expect(onDelete).toHaveBeenCalledWith('1')
-  })
+  // ✅ 同理测试 onDelete 回调
 })
 ```
 
 ---
 
-## 最佳实践总结
+## 常见陷阱及避免方法
 
-### ✅ Do's
+| 陷阱 | 正确做法 |
+|------|----------|
+| ❌ 在循环中定义函数/Hooks | ✅ 使用 useCallback，Hooks 只在顶层调用 |
+| ❌ Props 钻取超过 3 层 | ✅ 使用 Context 或 Zustand |
+| ❌ 服务端状态用 useState 管理 | ✅ 使用 TanStack Query（自动缓存、重试、失效） |
+| ❌ 所有组件都用 memo | ✅ 先测量性能，只优化瓶颈组件 |
+| ❌ 巨型组件（200+ 行） | ✅ 拆分为多个小组件，每个专注一件事 |
+| ❌ 内联样式或 CSS-in-JS | ✅ 使用 Tailwind CSS + cn 工具 |
+| ❌ 列表渲染不加 key | ✅ 使用唯一且稳定的 key（如 id） |
+| ❌ 直接修改状态 | ✅ 不可变更新（展开运算符或 immer） |
 
-1. **组件化优先** - 拆分小而专注的组件
-2. **类型安全** - 所有 Props 和返回值都定义类型
-3. **Hooks 抽象** - 将业务逻辑抽取到自定义 Hooks
-4. **错误处理** - 使用 Error Boundary 和 Try-Catch
-5. **Loading 状态** - 明确显示加载状态
-6. **性能优化** - 合理使用 memo、useMemo、useCallback
-7. **代码分割** - 使用 React.lazy 懒加载
-8. **测试覆盖** - 关键组件和逻辑有测试
-
-### ❌ Don'ts
-
-1. **避免过度嵌套** - 组件层级不超过 5 层
-2. **避免巨型组件** - 单个组件不超过 200 行
-3. **避免 Props 钻取** - 超过 3 层使用 Context 或状态管理
-4. **避免内联样式** - 使用 Tailwind CSS
-5. **避免直接修改状态** - 使用不可变更新
-6. **避免在循环中定义函数** - 使用 useCallback
-7. **避免过度优化** - 先测量性能再优化
-8. **避免忽略 key** - 列表渲染必须有唯一 key
-
----
-
-## 参考资料
+## 参考资源
 
 - [React 官方文档](https://react.dev/)
 - [shadcn/ui 文档](https://ui.shadcn.com/)
 - [TanStack Query 文档](https://tanstack.com/query)
 - [React Hook Form 文档](https://react-hook-form.com/)
 - [Tailwind CSS 文档](https://tailwindcss.com/)
+
+---
+
+**详细参考：**
+- 完整开发工作规范 → [development-workflow.md](development-workflow.md)
+- 架构设计和组件模式 → [architecture-design.md](architecture-design.md)
+- 一键初始化项目 → `init-project.sh`
+
+**实现顺序：** Types → API → Hooks → Components → Pages → Test
+
+**完成标准：**
+- [ ] 功能实现且测试通过
+- [ ] TypeScript 无类型错误
+- [ ] 有适当的 Loading 和 Error 状态处理
+- [ ] 通过 lint 检查
+- [ ] 关键组件有测试覆盖
+
+---
+
+**使用此 skill 时，Claude 将：**
+- 遵循 Feature-Based 架构组织代码
+- 使用 TanStack Query 管理服务端状态，Zustand 管理客户端状态
+- 使用 React Hook Form + Zod 处理表单验证
+- 使用 shadcn/ui 组件库 + Tailwind CSS
+- TypeScript 全链路类型安全
+- 按推荐顺序实现：Types → API → Hooks → Components → Pages → Test
+- 合理使用 memo/useMemo/useCallback 优化性能
+- 编写 Vitest + React Testing Library 测试
+- 遵循 React 社区最佳实践

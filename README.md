@@ -17,9 +17,8 @@
 - **Handoff Summary** - 会话交接总结生成（支持通用交接 + 代码交接两种模式）
 - **Project Archive** - 项目技术归档（项目归档 / 功能归档 / 文档更新三种模式，语言无关）
 
-### 辅助 Skills（2 个）
-- **Development Workflow** - 通用软件开发流程（需求分析、代码审查、CI/CD、分支策略）
-- **Doc Co-Authoring** - 三阶段结构化文档协作编写流程
+### 辅助 Skills（1 个）
+- **Development Workflow** - 通用软件开发流程（需求引导、设计方案、文档模板、代码审查、CI/CD）
 
 ## 快速开始
 
@@ -50,8 +49,7 @@ Skills 会在对话中自动激活，当你提到相关关键词时：
 | Learning Docs | "学习文档"、"学习教程"、"入门教程"、"帮我学"、"生成教程" |
 | Handoff Summary | "交接总结"、"交接"、"hand-off"、"会话总结"、"代码交接" |
 | Project Archive | "项目归档"、"技术归档"、"功能归档"、"补功能文档"、"同步文档" |
-| Development Workflow | "开发流程"、"需求分析"、"代码审查"、"CI/CD"、"分支策略" |
-| Doc Co-Authoring | "写文档"、"设计文档"、"ADR"、"技术 spec" |
+| Development Workflow | "做一个"、"构建"、"实现"、"开发流程"、"需求分析"、"写文档"、"ADR" |
 
 ### 初始化新项目
 
@@ -124,10 +122,7 @@ bash .claude/skills/react-best-practices/init-project.sh my-react-app
 │   └── SKILL.md                # 项目归档 / 功能归档 / 文档更新三种模式
 │
 ├── development-workflow/       # 通用开发流程指南
-│   └── SKILL.md                # 六步流程 + CI/CD + 分支策略
-│
-├── doc-coauthoring/            # 文档协作编写
-│   ├── SKILL.md                # 三阶段协作流程
+│   ├── SKILL.md                # 六步流程 + CI/CD + 分支策略
 │   └── templates/              # 需求/设计/ADR/评审模板
 │
 └── DOCKER_GUIDE.md             # Docker 部署通用指南
@@ -161,7 +156,6 @@ fastapi  golang     react       ← 技术栈 Skill
                       ↓
                frontend-design  ← UI 设计 Skill
 
-doc-coauthoring  ← 所有 Skill 共享文档模板
 learning-docs    ← 为任意技术栈生成学习文档
 handoff-summary  ← 会话结束时生成交接总结
 project-archive  ← 阶段完成时生成技术归档
@@ -170,7 +164,7 @@ project-archive  ← 阶段完成时生成技术归档
 典型使用场景：
 
 ```bash
-# 1. 需求分析（development-workflow + doc-coauthoring）
+# 1. 需求分析（development-workflow）
 "帮我分析这个需求，写一个技术设计文档"
 
 # 2. 后端开发（golang-best-practices + development-workflow）
@@ -194,7 +188,7 @@ project-archive  ← 阶段完成时生成技术归档
 
 ## 文档模板
 
-通过 `doc-coauthoring` Skill 统一管理，各技术栈 Skill 通过 symlink 共享：
+通过 `development-workflow` Skill 统一管理：
 
 | 模板 | 用途 |
 |------|------|
@@ -204,6 +198,14 @@ project-archive  ← 阶段完成时生成技术归档
 | `architecture-review-checklist.md` | 架构评审清单 |
 
 ## 更新日志
+
+### 2026-03-31
+
+**Development Workflow Skill**
+- 重构核心流程：强化设计先行（HARD-GATE）、需求引导一次一问、防绕过机制
+- 合并 Doc Co-Authoring Skill，文档模板和读者测试能力整合进 development-workflow
+- 文档模板通用化：去掉 FastAPI 特定代码，改为语言无关的骨架格式
+- 精简模板体积：design-template 563→140 行、adr-template 317→100 行、checklist 513→160 行
 
 ### 2026-03-12
 

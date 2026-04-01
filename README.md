@@ -123,7 +123,7 @@ bash .claude/skills/react-best-practices/init-project.sh my-react-app
 │
 ├── development-workflow/       # 通用开发流程指南
 │   ├── SKILL.md                # 六步流程 + CI/CD + 分支策略
-│   └── templates/              # 需求/设计/ADR/评审模板
+│   └── templates/              # 需求/设计/tasks/ADR/评审模板
 │
 └── DOCKER_GUIDE.md             # Docker 部署通用指南
 ```
@@ -215,6 +215,7 @@ project-archive  ← 阶段完成时生成技术归档
 - 将 `tasks` 机制接入实施规划和代码实现阶段，要求先给 `## Tasks` 总览，再按任务执行
 - 新增 `templates/tasks-template.md`，作为中等和复杂任务必用的 tasks 文件模板
 - 补充 tasks 反模式、覆盖度自审和测试收尾规则，避免只靠记忆追踪进度
+- 重构全部模板：补齐需求/设计/tasks/ADR/评审之间的追踪字段，去除设计/ADR 内嵌执行计划，增强模板的通用性和可落地性
 
 ### 2026-03-12
 

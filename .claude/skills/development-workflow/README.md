@@ -1,6 +1,6 @@
 # 软件开发工作流程 Skill
 
-**版本**: v2.1.0
+**版本**: v2.2.0
 **语言无关**: ✅
 
 通用的软件工程实践和开发流程规范。
@@ -50,15 +50,15 @@ react-best-practices    →  React 项目开发
 
 ### 2. 文档模板与 Tasks 文件模板
 
-内置 4 个文档模板和 1 个 tasks 文件模板，位于 `templates/` 目录：
+内置 4 个文档模板和 1 个 tasks 文件模板，形成 `requirement -> design -> ADR -> tasks -> review` 的追踪链路：
 
 | 模板 | 用途 |
 |------|------|
-| `requirement-template.md` | 需求文档（用户故事、验收标准） |
-| `design-template.md` | 技术设计文档（架构、API、数据模型） |
+| `requirement-template.md` | 需求文档（目标、范围、需求 ID、验收和追踪矩阵） |
+| `design-template.md` | 技术设计文档（方案摘要、组件职责、契约/数据、设计追踪） |
 | `tasks-template.md` | Tasks 文件模板（中等/复杂任务的执行追踪、状态更新、验证记录） |
-| `adr-template.md` | 架构决策记录（选型理由、权衡分析） |
-| `architecture-review-checklist.md` | 架构评审清单（11 维度 100+ 检查点） |
+| `adr-template.md` | 架构决策记录（备选方案、决策理由、验证与回滚） |
+| `architecture-review-checklist.md` | 架构评审清单（状态、证据、后续任务） |
 
 中等和复杂任务必须落一个独立 tasks 文件。默认命名规则使用 `<主题>_tasks.md`，并与需求/设计文档共用同一个主题前缀；例如：`用户导入_requirement.md`、`用户导入_design.md`、`用户导入_tasks.md`。如果项目已有文档目录规范，也可以使用等价独立路径。原生任务工具只能辅助同步状态，不能替代该文件。
 
@@ -179,5 +179,5 @@ development-workflow/
 
 ## 维护
 
-**版本**: v2.1.0
+**版本**: v2.2.0
 **最后更新**: 2026-04-01

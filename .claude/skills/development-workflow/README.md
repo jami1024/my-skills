@@ -13,7 +13,7 @@
 - 任务分解和实施规划
 - 代码审查清单
 - 测试策略
-- 文档与执行模板（需求、设计、tasks、ADR、评审清单）
+- 文档模板 + tasks 文件模板（需求、设计、tasks、ADR、评审清单）
 
 ## 适用场景
 
@@ -48,17 +48,19 @@ react-best-practices    →  React 项目开发
 需求引导 → 设计方案 → 实施规划 → 代码实现 → 代码审查 → 测试验证
 ```
 
-### 2. 文档与执行模板
+### 2. 文档模板与 Tasks 文件模板
 
-内置 5 个标准模板，位于 `templates/` 目录：
+内置 4 个文档模板和 1 个 tasks 文件模板，位于 `templates/` 目录：
 
 | 模板 | 用途 |
 |------|------|
 | `requirement-template.md` | 需求文档（用户故事、验收标准） |
 | `design-template.md` | 技术设计文档（架构、API、数据模型） |
-| `tasks-template.md` | Tasks 清单模板（执行追踪、状态更新、验证记录） |
+| `tasks-template.md` | Tasks 文件模板（中等/复杂任务的执行追踪、状态更新、验证记录） |
 | `adr-template.md` | 架构决策记录（选型理由、权衡分析） |
 | `architecture-review-checklist.md` | 架构评审清单（11 维度 100+ 检查点） |
+
+中等和复杂任务必须落一个独立 tasks 文件。默认命名规则使用 `<主题>_tasks.md`，并与需求/设计文档共用同一个主题前缀；例如：`用户导入_requirement.md`、`用户导入_design.md`、`用户导入_tasks.md`。如果项目已有文档目录规范，也可以使用等价独立路径。原生任务工具只能辅助同步状态，不能替代该文件。
 
 ### 3. 最佳实践
 
@@ -74,10 +76,10 @@ react-best-practices    →  React 项目开发
 development-workflow/
 ├── SKILL.md                              # 核心工作流程和最佳实践
 ├── README.md                             # 本文件
-└── templates/                            # 文档模板
+└── templates/                            # 文档模板 + tasks 文件模板
     ├── requirement-template.md           # 需求文档模板
     ├── design-template.md                # 设计文档模板
-    ├── tasks-template.md                 # Tasks 清单模板
+    ├── tasks-template.md                 # Tasks 文件模板
     ├── adr-template.md                   # 架构决策记录模板
     └── architecture-review-checklist.md  # 架构评审清单
 ```
@@ -114,10 +116,12 @@ development-workflow/
 3. 团队评审
 ```
 
-### 场景 3：任务执行追踪
+### 场景 3：中等或复杂任务的执行追踪
 
 ```
-1. 使用 Tasks 模板
+1. 创建独立 tasks 文件
+   默认：`<主题>_tasks.md`
+   如已存在需求/设计文档，则复用相同主题前缀
    参考：templates/tasks-template.md
 
 2. 填写任务清单

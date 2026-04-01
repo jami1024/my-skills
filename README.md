@@ -194,7 +194,7 @@ project-archive  ← 阶段完成时生成技术归档
 |------|------|
 | `requirement-template.md` | 需求文档（用户故事、验收标准） |
 | `design-template.md` | 技术设计文档（架构、API、数据模型） |
-| `tasks-template.md` | Tasks 清单模板（执行追踪、状态更新、验证记录） |
+| `tasks-template.md` | Tasks 文件模板（中等/复杂任务的执行追踪、状态更新、验证记录） |
 | `adr-template.md` | 架构决策记录（选型理由、权衡分析） |
 | `architecture-review-checklist.md` | 架构评审清单 |
 
@@ -211,9 +211,9 @@ project-archive  ← 阶段完成时生成技术归档
 ### 2026-04-01
 
 **Development Workflow Skill**
-- 新增显式 `tasks` 任务清单机制：中等和复杂任务必须创建并持续维护任务状态
+- 新增显式 `tasks` 任务清单机制：中等和复杂任务必须创建并持续维护独立 tasks 文件
 - 将 `tasks` 机制接入实施规划和代码实现阶段，要求先给 `## Tasks` 总览，再按任务执行
-- 新增 `templates/tasks-template.md`，补齐文件化任务追踪模板
+- 新增 `templates/tasks-template.md`，作为中等和复杂任务必用的 tasks 文件模板
 - 补充 tasks 反模式、覆盖度自审和测试收尾规则，避免只靠记忆追踪进度
 
 ### 2026-03-12

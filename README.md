@@ -18,7 +18,7 @@
 - **Project Archive** - 项目技术归档（项目归档 / 功能归档 / 文档更新三种模式，语言无关）
 
 ### 辅助 Skills（1 个）
-- **Development Workflow** - 通用软件开发流程（需求引导、设计方案、文档模板、代码审查、CI/CD）
+- **Development Workflow** - 通用软件开发流程（需求引导、设计方案、tasks 任务清单、文档模板、代码审查、CI/CD）
 
 ## 快速开始
 
@@ -49,7 +49,7 @@ Skills 会在对话中自动激活，当你提到相关关键词时：
 | Learning Docs | "学习文档"、"学习教程"、"入门教程"、"帮我学"、"生成教程" |
 | Handoff Summary | "交接总结"、"交接"、"hand-off"、"会话总结"、"代码交接" |
 | Project Archive | "项目归档"、"技术归档"、"功能归档"、"补功能文档"、"同步文档" |
-| Development Workflow | "做一个"、"构建"、"实现"、"开发流程"、"需求分析"、"写文档"、"ADR" |
+| Development Workflow | "做一个"、"构建"、"实现"、"开发流程"、"需求分析"、"写文档"、"ADR"、"任务清单"、"tasks" |
 
 ### 初始化新项目
 
@@ -206,6 +206,13 @@ project-archive  ← 阶段完成时生成技术归档
 - 合并 Doc Co-Authoring Skill，文档模板和读者测试能力整合进 development-workflow
 - 文档模板通用化：去掉 FastAPI 特定代码，改为语言无关的骨架格式
 - 精简模板体积：design-template 563→140 行、adr-template 317→100 行、checklist 513→160 行
+
+### 2026-04-01
+
+**Development Workflow Skill**
+- 新增显式 `tasks` 任务清单机制：中等和复杂任务必须创建并持续维护任务状态
+- 将 `tasks` 机制接入实施规划和代码实现阶段，要求先给 `## Tasks` 总览，再按任务执行
+- 补充 tasks 反模式、覆盖度自审和测试收尾规则，避免只靠记忆追踪进度
 
 ### 2026-03-12
 

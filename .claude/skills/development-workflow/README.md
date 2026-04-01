@@ -1,6 +1,6 @@
 # 软件开发工作流程 Skill
 
-**版本**: v2.0.0
+**版本**: v2.1.0
 **语言无关**: ✅
 
 通用的软件工程实践和开发流程规范。
@@ -13,7 +13,7 @@
 - 任务分解和实施规划
 - 代码审查清单
 - 测试策略
-- 文档模板（需求、设计、ADR、评审清单）
+- 文档与执行模板（需求、设计、tasks、ADR、评审清单）
 
 ## 适用场景
 
@@ -48,14 +48,15 @@ react-best-practices    →  React 项目开发
 需求引导 → 设计方案 → 实施规划 → 代码实现 → 代码审查 → 测试验证
 ```
 
-### 2. 文档模板
+### 2. 文档与执行模板
 
-内置 4 个标准模板，位于 `templates/` 目录：
+内置 5 个标准模板，位于 `templates/` 目录：
 
 | 模板 | 用途 |
 |------|------|
 | `requirement-template.md` | 需求文档（用户故事、验收标准） |
 | `design-template.md` | 技术设计文档（架构、API、数据模型） |
+| `tasks-template.md` | Tasks 清单模板（执行追踪、状态更新、验证记录） |
 | `adr-template.md` | 架构决策记录（选型理由、权衡分析） |
 | `architecture-review-checklist.md` | 架构评审清单（11 维度 100+ 检查点） |
 
@@ -76,6 +77,7 @@ development-workflow/
 └── templates/                            # 文档模板
     ├── requirement-template.md           # 需求文档模板
     ├── design-template.md                # 设计文档模板
+    ├── tasks-template.md                 # Tasks 清单模板
     ├── adr-template.md                   # 架构决策记录模板
     └── architecture-review-checklist.md  # 架构评审清单
 ```
@@ -112,7 +114,21 @@ development-workflow/
 3. 团队评审
 ```
 
-### 场景 3：代码审查
+### 场景 3：任务执行追踪
+
+```
+1. 使用 Tasks 模板
+   参考：templates/tasks-template.md
+
+2. 填写任务清单
+   - 稳定任务编号
+   - 当前状态
+   - 验证记录
+
+3. 执行中持续更新
+```
+
+### 场景 4：代码审查
 
 ```
 使用代码审查清单（SKILL.md 第 5 节）：
@@ -130,7 +146,7 @@ development-workflow/
 ```
 ┌─────────────────────────────────────────────────┐
 │          development-workflow                   │
-│     (通用流程 + 文档模板 + 读者测试)              │
+│   (通用流程 + 模板体系 + 读者测试)                │
 └───────────────┬─────────────────────────────────┘
                 │
         ┌───────┼───────┐
@@ -142,7 +158,7 @@ development-workflow/
 ```
 
 **分工**：
-- **development-workflow**：通用流程、文档模板、最佳实践
+- **development-workflow**：通用流程、模板体系、最佳实践
 - **技术栈 Skill**：具体语言/框架的实现、架构模式、工具链
 
 ## 相关资源
@@ -159,5 +175,5 @@ development-workflow/
 
 ## 维护
 
-**版本**: v2.0.0
-**最后更新**: 2026-03-31
+**版本**: v2.1.0
+**最后更新**: 2026-04-01

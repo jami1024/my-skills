@@ -50,10 +50,11 @@ react-best-practices    →  React 项目开发
 
 ### 2. 文档模板与 Tasks 文件模板
 
-内置 4 个文档模板和 1 个 tasks 文件模板，形成 `requirement -> design -> ADR -> tasks -> review` 的追踪链路：
+内置 5 个正式模板和 1 个模板选择指南，形成 `requirement -> design -> ADR -> tasks -> review` 的可选追踪链路；不要求每个任务全部使用。
 
 | 模板 | 用途 |
 |------|------|
+| `README.md` | 模板选择指南、组合方式和共用规则 |
 | `requirement-template.md` | 需求文档（目标、范围、需求 ID、验收和追踪矩阵） |
 | `design-template.md` | 技术设计文档（方案摘要、组件职责、契约/数据、设计追踪） |
 | `tasks-template.md` | Tasks 文件模板（中等/复杂任务的执行追踪、状态更新、验证记录） |
@@ -80,7 +81,8 @@ development-workflow/
 │   ├── implementation-review-and-delivery.md
 │   ├── systematic-debugging.md
 │   └── verification-before-completion.md
-└── templates/                            # 文档模板 + tasks 文件模板
+└── templates/                            # 文档模板、tasks 模板和选择指南
+    ├── README.md                         # 模板选择指南
     ├── requirement-template.md           # 需求文档模板
     ├── design-template.md                # 设计文档模板
     ├── tasks-template.md                 # Tasks 文件模板

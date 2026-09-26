@@ -225,6 +225,18 @@ description: "通用软件开发流程，覆盖需求澄清、技术方案、tas
 
 当步骤 1-2 的产出需要形成**独立的正式文档**（需求文档、设计文档、ADR、技术规范）时，使用此流程。简单的设计确认不需要走此流程。
 
+### 文档选择决策
+
+在创建文档前先判断，不要默认连续生成所有模板：
+
+1. **目标、范围或验收还不清楚** → 先用 `requirement-template.md`；
+2. **需求已明确，但实现方案、接口、数据或技术取舍未确定** → 用 `design-template.md`；
+3. **需求和设计已确定，只需要拆解执行步骤** → 用 `tasks-template.md`；
+4. **存在需要长期记录的技术选型或架构取舍** → 在 design 基础上补 `adr-template.md`；
+5. **需要判断方案是否可交付或上线** → 使用 `architecture-review-checklist.md`。
+
+如果用户已经提供了完整需求，不重复生成同内容的需求文档；如果只是要计划，不在方案未确定时直接编造 Tasks。输出文档前先用一句话说明选择了哪个模板及原因。
+
 ### 文档模板
 
 | 模板 | 用途 | 路径 |
@@ -232,9 +244,12 @@ description: "通用软件开发流程，覆盖需求澄清、技术方案、tas
 | 需求文档 | 用户故事、功能需求、验收标准 | `templates/requirement-template.md` |
 | 设计文档 | 架构方案、API 设计、数据模型 | `templates/design-template.md` |
 | ADR | 架构决策记录（选型理由、权衡分析） | `templates/adr-template.md` |
-| 评审清单 | 架构系统化评审（11 维度 100+ 检查点） | `templates/architecture-review-checklist.md` |
+| 模板选择指南 | 各模板的适用场景、组合方式和共用规则 | `templates/README.md` |
+| 评审清单 | 架构评审的 10 个主题维度、问题台账和复审结论 | `templates/architecture-review-checklist.md` |
 
-使用方式：读取对应模板，按模板结构填充内容。
+使用方式：正式文档任务开始时先读取 `templates/README.md` 选择模板，再读取对应文件；不要默认加载所有模板。不需要的可选章节直接删除。
+
+快速判断：**做什么、为什么做**是需求；**怎么做、为什么这样做**是设计；**按什么顺序做、如何证明完成**是 Tasks。
 
 ### 文档写作规则
 

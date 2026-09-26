@@ -1,1 +1,0 @@
-../../doc-coauthoring/templates/design-template.md

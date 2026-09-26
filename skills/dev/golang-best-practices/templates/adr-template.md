@@ -1,0 +1,1 @@
+../../development-workflow/templates/adr-template.md

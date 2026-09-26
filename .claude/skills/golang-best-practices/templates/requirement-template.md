@@ -1,1 +1,0 @@
-../../doc-coauthoring/templates/requirement-template.md

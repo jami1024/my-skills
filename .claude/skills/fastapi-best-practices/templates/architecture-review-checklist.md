@@ -1,1 +1,0 @@
-../../doc-coauthoring/templates/architecture-review-checklist.md

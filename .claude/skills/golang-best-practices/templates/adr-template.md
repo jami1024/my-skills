@@ -1,1 +1,0 @@
-../../doc-coauthoring/templates/adr-template.md

@@ -77,18 +77,6 @@ python3 scripts/validate-skills.py
 - 详细材料放到 `references/`，可执行逻辑放到 `scripts/`；
 - `SKILL.md` 尽量控制在 500 行以内，引用保持一层深。
 
-## Wiki 数据
-
-Wiki 是独立的数据目录，例如：
-
-```text
-~/wiki-hub/
-├── raw/
-└── wiki/
-```
-
-`library` 运行时使用用户提供的 Wiki 根目录，不在本仓库硬编码机器路径。工具与数据分开，避免知识更新污染 Skills 的版本历史。
-
 ## 验证
 
 普通检查：

@@ -25,7 +25,7 @@ skills/
 
 ## 数据与工具分离
 
-`my-skills` 保存工具和流程；个人 wiki 保存 raw、wiki、index 和 log 数据。本机的 `~/wiki-hub` 只是一个示例数据目录；`library` 必须使用用户明确提供的 `<WIKI_ROOT>`、项目配置或环境变量，不自动猜测路径。
+`my-skills` 保存工具和流程；个人 wiki 保存 raw、wiki、index 和 log 数据。本机的 `~/Downloads/Project/wiki-hub` 只是一个示例数据目录；`library` 必须使用用户明确提供的 `<WIKI_ROOT>`、项目配置或环境变量，不自动猜测路径。
 
 ## 兼容入口
 

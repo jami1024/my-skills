@@ -9,7 +9,7 @@
 - [x] T6 更新 README，改为引用式安装并说明按类别加载
 - [x] T7 运行结构、规范和脚本验证，修复发现的问题
 - [x] T8 将三个超长 SKILL.md 的详细内容拆入 `references/`
-- [x] T9 创建独立 Wiki 数据目录 `~/wiki-hub`
+- [x] T9 创建并迁移独立 Wiki 数据目录 `~/Downloads/Project/wiki-hub`
 - [x] T10 移除 `library` 对本机 Wiki 路径的默认假设
 - [x] T11 统一所有 skill description 的适用边界，避免技术栈 skill 误触发
 - [x] T12 修正文档中的 skill 数量与验证结果，确保维护记录和仓库现状一致

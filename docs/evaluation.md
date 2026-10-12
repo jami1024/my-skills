@@ -24,6 +24,7 @@
 | 开发 | `fastapi-best-practices` | 3 |
 | 开发 | `golang-best-practices` | 3 |
 | 开发 | `react-best-practices` | 6 |
+| 开发 | `code-reading` | 4 |
 | 内容 | `library` | 3 |
 | 内容 | `explain` | 3 |
 | 内容 | `draft` | 3 |

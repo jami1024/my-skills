@@ -7,7 +7,7 @@
 ```text
 my-skills/
 ├── skills/
-│   ├── dev/                    # FastAPI、Golang、React、开发流程
+│   ├── dev/                    # FastAPI、Golang、React、开发流程、读码
 │   ├── content/                # library、explain、draft
 │   └── session/                # handoff-summary、project-archive
 ├── template/                   # 新 skill 的起点模板
@@ -21,7 +21,7 @@ my-skills/
 
 ## Skill 一览
 
-当前仓库包含 9 个 skill。按需加载分类目录，避免把不相关的规则一并放入模型上下文。
+当前仓库包含 10 个 skill。按需加载分类目录，避免把不相关的规则一并放入模型上下文。
 
 ### 开发类 `skills/dev/`
 
@@ -29,6 +29,7 @@ my-skills/
 - `golang-best-practices`：Golang 项目与 Clean Architecture
 - `react-best-practices`：React 应用与前端工程
 - `development-workflow`：需求、设计、tasks、审查与验证流程
+- `code-reading`：阅读陌生代码库并产出结构化读码报告（收录自 lichuang/how-to-read-code）
 
 ### 内容类 `skills/content/`
 

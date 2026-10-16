@@ -1,248 +1,72 @@
-# Golang Docker 快速部署
+# Go 可选 Docker 示例
 
-本目录包含 Golang 项目的 Docker 配置，支持开发、测试、生产多环境部署。
+只有项目需要容器时才使用。本目录默认运行一个应用，不要求数据库、缓存、JWT、固定包结构或某个地区的镜像代理。
 
-## 📁 文件说明
+## 放置与构建
 
-- `Dockerfile` - 多阶段构建，已配置国内源（goproxy.cn + apk 清华源）
-- `docker-compose.yml` - Golang + PostgreSQL + Redis 完整编排
-- `.env.example` - 环境变量配置模板
-- `.dockerignore` - 构建优化
+保留以下相对布局，Compose 的构建上下文是项目根目录：
 
-## 🚀 快速开始
-
-### 1. 调整项目结构
-
-确保主程序路径符合 Dockerfile 预期：
-
-```
-your-project/
-├── cmd/
-│   └── myapp/          # 主程序入口（默认路径）
-│       └── main.go
+```text
+project/
 ├── go.mod
-├── go.sum
-└── docker 配置文件...
+├── main.go                    # 默认入口；可改 MAIN_PACKAGE
+└── templates/docker/
+    ├── Dockerfile
+    ├── docker-compose.yml
+    └── .env.example
 ```
 
-**如果路径不同**，修改 Dockerfile 第 38 行：
-```dockerfile
-# 改为你的实际路径
-RUN go build -ldflags="-s -w" -trimpath -o /app/myapp ./cmd/server
-# 或根目录
-RUN go build -ldflags="-s -w" -trimpath -o /app/myapp .
-```
-
-### 2. 配置环境变量
+不需要调整代码目录来适配模板。将本目录的 `.dockerignore` 复制到项目根目录后，按实际资源调整；不要忽略编译需要的 `wire_gen.go`、vendor 或 `go:embed` 文件。
 
 ```bash
-# 根据环境复制配置文件
-cp .env.example .env.dev
-
-# 修改关键配置
-vim .env.dev
+cp templates/docker/.env.example .env.dev
+# 编辑 .env.dev：GO_IMAGE 与 go.mod/CI 对齐，MAIN_PACKAGE 指向实际入口包。
+docker compose -f templates/docker/docker-compose.yml --env-file .env.dev config
+docker compose -f templates/docker/docker-compose.yml --env-file .env.dev up -d --build app
 ```
 
-**必须修改的配置**:
-```bash
-ENV=development
-HOST_PORT=8080          # 宿主机端口（外部访问）
-APP_PORT=8080           # 容器内部端口
-
-# 生产环境必须修改
-JWT_SECRET=<强随机密钥>  # openssl rand -hex 32
-DB_PASSWORD=<强密码>
-REDIS_PASSWORD=<强密码>
-```
-
-### 3. 启动服务
+单独构建：
 
 ```bash
-# 开发环境
-docker-compose --env-file .env.dev up -d
-
-# 测试环境（不同端口，避免冲突）
-docker-compose --env-file .env.test up -d
-
-# 生产环境
-docker-compose --env-file .env.prod up -d
+docker build -f templates/docker/Dockerfile \
+  --build-arg GO_IMAGE=golang:1.26.0-alpine \
+  --build-arg MAIN_PACKAGE=. \
+  -t example-app:dev .
 ```
 
-### 4. 验证运行
+多入口项目使用 `MAIN_PACKAGE=./cmd/server`。示例按整个 package 编译，支持同包多个源文件和没有 go.sum 的标准库项目。工具链镜像版本只是示例，应替换为项目选定版本；Compose 要求显式设置 `GO_IMAGE`，不会自动降级工具链。
+
+## 镜像适用条件
+
+- 默认 `CGO_ENABLED=0`，运行镜像使用 scratch，适用于纯 Go 可执行程序；不固定 amd64，平台由 Docker 构建配置决定。
+- 运行用户为非 root，携带 HTTPS 根证书；不附带 shell、curl、包管理器、时区数据库或可写应用目录。
+- 依赖 CGO、动态库、本地时区数据、运行时文件或写目录的程序，需要按项目需求选择运行镜像并显式复制资源、设置权限。
+- 镜像不假定 `/health` 端点。健康检查由应用和部署环境选择，不为实现探针额外引入 Web 框架。
+- `PORT` 是 Compose 传给应用的示例变量，程序仍需自己读取并监听 `:PORT`；修改环境变量不会自动改变 Go 程序端口。
+
+## 可选数据库与缓存
+
+`database` 和 `cache` profile 只增加演示依赖；默认应用不依赖它们，也不会被注入数据库或 Redis 配置。确实采用时：
+
+1. 在环境文件中设置非空 `DB_PASSWORD` 或 `REDIS_PASSWORD`，镜像版本沿用项目约定。
+2. 为 app 添加项目实际读取的连接配置、密钥来源和就绪条件；若使用 `depends_on`，只在启用对应服务的配置中声明。
+3. 确认项目已有的迁移、重试与故障处理方式，不把 Compose 启动顺序当成事务或可用性保证。
 
 ```bash
-# 查看日志
-docker-compose logs -f
-
-# 访问应用
-curl http://localhost:8080/health
+# 只启动采用的依赖，供项目按自己的连接配置使用。
+docker compose -f templates/docker/docker-compose.yml --env-file .env.dev \
+  --profile database up -d db
+docker compose -f templates/docker/docker-compose.yml --env-file .env.dev \
+  --profile cache up -d redis
 ```
 
-### 5. 停止服务
+依赖默认不发布宿主机端口。数据卷保留由项目决定，常规停止使用 `down`，不会执行卷删除。PostgreSQL 示例使用 16 系列的数据目录，跨大版本调整时应核对对应镜像布局与迁移要求。
+
+## 日常操作与验证
 
 ```bash
-# 停止但保留数据
-docker-compose down
-
-# 停止并删除数据（注意：会丢失数据库数据！）
-docker-compose down -v
+docker compose -f templates/docker/docker-compose.yml --env-file .env.dev logs -f app
+docker compose -f templates/docker/docker-compose.yml --env-file .env.dev down
 ```
 
-## 🔧 环境配置说明
-
-### 端口配置（重要）
-
-本配置通过 `HOST_PORT` 和 `APP_PORT` 实现灵活的端口映射：
-
-| 环境 | HOST_PORT | APP_PORT | 说明 |
-|------|-----------|----------|------|
-| 开发 | 8080 | 8080 | 本地开发 |
-| 测试 | 8081 | 8080 | 避免端口冲突 |
-| 生产 | 80 | 8080 | 标准 HTTP 端口 |
-
-**同时运行多个环境**:
-```bash
-# 使用不同项目名称
-docker-compose -p myapp-dev --env-file .env.dev up -d
-docker-compose -p myapp-test --env-file .env.test up -d
-
-# 分别访问
-curl http://localhost:8080/health  # 开发环境
-curl http://localhost:8081/health  # 测试环境
-```
-
-### 服务说明
-
-- **app**: Golang 应用（最终镜像 < 20MB）
-- **db**: PostgreSQL 16（持久化到 volume）
-- **redis**: Redis 7（缓存和队列）
-
-### 镜像优化
-
-使用多阶段构建，最终镜像极小：
-
-```bash
-# 查看镜像大小
-docker images myapp:latest
-
-# 预期大小：15-20 MB
-```
-
-## 🔐 生产环境配置
-
-### 必须修改的安全配置
-
-```bash
-# 生成强密钥
-openssl rand -hex 32
-
-# .env.prod 中配置
-JWT_SECRET=<生成的密钥>
-DB_PASSWORD=<强密码>
-REDIS_PASSWORD=<强密码>
-
-# 限制 CORS
-CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
-```
-
-### 数据库端口保护
-
-生产环境不要暴露数据库和 Redis 端口到宿主机：
-
-```yaml
-# docker-compose.yml 中注释掉
-# db:
-#   ports:
-#     - "${DB_PORT:-5432}:5432"  # 生产环境注释此行
-# redis:
-#   ports:
-#     - "${REDIS_PORT:-6379}:6379"  # 生产环境注释此行
-```
-
-## 🛠️ 常用命令
-
-```bash
-# 查看状态
-docker-compose ps
-
-# 查看日志
-docker-compose logs -f app      # 只看应用日志
-docker-compose logs -f db       # 只看数据库日志
-
-# 进入容器
-docker-compose exec app sh      # 进入应用容器（Alpine 使用 sh）
-docker-compose exec db psql -U myapp  # 进入数据库
-
-# 重启服务
-docker-compose restart app      # 重启应用
-docker-compose restart          # 重启所有服务
-
-# 重新构建
-docker-compose build --no-cache app
-docker-compose up -d
-```
-
-## 🐛 快速问题排查
-
-**端口被占用**:
-```bash
-lsof -i :8080
-# 修改 .env 中的 HOST_PORT
-```
-
-**数据库连接失败**:
-```bash
-# 检查数据库状态
-docker-compose ps
-docker-compose logs db
-
-# 检查环境变量
-docker-compose exec app env | grep DB_
-```
-
-**主程序路径错误**:
-```bash
-# 错误: package ./cmd/myapp: cannot find package
-# 修改 Dockerfile 第 38 行为实际路径
-```
-
-**构建很慢**:
-已配置 goproxy.cn 加速，如仍慢可检查网络。
-
-## 🔄 健康检查
-
-应用需要实现健康检查端点：
-
-```go
-// 在路由中添加
-router.GET("/health", func(c *gin.Context) {
-    c.JSON(200, gin.H{
-        "status": "ok",
-        "timestamp": time.Now().Unix(),
-    })
-})
-```
-
-## 📚 详细文档
-
-完整的 Docker 使用指南和最佳实践：
-
-- **[统一 Docker 指南](../../../../../docs/DOCKER_GUIDE.md)** - 多环境部署、镜像源配置、安全实践
-- **配置文件说明**:
-  - [Dockerfile](./Dockerfile) - 多阶段构建 + 国内源配置
-  - [docker-compose.yml](./docker-compose.yml) - 服务编排详细配置
-  - [.env.example](./.env.example) - 所有环境变量说明
-
-## 💡 最佳实践
-
-✅ 使用 `.env.dev`、`.env.test`、`.env.prod` 分别管理不同环境
-✅ 生产环境必须修改 `JWT_SECRET`、`DB_PASSWORD`、`REDIS_PASSWORD`
-✅ 生产环境不要暴露数据库和 Redis 端口
-✅ 多阶段构建保持镜像极小（< 20MB）
-✅ 编译时使用 `-ldflags="-s -w"` 减小二进制大小
-✅ 定期更新基础镜像（`docker-compose pull`）
-✅ 数据库使用 volume 持久化，避免使用 `-v` 删除
-
----
-
-需要更多帮助?查看 [DOCKER_GUIDE.md](../../../../../docs/DOCKER_GUIDE.md) 获取详细说明。
+以项目实际端点验证应用响应、退出和依赖连接。构建或配置解析通过不等于生产部署已验证，也不承诺固定镜像大小。多个环境并行运行时用 Compose 的 `-p` 区分项目，而不是固定容器名称。

@@ -1,29 +1,32 @@
 ---
 name: golang-best-practices
-description: 为 Go 服务端代码提供创建、维护、重构和审查指导；当请求涉及 Go/Golang、HTTP 或 gRPC 服务、并发、context、错误处理、Go 测试或构建时使用。不用于前端实现、纯语言入门问答或没有 Go 约束的通用产品设计。
+description: 指导 Go 服务的项目结构、分层边界、跨层依赖、配置与资源生命周期，以及工程交付审查。新建服务、跨层改动或项目级架构审查时使用；单独的语法、并发、context、错误、测试、性能、排障和库用法使用对应主题 skill，不因请求包含 Go 就加载。
+metadata:
+  author: jami1024
+  version: "1.1.0"
 ---
 
 # Go 工程最佳实践
 
 面向新建和现有 Go 项目的工程指导，重点是清晰的包边界、错误处理、并发安全、可测试性和可观测交付。
 
-> 文中的 HTTP、数据库、JWT、GORM、Wire 和 golangci-lint 都是可选方案。先读取项目依赖和配置，再复用已有方案；不要因为示例而新增依赖。
+> 先读取项目已有代码、依赖和配置。包组织、存储、依赖组装和部署方式由实际需求决定，不因为本 skill 或可选工具示例而新增依赖。
 
 ## 何时使用
 
 - 为新 Go 服务选择项目结构、模块边界和依赖；
-- 创建或重构 HTTP/gRPC handler、service、store 和 middleware；
-- 审查并发、context、错误、配置、认证、日志和资源生命周期；
-- 补充单元、集成、竞态和构建验证。
+- 跨 HTTP/gRPC handler、biz/service、store 和 middleware 增加或调整能力；
+- 审查跨层依赖、配置、认证边界和资源生命周期；
+- 为上述工程改动组织必要的测试、竞态和交付验证。
 
-不负责固定脚手架或无依据的框架迁移。新项目先输出架构决策和目录建议，再使用 `go mod init` 及目标框架的官方文档开始实现。
+单个函数的错误修复、并发处理或补测试等任务，只加载对应主题 skill。需要跨层调整时再加载本 skill。不负责固定脚手架或无依据的框架迁移；新项目先给出与规模相符的目录和依赖建议。
 
 ## 项目勘察
 
 开始修改前，先读取并总结：
 
 1. `go.mod`、`go.sum`、`go` 版本和现有依赖；
-2. `cmd/`、`internal/`、`pkg/`、`api/` 及入口文件；
+2. 实际入口、包组织和公开 API；目录是否使用 `cmd/`、`internal/` 等以项目现状为准；
 3. HTTP/gRPC 框架、数据库、迁移、配置、日志和认证方案；
 4. `Makefile`、CI、lint、test、build 和 Docker 配置；
 5. 现有错误类型、context 传递和资源关闭方式。
@@ -41,31 +44,22 @@ description: 为 Go 服务端代码提供创建、维护、重构和审查指导
 7. **资源有生命周期**：关闭 response body、数据库连接、ticker、文件和 goroutine；服务器支持优雅关闭。
 8. **先测量再优化**：基于 benchmark、profile、trace 或指标处理性能问题。
 
-## 推荐目录形状
+## 按需求选择组织方式
 
-按服务规模调整，不要求机械套用：
+| 场景 | 起点 |
+| --- | --- |
+| 小型程序或单一服务 | 同一个 package，按职责分文件即可，不预建空层 |
+| 多个业务能力独立变化 | 按业务能力组织包，明确能力之间的调用与数据契约 |
+| 多个协议入口复用规则 | 分离协议适配和实际复用的用例，不要求固定目录名 |
+| 已有稳定分层或模块划分 | 沿用现有结构，局部完成行为，不为套图搬包 |
+| 多个可执行程序或可复用库 | 按入口与公开 API 组织，`cmd/`、`internal/` 仅在适用时使用 |
 
-```text
-project/
-├── cmd/<service>/main.go       # 可执行程序入口
-├── internal/
-│   ├── app/                    # 应用组装和生命周期
-│   ├── handler/                # HTTP/gRPC 边界
-│   ├── service/                # 业务用例
-│   ├── store/                  # 数据访问
-│   └── model/                  # 领域或持久化模型
-├── api/                        # 对外协议定义（如项目采用）
-├── migrations/                 # 数据库迁移（如需要）
-├── configs/                    # 非敏感默认配置（如项目采用）
-└── go.mod
-```
-
-小项目可以合并层级；只有真正需要跨项目复用时才使用 `pkg/`。不要为了“Clean Architecture”提前创建空层。
+职责边界不等于目录层级；依赖清晰且测试方便时可以同包实现。接口、领域模型、持久化模型和传输对象只在真实替换或变化需要时拆分。具体取舍按需读架构参考。
 
 ## HTTP 和服务生命周期
 
-- handler 只负责解析输入、调用用例和映射响应；
-- service 不依赖 HTTP 细节；store 不决定 API 状态码；
+- 协议边界处理输入、调用用例和映射响应；职责可以在同包中表达，不要求另建 handler 或 service 包；
+- 需要跨入口复用的业务规则不依赖某个 HTTP 框架，数据访问契约不决定 API 状态码；
 - 所有外部 HTTP client 设置 timeout，并检查状态码和 response body；
 - 服务器使用 `http.Server`，监听、信号取消和 `Shutdown` 有明确错误处理；
 - 中间件按顺序处理 request ID、日志、认证、限流和恢复，避免吞掉 panic 或错误；
@@ -83,15 +77,16 @@ project/
 ## 错误、日志与可观测性
 
 ```go
-if err != nil {
-    return fmt.Errorf("load user %q: %w", userID, err)
-}
-
 if errors.Is(err, sql.ErrNoRows) {
     return ErrNotFound
 }
+if err != nil {
+    return fmt.Errorf("load user %q: %w", userID, err)
+}
 ```
 
+- 在数据访问边界将数据库特有的 not-found 等错误映射为项目领域错误，业务调用方不依赖 ORM 错误类型；其余错误使用 `%w` 保留诊断原因；
+- 先处理需要转换的特定错误，再处理其余非空错误，避免提前返回绕过领域映射；
 - 区分客户端错误、业务错误和基础设施错误；
 - 日志包含 request ID、操作和可定位上下文，不重复打印同一错误；
 - 指标和 tracing 在边界处建立，不把 observability 代码散落到领域逻辑；
@@ -99,7 +94,7 @@ if errors.Is(err, sql.ErrNoRows) {
 
 ## 测试与验证
 
-至少覆盖：
+按本次变更涉及的风险覆盖：
 
 - 业务用例成功、失败和边界；
 - handler 的输入校验、状态码和错误响应；
@@ -115,18 +110,39 @@ gofmt → go vet ./... → go test ./... → go test -race ./... → go build ./
 
 如果项目已配置，再运行 `staticcheck`、`golangci-lint`、benchmark、集成测试和容器构建。
 
+## 可选工具与示例
+
+- `go`、`gofmt`、`go vet` 是 Go 工具链的一部分，版本以项目与 CI 为准；
+- lint、生成器、迁移、热重载和容器工具只在项目采用或任务明确需要时使用，版本沿用项目锁定，不自动安装 `@latest`；
+- 本 skill 的 `Makefile`、`scripts/` 和 Docker 模板是特定工具的辅助示例，复用前按实际路径与配置调整，不是项目默认组成；
+- 优先执行现有项目命令，不为使用辅助示例引入工具、额外层级或新的环境管理方式。
+
 ## 交付清单
 
 - [ ] 包边界和依赖方向清晰，没有无必要的全局状态；
 - [ ] context、错误、超时和资源关闭可追踪；
 - [ ] 配置和密钥安全，密码只保存哈希；
 - [ ] API 错误、日志、指标和健康检查符合项目约定；
-- [ ] 单元、集成、竞态、lint 和构建验证通过；
+- [ ] 本次改动需要的行为测试、竞态、lint 和构建验证通过，未执行项说明原因；
 - [ ] 变更说明了接口、迁移、配置和部署影响。
+
+## 与其他 Go skill 的分工
+
+本 skill 负责项目工程决策：包边界、依赖组装、配置与生命周期、跨模块改动和交付检查，不预设统一分层或默认工具组合。
+
+`skills/golang`（取自 samber/cc-skills-golang）负责具体技术判断：性能测量与 pprof/benchstat、线上可观测与告警、排障与竞态检测、安全审计与漏洞扫描、工具链（gopls、godig、govulncheck）、CLI 与协议、以及各库的用法细节。
+
+两者同时可用时：
+
+- `golang-how-to` 先根据任务判断是否需要项目蓝图；新服务、跨层改动、项目级审查先读本 skill，单主题任务直接读对应主题；
+- 用户要求和项目已有约定优先；本 skill 的组织方式是选择依据，不是缺少约定时强制套用的目录模板；
+- 具体技术正确性由对应主题负责，目录、测试组织和实现顺序等偏好不能覆盖项目既有方式；
+- 初始读取一个主 skill，确有任务依赖时再加至多两个主题；已读内容不重复加载；
+- 本 skill 或相邻主题未安装时沿用项目约定与已可用资料，说明缺少的资料，不要求额外安装也不声称已经加载。
 
 ## 详细参考
 
-- [`references/architecture-patterns.md`](references/architecture-patterns.md)：架构、依赖、并发和安全参考；
-- [`references/development-workflow.md`](references/development-workflow.md)：需求、实现、测试和审查流程；
-- [`scripts/`](scripts/)：迁移、lint、Wire 和 Docker 辅助脚本；
-- [`templates/docker/`](templates/docker/)：部署模板。
+- [`references/architecture-patterns.md`](./references/architecture-patterns.md)：包边界、接口、数据契约与资源所有权的选择依据；
+- [`references/development-workflow.md`](./references/development-workflow.md)：按任务切片实施、验证和审查；
+- [`scripts/README.md`](./scripts/README.md)：可选辅助脚本的适用条件；
+- [`templates/docker/`](templates/docker/)：仅在项目需要 Docker 时参考的部署示例。

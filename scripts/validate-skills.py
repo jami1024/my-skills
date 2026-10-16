@@ -7,8 +7,42 @@ import argparse
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+INLINE_LINK_RE = re.compile(
+    r"!?\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s<>]*?))"
+    r"\s*(?:\"[^\"\n]*\"|'[^'\n]*')?\s*\)"
+)
+
+
+def check_documentation_links(root: Path) -> list[str]:
+    errors: list[str] = []
+    for path in sorted(root.rglob("*.md")):
+        relative = path.relative_to(root)
+        # 这些目录保存生成目标的模板和评估输入，不是本仓库的导航链接。
+        if {"assets", "templates", "evals"}.intersection(relative.parts):
+            continue
+        fence = ""
+        for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            marker = re.match(r"^\s{0,3}(`{3,}|~{3,})(.*)$", line)
+            if marker:
+                if not fence:
+                    fence = marker[1]
+                elif marker[1][0] == fence[0] and len(marker[1]) >= len(fence) and not marker[2].strip():
+                    fence = ""
+                continue
+            if fence:
+                continue
+            line = re.sub(r"(`+).*?\1", "", line)
+            for match in INLINE_LINK_RE.finditer(line):
+                target = match[1] or match[2]
+                url = urlsplit(target)
+                if url.scheme or url.netloc or not url.path or url.path.startswith("/"):
+                    continue
+                if not (path.parent / unquote(url.path)).exists():
+                    errors.append(f"{relative}:{number}: broken Markdown link {target!r}")
+    return errors
 
 
 def parse_frontmatter(path: Path) -> dict[str, str]:
@@ -39,6 +73,8 @@ def validate(root: Path, strict: bool) -> int:
     for path in sorted(root.rglob("*")):
         if path.is_symlink() and not path.exists():
             errors.append(f"{path.relative_to(root)}: broken symlink")
+
+    errors.extend(check_documentation_links(root))
 
     if not skill_files:
         errors.append(f"{root}: no SKILL.md found")

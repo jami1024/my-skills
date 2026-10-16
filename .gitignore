@@ -9,3 +9,6 @@ CLAUDE.md
 .vscode/
 *.swp
 *.swo
+
+# 中间结果与临时克隆
+.tmp/

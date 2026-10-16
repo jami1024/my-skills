@@ -1,0 +1,286 @@
+{
+  "descriptions": {
+    "golang-benchmark": "Measure Go performance with benchmarks, pprof, trace and benchstat. Use to establish bottlenecks or compare changes; optimization patterns belong to golang-performance.",
+    "golang-cli": "Design Go CLI behavior: arguments, exit codes, output streams, signals and interactive UX. Use for command-line applications; Cobra APIs belong to golang-spf13-cobra.",
+    "golang-code-style": "Review or improve Go formatting, control flow, declarations and readability. Preserve project style; naming and lint configuration have separate skills.",
+    "golang-concurrency": "Implement or debug Go goroutines, channels, mutexes, worker pools and shared-state synchronization. Add golang-context when cancellation is part of the task.",
+    "golang-context": "Propagate Go context cancellation, deadlines and request values through APIs and I/O. Use for timeout or cancellation behavior; synchronization belongs to golang-concurrency.",
+    "golang-continuous-integration": "Build Go CI workflows for tests, race checks, lint, security scans, caching and releases. Use when changing automation or release pipelines.",
+    "golang-data-structures": "Choose and implement Go slices, maps, sets, queues and other collections. Use for data representation and operations; measure performance with golang-benchmark.",
+    "golang-database": "Implement Go database access with database/sql, pgx or sqlx: queries, transactions, pooling and context. Preserve the existing driver and domain error boundary.",
+    "golang-dependency-injection": "Choose Go dependency injection and constructor boundaries. Use for explicit dependency wiring or comparing DI approaches; do not introduce a container by default.",
+    "golang-dependency-management": "Maintain Go modules, go.mod/go.sum, versions, replacements and dependency upgrades. Use for dependency changes; package documentation belongs to golang-pkg-go-dev.",
+    "golang-design-patterns": "Design Go APIs and apply architectural patterns when they solve a concrete problem. Use for design tradeoffs; project conventions take precedence over default patterns.",
+    "golang-documentation": "Write Go doc comments, runnable examples, README, CONTRIBUTING and changelogs. Use for documentation work and library guidance.",
+    "golang-error-handling": "Handle Go errors with wrapping, errors.Is/As, sentinel or typed errors and boundary translation. Use for error behavior; panic prevention belongs to golang-safety.",
+    "golang-google-wire": "Use Google Wire in Go projects that already use it or explicitly choose it: provider sets, bindings, generation and cleanup. Not a default DI recommendation.",
+    "golang-gopls": "Navigate and refactor the local Go build with gopls: definitions, references, diagnostics, APIs and rename. Published package discovery belongs to golang-pkg-go-dev.",
+    "golang-graphql": "Implement or review Go GraphQL services with gqlgen: schema, resolvers, batching, errors and transport. Use when GraphQL is part of the requested work.",
+    "golang-grpc": "Implement or review Go gRPC services: protobuf APIs, deadlines, status errors, interceptors, streams and testing. Use for gRPC-specific behavior.",
+    "golang-how-to": "Route Go tasks to the smallest relevant skill set. Use before Go coding, review or debugging; include golang-best-practices only for new services, cross-layer work or architecture review.",
+    "golang-lint": "Configure and interpret Go lint, formatting and static analysis, including golangci-lint. Use existing project configuration; avoid enabling unrelated rules.",
+    "golang-modernize": "Adopt newer Go language and standard-library features while preserving the project's minimum Go version. Use for version-aware modernization, not general refactoring.",
+    "golang-naming": "Choose Go package, type, function, variable and interface names. Use for naming reviews or renames; preserve public API compatibility and project conventions.",
+    "golang-observability": "Instrument Go production services with logs, metrics, traces, health checks and alerts. Use for operational visibility; profiling belongs to golang-benchmark.",
+    "golang-performance": "Optimize Go allocation, CPU, memory and I/O after identifying a bottleneck. Use golang-benchmark for measurements and validate behavior after changes.",
+    "golang-pkg-go-dev": "Look up published Go package documentation, versions, symbols, licenses and vulnerabilities with godig/pkg.go.dev. For the exact local build use golang-gopls.",
+    "golang-popular-libraries": "Compare Go library choices against concrete requirements and existing dependencies. Use when asked to choose a library; use library-specific skills for API details.",
+    "golang-project-layout": "Set up Go modules, package directories and go.work workspaces. Use for layout changes; read golang-best-practices first for service architecture when available.",
+    "golang-refactoring": "Plan and execute Go refactors in small, verified steps with API compatibility and gopls support. Use for behavior-preserving structural changes, not feature design.",
+    "golang-safety": "Find Go correctness hazards: nil values, panics, bounds, resource leaks and unsafe assumptions. Use for internal failure prevention; external threats belong to golang-security.",
+    "golang-samber-do": "Use samber/do for Go dependency injection when already adopted or explicitly requested: providers, scopes, lifecycle and testing. Not a default container choice.",
+    "golang-samber-hot": "Use samber/hot caches in Go: eviction, TTL, loaders and concurrent access. Use only when this library is adopted or requested.",
+    "golang-samber-lo": "Use samber/lo collection helpers for finite Go slices and maps. Use when lo is adopted or requested; avoid adding it for a simple standard-library operation.",
+    "golang-samber-mo": "Use samber/mo Option, Result, Either and related types in Go. Use when the library is adopted or requested; preserve existing API conventions.",
+    "golang-samber-oops": "Use samber/oops structured Go errors with context and stack information. Use when the library is adopted or requested; generic error idioms have a separate skill.",
+    "golang-samber-ro": "Use samber/ro reactive streams and operators in Go. Use when the library is adopted or requested; finite collection helpers belong to golang-samber-lo.",
+    "golang-samber-slog": "Use Go log/slog and samber slog adapters for structured logging, handlers and context. Add golang-observability for broader instrumentation work.",
+    "golang-security": "Audit Go authentication, authorization, injection, secrets, network boundaries and reachable vulnerabilities. Use for security behavior or dependency audits, not style reviews.",
+    "golang-spf13-cobra": "Implement Go command trees, arguments, flags and completions with spf13/cobra. Use when Cobra is adopted or requested; CLI behavior has a separate skill.",
+    "golang-spf13-viper": "Manage Go configuration with spf13/viper: defaults, files, environment variables, flags and validation. Use when Viper is adopted or requested.",
+    "golang-stay-updated": "Research Go releases and ecosystem changes relevant to a project. Verify dates, sources and compatibility; use for update research rather than automatic upgrades.",
+    "golang-stretchr-testify": "Use stretchr/testify assertions, require, mocks and suites in Go tests. Use when testify is already adopted or explicitly requested; general test design belongs to golang-testing.",
+    "golang-structs-interfaces": "Design Go structs, method sets, embedding, interfaces and generics. Use for type contracts and composition; broader architecture belongs to golang-design-patterns.",
+    "golang-swagger": "Document or generate Go OpenAPI/Swagger APIs with the project's existing tooling. Use for API specifications and generation; preserve the current public contract.",
+    "golang-testing": "Write, review or debug Go unit, integration and fuzz tests. Focus on observable behavior, isolation and race checks; preserve existing test naming and selection conventions.",
+    "golang-troubleshooting": "Diagnose Go failures, panics, hangs, leaks and unexpected runtime behavior. Reproduce first; add benchmark or concurrency guidance only when evidence requires it.",
+    "golang-uber-dig": "Use uber/dig reflection-based Go dependency injection: constructors, named values, groups and errors. Use when Dig is adopted or explicitly requested.",
+    "golang-uber-fx": "Use uber/fx Go application wiring and lifecycle hooks. Use when Fx is adopted or explicitly requested; preserve startup, shutdown and cleanup semantics."
+  },
+  "replacements": {
+    "golang-documentation/references/project-docs.md": [
+      {
+        "old": "](./templates/",
+        "new": "](../assets/templates/"
+      }
+    ],
+    "golang-documentation/references/library.md": [
+      {
+        "old": "](./templates/",
+        "new": "](../assets/templates/"
+      }
+    ],
+    "golang-troubleshooting/references/methodology.md": [
+      {
+        "old": "](./SKILL.md)",
+        "new": "](../SKILL.md)"
+      }
+    ],
+    "golang-how-to/SKILL.md": [
+      {
+        "old": "    requires:\n      bins:\n        - go\n        - gopls\n    install:\n      - kind: go\n        package: golang.org/x/tools/gopls@latest\n        bins: [gopls]",
+        "new": "    requires:\n      bins:\n        - git"
+      },
+      {
+        "old": "| Database queries and transactions | `golang-database` | `golang-error-handling`, `golang-security` |",
+        "new": "| Database queries and transactions | For cross-layer store/biz changes, read local `golang-best-practices` first when registered, then `golang-database`; otherwise `golang-database` | `golang-error-handling` for error translation; `golang-context` for cancellation behavior |"
+      },
+      {
+        "old": "**Persona:** You are a Go skills orchestrator. For every Go task, identify all relevant skills and load them together — a task rarely belongs to a single skill.",
+        "new": "**Persona:** Route Go tasks to the smallest useful set of skills. Read the task and existing project conventions before choosing guidance. Do not load skills merely because they are adjacent topics."
+      },
+      {
+        "old": "- **Orchestrate** — for any Go coding, review, debug, or setup task, load the primary skill plus all applicable secondary skills simultaneously.",
+        "new": "- **Orchestrate** — choose one primary skill, then add secondary skills only for concrete needs uncovered by the task or code."
+      },
+      {
+        "old": "**Dependencies:** `gopls` — `go install golang.org/x/tools/gopls@latest`; Claude Code's built-in `LSP` tool also needs `ENABLE_LSP_TOOL=1` and a Go language server wired (see [Code navigation with gopls](#code-navigation-with-gopls)).",
+        "new": "**Tooling:** Routing requires no extra tools. Use the harness's existing code intelligence when available. Load `golang-gopls` only for Go semantic navigation or refactoring; if a tool is missing, explain the limitation instead of automatically installing an unpinned version."
+      },
+      {
+        "old": "For each task, load the **primary skill** and all applicable **secondary skills** at the same time. Do not wait — load them together at the start.",
+        "new": "1. User requirements and existing project conventions take precedence over community defaults. Directory names, test organization and implementation order are preferences, not reasons to restructure an existing project.\n2. Before consulting the topic table, classify whether the task crosses handler/service/store or changes service architecture. If it does, and local `golang-best-practices` is registered, read and finish that blueprint first in a separate read call; do not batch it with topic reads. Then select only the remaining topic guidance needed for the work. For a single-topic task such as naming, error handling, concurrency, tests or profiling, go directly to that topic without loading the project blueprint.\n3. Start with one primary skill and zero to two secondary skills that the task actually needs. The table's **Also load** column lists candidates, not an unconditional bundle. Load further guidance later only when a new requirement or finding justifies it; do not reread already loaded skills.\n4. Library-specific skills apply when that library is in the project or explicitly requested. Do not add a dependency to make a skill applicable. Run the project's existing checks without loading a separate testing skill unless test design is part of the work.\n5. If `golang-best-practices` or a requested topic is not registered, use available project guidance and report the missing resource. Do not claim to have loaded it or require installation to proceed."
+      },
+      {
+        "old": "| Set up a new project structure | `golang-project-layout` | `golang-design-patterns`, `golang-dependency-injection`, `golang-lint` |",
+        "new": "| Set up a new service or change cross-layer architecture | local `golang-best-practices` when registered; otherwise `golang-project-layout` | `golang-project-layout` for layout details; DI or lint only if requested |\n| Organize a standalone library, CLI module, or Go workspace | `golang-project-layout` | `golang-design-patterns` only for a concrete design question |"
+      },
+      {
+        "old": "All skill identifiers above are short forms of `samber/cc-skills-golang@<name>`.",
+        "new": "Load skills by their names and paths in the current harness's inventory. `samber/cc-skills-golang@<name>` identifies upstream provenance; this local collection registers bare names such as `golang-testing`. `golang-best-practices` is an optional local skill, not part of the upstream catalog."
+      }
+    ],
+    "golang-testing/SKILL.md": [
+      {
+        "old": "2. Integration tests MUST use build tags (`//go:build integration`) to separate from unit tests",
+        "new": "2. Keep integration tests independently selectable using the project's existing approach: build tags, packages, flags, environment configuration or a dedicated command"
+      },
+      {
+        "old": "9. Keep unit tests fast (< 1ms), use build tags for integration tests",
+        "new": "9. Keep unit tests fast enough for the project's feedback loop; choose integration-test selection according to its dependencies and CI setup"
+      },
+      {
+        "old": "12. Test files MUST be named after the source file under test, not after the function or method being tested",
+        "new": "12. Follow the project's test-file naming; source-file-based names and behavior-focused names are both acceptable"
+      },
+      {
+        "old": "13. Test functions SHOULD appear in the same order as the functions/methods they test in the source file",
+        "new": "13. Organize tests for navigation and behavior coverage; do not reorder existing tests merely to mirror source order"
+      },
+      {
+        "old": "Name the test file after the source file it tests, not after the function or method under test. Go's convention is one test file per source file (`foo.go` -> `foo_test.go`), because tools (`go test`, coverage reports, IDE \"jump to test\" navigation, `gotests`) and reviewers all resolve tests by source file, not by symbol. A source file usually declares several functions/methods; splitting its tests by symbol name scatters them across many files and breaks that file-to-file mapping.\n\n```\n// ✓ Good — one test file per source file\nhelloworld.go       -> helloworld_test.go   // contains TestHelloWorld, TestAbcd, TestXyz, ...\n\n// ✗ Bad — test file named after the function/method instead of the source file\nhelloworld.go       -> abcd_test.go         // wrong: should be helloworld_test.go\n```\n\nException: very large source files MAY be split into multiple `_test.go` files by concern (e.g. `foo_test.go` + `foo_edgecases_test.go`), but each split file's name MUST still be derived from the source file name, never from an individual function name. Prefer keeping a single `_test.go` file per source file even when it grows large — splitting adds navigation overhead and is rarely worth it; reach for the exception only when a single file becomes genuinely unwieldy to browse or review.\n\nWithin a test file, order test functions to match the order their tested functions/methods appear in the source file. A reader (human or agent) scrolling `foo.go` alongside `foo_test.go` can then find the matching test by position instead of searching; drift between the two orderings compounds every time either file grows.",
+        "new": "Use descriptive `*_test.go` names that fit the package and existing repository conventions. `foo_test.go`, `user_validation_test.go` and `authorization_test.go` can all be appropriate. Choose grouping and test order for readability and behavior coverage; do not rename files or reorder tests solely to match production source files.\n\nIntegration tests need a documented way to run independently when they require external services or expensive setup. Reuse the project's existing build tags, package boundaries, flags, environment selection or CI commands; adding `//go:build integration` is one option, not a universal requirement."
+      },
+      {
+        "old": "Use build tags to separate integration tests from unit tests:",
+        "new": "Make integration tests runnable independently. A build tag is a common choice:"
+      }
+    ],
+    "golang-project-layout/SKILL.md": [
+      {
+        "old": "**Questions:** Ask the user through the environment's question tool — never as plain-text prose. Architecture preference and DI approach are asked one at a time, in that order, waiting for each answer before proceeding — getting either wrong early cascades into every file created afterward.",
+        "new": "**Scope:** Preserve explicit user choices and existing project structure. A tiny service may stay in one package with a root main.go. Ask a question only when an unresolved architecture or dependency decision materially changes the work; do not ask again for choices the user has already supplied."
+      },
+      {
+        "old": "When starting a new project, **ask the developer** what software architecture they prefer (clean architecture, hexagonal, DDD, flat structure, etc.). Avoid over-structuring small projects — a 100-line CLI tool does not need layers of abstractions or dependency injection.",
+        "new": "Start with the smallest structure that expresses the required behavior. A single-package service or CLI is a valid initial design. If the user requests a particular architecture, follow it; discuss alternatives only when there is a real unresolved tradeoff. Do not require an architecture selection ceremony for routine setup."
+      },
+      {
+        "old": "After settling on the architecture, **ask the developer** which dependency injection approach they want: manual constructor injection, or a DI library (samber/do, google/wire, uber-go/dig+fx), or none at all. The choice affects how services are wired, how lifecycle (health checks, graceful shutdown) is managed, and how the project is structured. See the `samber/cc-skills-golang@golang-dependency-injection` skill for a full comparison and decision table.",
+        "new": "Reuse existing wiring. For a small new program, explicit constructors are sufficient unless the user requests a DI library or lifecycle framework. Read `golang-dependency-injection` only when choosing or changing the injection approach is part of the task."
+      },
+      {
+        "old": "| **CLI Tool** | Building a command-line application | `cmd/{name}/`, `internal/`, optional `pkg/` |\n| **Library** | Creating reusable code for others | `pkg/{name}/`, `internal/` for private code |\n| **Service** | HTTP API, microservice, or web app | `cmd/{service}/`, `internal/`, `api/`, `web/` |\n| **Monorepo** | Multiple related packages/modules | `go.work`, separate modules per package |\n| **Workspace** | Developing multiple local modules | `go.work`, replace directives |",
+        "new": "| **Small CLI or service** | One executable with a few behaviors | Module root package; split files by responsibility |\n| **Library** | Reusable public Go API | Module root package; `internal/` only for genuinely private packages |\n| **Multiple executables** | Distinct entry points or deployment lifecycles | `cmd/{name}/` and shared packages when useful |\n| **Several business capabilities** | Responsibilities need separate packages | Capability packages; preserve existing naming |\n| **Workspace** | Multiple modules with independent boundaries | `go.work` when needed, not one module per package by default |"
+      },
+      {
+        "old": "All `main` packages must reside in `cmd/` with minimal logic — parse flags, wire dependencies, call `Run()`. Business logic belongs in `internal/` or `pkg/`. Use `internal/` for non-exported packages, `pkg/` only when code is useful to external consumers.",
+        "new": "A single executable may keep main.go and related source files in the module root. Use cmd/ for multiple entry points or when the existing project does so. Extract packages only for a concrete responsibility, reuse or import boundary; use internal/ where its import restriction is useful. Do not create empty handler/service/store/model layers or a pkg/ wrapper for every program."
+      },
+      {
+        "old": "Every Go project should include at the root:\n\n- **Makefile** — build automation. See [Makefile template](assets/Makefile)\n- **.gitignore** — git ignore patterns. See [.gitignore template](assets/.gitignore)\n- **.golangci.yml** — linter config. See the `samber/cc-skills-golang@golang-lint` skill for the recommended configuration",
+        "new": "Reuse the project's existing automation and configuration. Add files only when required by its workflow:\n\n- **Makefile** — optional automation; see [Makefile template](assets/Makefile)\n- **.gitignore** — ignore local artifacts when using Git; see [.gitignore template](assets/.gitignore)\n- **.golangci.yml** — only if golangci-lint is adopted; use the existing configuration rather than adding a default lint setup"
+      },
+      {
+        "old": "- [ ] Confirm preferred software architecture (clean, hexagonal, DDD, flat, etc.)\n- [ ] Confirm preferred DI approach — see `samber/cc-skills-golang@golang-dependency-injection` skill\n- [ ] Decide project type (CLI, library, service, monorepo)\n- [ ] Right-size the structure to the project scope\n- [ ] Choose module name (matches repo URL, lowercase, hyphens)\n- [ ] Run `go version` to detect the current go version\n- [ ] Run `go mod init github.com/user/project-name`\n- [ ] Create `cmd/{name}/main.go` for entry point\n- [ ] Create `internal/` for private code\n- [ ] Create `pkg/` only if you have public libraries\n- [ ] For monorepos: Initialize `go work` and add modules\n- [ ] Run `gofmt -s -w .` to ensure formatting\n- [ ] Add `.gitignore` with `/vendor/` and binary patterns\n- [ ] Write the always-load directive for `samber/cc-skills-golang@golang-how-to` into the project's agent-config file (CLAUDE.md, AGENTS.md, or equivalent) — no user confirmation needed, see that skill's Configure mode",
+        "new": "- [ ] Read the requested behavior, existing conventions and explicit architecture/tool choices\n- [ ] Choose a minimal package structure; a single root package is sufficient when no separate boundary is needed\n- [ ] Confirm the module path and Go version, then initialize the module if missing\n- [ ] Implement one runnable behavior with explicit construction and cleanup\n- [ ] Add packages, automation or workspaces only for concrete needs\n- [ ] Format, test and build using the project's commands\n- [ ] Modify agent-config files only when configuring agent behavior is requested"
+      }
+    ]
+  },
+  "assertion_fixes": {
+    "golang-project-layout/evals/evals.json": [
+      {
+        "id": "1.1",
+        "old": "Asks the developer which software architecture they prefer (clean, hexagonal, DDD, flat, etc.)",
+        "new": "Chooses the smallest structure that fits the request; a single package with a root main.go is valid, and an explicitly requested architecture is followed"
+      },
+      {
+        "id": "1.2",
+        "old": "Asks about the project scope/size to right-size the structure",
+        "new": "Right-sizes the structure to the requested scope instead of applying a fixed template"
+      },
+      {
+        "id": "1.4",
+        "old": "Mentions dependency injection approach as a follow-up question",
+        "new": "Does not require a dependency-injection decision; explicit constructors are the default unless a DI library is requested"
+      },
+      {
+        "id": "2.2",
+        "old": "Says cmd/ should contain minimal logic: parse flags, wire dependencies, call Run()",
+        "new": "Keeps the entry point focused on wiring and startup rather than request handling, queries and response formatting"
+      },
+      {
+        "id": "2.3",
+        "old": "Recommends moving business logic to internal/ or pkg/",
+        "new": "Recommends extracting the mixed responsibilities into a separate package; internal/, pkg/ or a named business package are all acceptable"
+      },
+      {
+        "id": "2.5",
+        "old": "NEVER put request parsing, database queries, or response formatting in cmd/",
+        "new": "Flags request parsing, database queries and response formatting as responsibilities that do not belong in the entry point"
+      },
+      {
+        "id": "3.6",
+        "old": "Recommends putting main.go inside cmd/{name}/ not at root or in src/",
+        "new": "Recommends moving main.go out of src/; the module root and cmd/{name}/ are both valid"
+      },
+      {
+        "id": "5.1",
+        "old": "Puts the shared logging library in pkg/ (useful to external consumers)",
+        "new": "Puts the shared logging library in an importable package (module root or pkg/); pkg/ is optional"
+      },
+      {
+        "id": "5.5",
+        "old": "Service/business logic goes in internal/ by default",
+        "new": "Keeps service/business packages out of pkg/ and uses internal/ where the import restriction is actually useful"
+      },
+      {
+        "id": "11.5",
+        "old": "Business logic is in internal/, not duplicated across cmd/ directories",
+        "new": "Shared logic lives in a common package rather than being duplicated across cmd/ directories"
+      }
+    ],
+    "golang-testing/evals/evals.json": [
+      {
+        "id": "2.2",
+        "old": "Uses `//go:build integration` build tag (at the file level, before the package declaration)",
+        "new": "Selects integration tests independently using the project's existing mechanism (build tag, separate package, flag, environment configuration or dedicated command)"
+      },
+      {
+        "id": "2.3",
+        "old": "Explains why build tags are preferred: tests using testing.Short() still compile and attempt connections when running without -short, whereas build-tagged files are completely excluded from compilation",
+        "new": "Explains that the selection mechanism must gate expensive setup: a build tag removes the file from compilation, while testing.Short() still compiles and can attempt connections without -short"
+      },
+      {
+        "id": "2.4",
+        "old": "Includes the command to run integration tests: go test -tags=integration ./...",
+        "new": "Shows how to run the integration tests with the selected mechanism"
+      },
+      {
+        "id": "12.5",
+        "old": "Uses `//go:build integration` build tag",
+        "new": "Makes the integration tests selectable through the project's chosen mechanism (for example a build tag)"
+      }
+    ]
+  },
+  "local_cases": {
+    "golang-project-layout/evals/evals.json": [
+      {
+        "id": 12,
+        "name": "local-existing-service-lookup",
+        "description": "本地用例：在已有服务里加查询路径时必须复用现有布局与装配",
+        "prompt": "This checkout is an existing Go service. We need to add an endpoint that returns all orders for one user. Show how you would wire it through the code that is already here, and list the files you would add or change.",
+        "trap": "Tempts scaffolding a service/repository/domain layer or a pkg/ wrapper for a query that belongs next to the existing store methods, or replacing explicit constructors with a DI framework",
+        "fixture": "docs/evals/fixtures/existing-service",
+        "assertions": [
+          {
+            "id": "L1.1",
+            "text": "Reads the existing entry point, store package or README before proposing the change"
+          },
+          {
+            "id": "L1.2",
+            "text": "Keeps the existing package layout: no new cmd/, service/, repository/ or domain/ directories and no pkg/ wrapper"
+          },
+          {
+            "id": "L1.3",
+            "text": "Adds the query to the existing store type and reuses the existing constructor wiring; no DI framework, ORM or extra abstraction layer"
+          }
+        ]
+      }
+    ],
+    "golang-testing/evals/evals.json": [
+      {
+        "id": 15,
+        "name": "local-reuse-existing-integration-selection",
+        "description": "本地用例：新增集成测试必须沿用项目既有的选中机制",
+        "prompt": "This checkout is an existing Go service with tests. We are adding a ListByUserID query to the order store and need integration tests for it. Check how this project runs its tests today, then tell me what you would add and which commands to run.",
+        "trap": "Tempts forcing //go:build integration onto a project that already selects integration tests through an environment variable, or splitting the suite into new test packages",
+        "fixture": "docs/evals/fixtures/existing-service",
+        "assertions": [
+          {
+            "id": "L2.1",
+            "text": "Reads the existing test files or README before recommending how to add integration tests"
+          },
+          {
+            "id": "L2.2",
+            "text": "Keeps the project's env-var integration-test selection and does not migrate the suite to build tags"
+          },
+          {
+            "id": "L2.3",
+            "text": "Keeps the existing test layout: no separate tests/ directory and no new test packages for the suite"
+          }
+        ]
+      }
+    ]
+  }
+}

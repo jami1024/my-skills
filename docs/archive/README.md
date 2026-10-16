@@ -7,3 +7,4 @@
 目前归档内容：
 
 - `learning-docs/`：已由 `skills/content/explain` 和 `skills/content/draft` 承接的旧版学习文档 skill。
+- [golang-skill-provenance.md](golang-skill-provenance.md)：Go 工程指南旧版材料的来源与去除项目风格绑定的说明。

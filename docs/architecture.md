@@ -12,12 +12,15 @@
 
 ```text
 skills/
-├── dev/       # 开发与设计最佳实践
+├── dev/       # 开发与设计最佳实践（自有）
+├── golang/    # 上游 samber/cc-skills-golang 的副本（46 个 Go 主题 skill）
 ├── content/   # 知识库、讲解和内容成稿
 └── session/   # 会话交接与项目归档
 ```
 
 分类目录只是组织方式；加载范围由客户端配置决定。pi 若只需要内容工作流，应指向 `skills/content`，不要指向整个仓库。
+
+`skills/golang` 是上游副本，本地描述、路由、测试偏好及文档链接修正统一记录在补丁清单，由同步脚本自动重放；其他内容保持上游原样。它单独加载，不并入 `skills/dev`，本地修正、同步方式与加载代价见 [`../skills/golang/README.md`](../skills/golang/README.md)。
 
 ## 单个 skill
 

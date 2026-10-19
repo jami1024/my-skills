@@ -1,0 +1,36 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 回归测试里会从 SKILL.md 提取 Go 代码示例并真正执行 go test。
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Validate skill layout and links
+        run: python3 -B scripts/validate-skills.py --strict
+
+      # 副本必须是清单的可重放结果：重放后提交树不应再有变化。
+      - name: Replay local overrides
+        run: |
+          python3 -B scripts/apply-golang-overrides.py skills/golang
+          if ! git diff --exit-code; then
+            echo "::error::skills/golang 与清单不一致，请重放并提交"
+            git diff --stat
+            exit 1
+          fi
+
+      - name: Run tooling regression tests
+        run: python3 -B -m unittest discover -s scripts/tests -v

@@ -67,4 +67,4 @@ Assert to the smallest interface that carries the behavior you need rather than 
 
 Error inspection has dedicated helpers — `errors.As` walks the wrap chain, a plain type assertion does not. A bare `err.(*MyError)` misses an error that was wrapped with `%w` anywhere up the stack.
 
-→ See `samber/cc-skills-golang@golang-error-handling` skill for error wrapping and inspection.
+→ See `golang-error-handling` skill for error wrapping and inspection.

@@ -87,4 +87,4 @@ type OrderedStringer interface {
 
 Generics shine for data structures (containers, sets, trees), algorithms (sort, search, transform), and utility functions (min, max, clamp) where the logic is identical across types.
 
-→ See `samber/cc-skills-golang@golang-structs-interfaces` skill for generics vs `any` guidance and interface design.
+→ See `golang-structs-interfaces` skill for generics vs `any` guidance and interface design.

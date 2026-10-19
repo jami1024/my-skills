@@ -115,7 +115,7 @@ fmt:
 	golangci-lint fmt ./...
 ```
 
-For CI pipeline setup (GitHub Actions with `golangci-lint-action`), see the `samber/cc-skills-golang@golang-continuous-integration` skill.
+For CI pipeline setup (GitHub Actions with `golangci-lint-action`), see the `golang-continuous-integration` skill.
 
 ## Interpreting Output
 
@@ -154,7 +154,7 @@ When adopting linting on a legacy codebase, use up to 5 parallel sub-agents to f
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for CI pipeline with golangci-lint-action
-- → See `samber/cc-skills-golang@golang-code-style` skill for style rules that linters enforce
-- → See `samber/cc-skills-golang@golang-security` skill for SAST tools beyond linting (gosec, govulncheck)
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines
+- → See `golang-continuous-integration` skill for CI pipeline with golangci-lint-action
+- → See `golang-code-style` skill for style rules that linters enforce
+- → See `golang-security` skill for SAST tools beyond linting (gosec, govulncheck)
+- → See `golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines

@@ -29,7 +29,7 @@ paths:
 - **Review mode** — reviewing a PR's error handling changes. Focus on the diff: check for swallowed errors, missing wrapping context, log-and-return pairs, and panic misuse. Sequential.
 - **Audit mode** — auditing existing error handling across a codebase. Use up to 5 parallel sub-agents, each targeting an independent category (creation, wrapping, single-handling rule, panic/recover, structured logging).
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-error-handling` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-error-handling` skill takes precedence.
 
 # Go Error Handling Best Practices
 
@@ -73,11 +73,11 @@ When auditing error handling across a large codebase, use up to 5 parallel sub-a
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-samber-oops` for full samber/oops API, builder patterns, and logger integration
-- → See `samber/cc-skills-golang@golang-observability` for structured logging setup, log levels, and request logging middleware
-- → See `samber/cc-skills-golang@golang-safety` for nil interface trap and nil error comparison pitfalls
-- → See `samber/cc-skills-golang@golang-naming` for error naming conventions (ErrNotFound, PathError)
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines
+- → See `golang-samber-oops` for full samber/oops API, builder patterns, and logger integration
+- → See `golang-observability` for structured logging setup, log levels, and request logging middleware
+- → See `golang-safety` for nil interface trap and nil error comparison pitfalls
+- → See `golang-naming` for error naming conventions (ErrNotFound, PathError)
+- → See `golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines
 
 ## References
 

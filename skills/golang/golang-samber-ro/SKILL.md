@@ -36,8 +36,8 @@ Go implementation of [ReactiveX](https://reactivex.io/). Generics-first, type-sa
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ## Why samber/ro (Streams vs Slices)
@@ -180,8 +180,8 @@ If you encounter a bug or unexpected behavior in samber/ro, open an issue at [gi
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-samber-lo` skill for finite slice transforms (Map, Filter, Reduce, GroupBy) — use lo when data is already in a slice
-- → See `samber/cc-skills-golang@golang-samber-mo` skill for monadic types (Option, Result, Either) that compose with ro pipelines
-- → See `samber/cc-skills-golang@golang-samber-hot` skill for in-memory caching (also available as an ro plugin)
-- → See `samber/cc-skills-golang@golang-concurrency` skill for goroutine/channel patterns when reactive streams are overkill
-- → See `samber/cc-skills-golang@golang-observability` skill for monitoring reactive pipelines in production
+- → See `golang-samber-lo` skill for finite slice transforms (Map, Filter, Reduce, GroupBy) — use lo when data is already in a slice
+- → See `golang-samber-mo` skill for monadic types (Option, Result, Either) that compose with ro pipelines
+- → See `golang-samber-hot` skill for in-memory caching (also available as an ro plugin)
+- → See `golang-concurrency` skill for goroutine/channel patterns when reactive streams are overkill
+- → See `golang-observability` skill for monitoring reactive pipelines in production

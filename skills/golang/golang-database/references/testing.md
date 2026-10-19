@@ -218,4 +218,4 @@ func (s *UserRepoSuite) SetupSuite() {
 - Integration tests SHOULD use testcontainers-go for reproducible database environments in CI.
 - NEVER test against production databases.
 
-→ See `samber/cc-skills-golang@golang-testing` skill for general test patterns and CI configuration.
+→ See `golang-testing` skill for general test patterns and CI configuration.

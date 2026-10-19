@@ -29,7 +29,7 @@ paths:
 - **Review mode** — reviewing a PR's concurrent code changes. Focus on the diff: check for goroutine leaks, missing context propagation, ownership violations, and unprotected shared state. Sequential.
 - **Audit mode** — auditing existing concurrent code across a codebase. Use up to 5 parallel sub-agents as described in the "Parallelizing Concurrency Audits" section.
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-concurrency` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-concurrency` skill takes precedence.
 
 # Go Concurrency Best Practices
 
@@ -125,12 +125,12 @@ When auditing concurrency across a large codebase, use up to 5 parallel sub-agen
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-performance` skill for false sharing, cache-line padding, `sync.Pool` hot-path patterns
-- → See `samber/cc-skills-golang@golang-context` skill for cancellation propagation and timeout patterns
-- → See `samber/cc-skills-golang@golang-safety` skill for concurrent map access and race condition prevention
-- → See `samber/cc-skills-golang@golang-troubleshooting` skill for debugging goroutine leaks and deadlocks
-- → See `samber/cc-skills-golang@golang-design-patterns` skill for graceful shutdown patterns
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines
+- → See `golang-performance` skill for false sharing, cache-line padding, `sync.Pool` hot-path patterns
+- → See `golang-context` skill for cancellation propagation and timeout patterns
+- → See `golang-safety` skill for concurrent map access and race condition prevention
+- → See `golang-troubleshooting` skill for debugging goroutine leaks and deadlocks
+- → See `golang-design-patterns` skill for graceful shutdown patterns
+- → See `golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines
 
 ### Goroutine leak profile
 

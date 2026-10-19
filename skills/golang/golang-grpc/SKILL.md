@@ -42,8 +42,8 @@ Treat gRPC as a pure transport layer — keep it separate from business logic. T
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ## Quick Reference
@@ -221,7 +221,7 @@ Most services do not need connection pooling — profile before adding complexit
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-context` skill for deadline and cancellation patterns
-- → See `samber/cc-skills-golang@golang-error-handling` skill for gRPC error to Go error mapping
-- → See `samber/cc-skills-golang@golang-observability` skill for gRPC interceptors (logging, tracing, metrics)
-- → See `samber/cc-skills-golang@golang-testing` skill for gRPC testing with bufconn
+- → See `golang-context` skill for deadline and cancellation patterns
+- → See `golang-error-handling` skill for gRPC error to Go error mapping
+- → See `golang-observability` skill for gRPC interceptors (logging, tracing, metrics)
+- → See `golang-testing` skill for gRPC testing with bufconn

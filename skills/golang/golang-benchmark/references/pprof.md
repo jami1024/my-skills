@@ -1,6 +1,6 @@
 # pprof Reference
 
-`go tool pprof` is the primary tool for understanding where CPU time, memory, and contention go in Go programs. This file covers how to **use** the CLI and **interpret** the output. For enabling pprof endpoints on running services (net/http/pprof import, authentication, security), → See `samber/cc-skills-golang@golang-troubleshooting` skill.
+`go tool pprof` is the primary tool for understanding where CPU time, memory, and contention go in Go programs. This file covers how to **use** the CLI and **interpret** the output. For enabling pprof endpoints on running services (net/http/pprof import, authentication, security), → See `golang-troubleshooting` skill.
 
 ## Table of Contents
 
@@ -122,7 +122,7 @@ go test -bench=BenchmarkParse -cpuprofile=cpu.prof -memprofile=mem.prof ./pkg/pa
 
 ### From running service
 
-Requires `import _ "net/http/pprof"` (see `samber/cc-skills-golang@golang-troubleshooting` skill for secure setup):
+Requires `import _ "net/http/pprof"` (see `golang-troubleshooting` skill for secure setup):
 
 ```bash
 # CPU profile — captures 30 seconds of CPU samples
@@ -854,7 +854,7 @@ The function calls slow things but does little work itself — it's a coordinato
 
 ### `alloc_objects` high, `inuse_space` low
 
-Short-lived allocations creating GC churn — objects are allocated and freed rapidly, each cheap individually but the aggregate volume triggers frequent GC cycles. Common sources: `fmt.Errorf` in hot paths (allocates every call), interface boxing (`any` arguments), string-to-byte conversions, slice growth without preallocation. → See `samber/cc-skills-golang@golang-performance` skill for allocation reduction patterns.
+Short-lived allocations creating GC churn — objects are allocated and freed rapidly, each cheap individually but the aggregate volume triggers frequent GC cycles. Common sources: `fmt.Errorf` in hot paths (allocates every call), interface boxing (`any` arguments), string-to-byte conversions, slice growth without preallocation. → See `golang-performance` skill for allocation reduction patterns.
 
 ### `inuse_space` growing over time
 
@@ -862,7 +862,7 @@ Memory leak. Take two heap snapshots minutes apart and compare with `-base` (see
 
 ### Mutex/block profile hot
 
-Contention, not CPU — the goroutines are all waiting to acquire the same lock or read from the same channel instead of working. Reduce critical section scope, shard locks across multiple mutexes, or use lock-free structures (`sync/atomic`, `sync.Map` for read-heavy workloads). → See `samber/cc-skills-golang@golang-concurrency` skill.
+Contention, not CPU — the goroutines are all waiting to acquire the same lock or read from the same channel instead of working. Reduce critical section scope, shard locks across multiple mutexes, or use lock-free structures (`sync/atomic`, `sync.Map` for read-heavy workloads). → See `golang-concurrency` skill.
 
 ### Many goroutines blocked on same channel/mutex
 
@@ -870,7 +870,7 @@ Serialization bottleneck — all work funnels through a single point, so the thr
 
 ### `runtime.mallocgc` dominates CPU profile
 
-Allocation rate is the bottleneck, not computation. The Go runtime is spending more time allocating and collecting garbage than running your code. Switch to the `alloc_objects` heap profile to find which functions allocate the most, then → See `samber/cc-skills-golang@golang-performance` skill for reduction patterns.
+Allocation rate is the bottleneck, not computation. The Go runtime is spending more time allocating and collecting garbage than running your code. Switch to the `alloc_objects` heap profile to find which functions allocate the most, then → See `golang-performance` skill for reduction patterns.
 
 ### `runtime.memmove` high in CPU profile
 

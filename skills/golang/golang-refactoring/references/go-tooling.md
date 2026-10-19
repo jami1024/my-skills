@@ -1,6 +1,6 @@
 # Go Tooling for Refactoring
 
-This file is the tool reference for `samber/cc-skills-golang@golang-refactoring`: every mechanical-rewrite tool worth reaching for, from the primary actuator (`gopls`) down to hand-rolled `go/analysis` fixers, ordered so you can pick the least-powerful tool that solves the problem. See [catalog.md](catalog.md) for which tool maps to which Fowler refactoring, and [workflow.md](workflow.md) for how a tool-driven step fits into the staged-PR process.
+This file is the tool reference for `golang-refactoring`: every mechanical-rewrite tool worth reaching for, from the primary actuator (`gopls`) down to hand-rolled `go/analysis` fixers, ordered so you can pick the least-powerful tool that solves the problem. See [catalog.md](catalog.md) for which tool maps to which Fowler refactoring, and [workflow.md](workflow.md) for how a tool-driven step fits into the staged-PR process.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ This file is the tool reference for `samber/cc-skills-golang@golang-refactoring`
 
 - gopls performs most of this skill's Low- and Medium-risk transforms — Rename, Inline, Extract, and the `refactor.rewrite.*` family.
 - See the Risk Stratification table in [SKILL.md](../SKILL.md) and the `Tool:` line on each entry in [catalog.md](catalog.md) for which gopls action maps to which refactoring.
-- The full code-action reference, CLI invocation, safety behavior, and MCP server setup belong to `samber/cc-skills-golang@golang-gopls` — this file covers the tools that skill doesn't.
+- The full code-action reference, CLI invocation, safety behavior, and MCP server setup belong to `golang-gopls` — this file covers the tools that skill doesn't.
 
 ## 2. Bulk Mechanical Rewrite Tools
 
@@ -92,7 +92,7 @@ gopatch -d -p rewrite.patch ./...    # dry-run — show the diff only
 
 ### `go fix` — the `go/analysis`-based fixer suite
 
-- As of Go 1.26, `go fix` is rewritten onto the `go/analysis` framework and has converged with `go vet` — this is where the `modernize` fixer suite lives (`rangeint`, `mapsloop`, `minmax`, `any`, `stringscut`, `omitzero`, and more). Coverage keeps shifting release to release — Go 1.27 added `atomictypes`, `embedlit`, `slicesbackward`, `unsafefuncs`, removed `fmtappendf`, and renamed `waitgroup` to `waitgroupgo`; → See `samber/cc-skills-golang@golang-modernize` skill for the idiom-by-idiom breakdown.
+- As of Go 1.26, `go fix` is rewritten onto the `go/analysis` framework and has converged with `go vet` — this is where the `modernize` fixer suite lives (`rangeint`, `mapsloop`, `minmax`, `any`, `stringscut`, `omitzero`, and more). Coverage keeps shifting release to release — Go 1.27 added `atomictypes`, `embedlit`, `slicesbackward`, `unsafefuncs`, removed `fmtappendf`, and renamed `waitgroup` to `waitgroupgo`; → See `golang-modernize` skill for the idiom-by-idiom breakdown.
 - On an older toolchain without this convergence, run the equivalent analyzers through `singlechecker`/`multichecker -fix` instead of `go fix`.
 - The `//go:fix inline` directive marks a function or constant so that `go fix` inlines every call site into its replacement — a machine-executable way to complete a deprecation migration once the replacement exists:
 

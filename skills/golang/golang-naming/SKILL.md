@@ -19,7 +19,7 @@ paths:
   - "**/*.go"
 ---
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-naming` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-naming` skill takes precedence.
 
 # Go Naming Conventions
 
@@ -154,16 +154,16 @@ For complete rules, examples, and rationale, see:
 | Unnecessary import aliases | Aliases add cognitive load. Only alias on collision — `mrand "math/rand"` |
 | Inconsistent concept names | Using `user`/`account`/`person` for the same concept forces readers to track synonyms — pick one name |
 
-Applying these fixes means renaming existing identifiers — → See `samber/cc-skills-golang@golang-gopls` skill to do it safely: its rename updates every call site across the workspace and refuses a rename that would break interface satisfaction, which a grep/sed or manual Edit-based rename silently misses.
+Applying these fixes means renaming existing identifiers — → See `golang-gopls` skill to do it safely: its rename updates every call site across the workspace and refuses a rename that would break interface satisfaction, which a grep/sed or manual Edit-based rename silently misses.
 
 ## Enforce with Linters
 
-Many naming convention issues are caught automatically by linters: `revive`, `predeclared`, `misspell`, `errname`. See `samber/cc-skills-golang@golang-lint` skill for configuration and usage.
+Many naming convention issues are caught automatically by linters: `revive`, `predeclared`, `misspell`, `errname`. See `golang-lint` skill for configuration and usage.
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-code-style` skill for broader formatting and style decisions
-- → See `samber/cc-skills-golang@golang-structs-interfaces` skill for interface naming depth and receiver design
-- → See `samber/cc-skills-golang@golang-lint` skill for automated enforcement (revive, predeclared, misspell, errname)
-- → See `samber/cc-skills-golang@golang-gopls` skill for safe rename when applying a naming fix
-- → See `samber/cc-skills-golang@golang-refactoring` skill for how to apply a rename safely at scale (gopls Rename/Inline, blast-radius mapping, staged PR workflow) once you've decided what to rename identifiers to
+- → See `golang-code-style` skill for broader formatting and style decisions
+- → See `golang-structs-interfaces` skill for interface naming depth and receiver design
+- → See `golang-lint` skill for automated enforcement (revive, predeclared, misspell, errname)
+- → See `golang-gopls` skill for safe rename when applying a naming fix
+- → See `golang-refactoring` skill for how to apply a rename safely at scale (gopls Rename/Inline, blast-radius mapping, staged PR workflow) once you've decided what to rename identifiers to

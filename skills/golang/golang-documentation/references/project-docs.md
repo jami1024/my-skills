@@ -1,6 +1,6 @@
 # Project Documentation
 
-→ See `samber/cc-skills-golang@golang-continuous-integration` skill for automating changelog generation and release workflows.
+→ See `golang-continuous-integration` skill for automating changelog generation and release workflows.
 
 ## Table of Contents
 

@@ -23,7 +23,7 @@
   - find every reference to the symbols you intend to change
   - walk the call hierarchy in both directions
   - check the package's exported API surface for anything an external module might depend on
-- Workspace symbol search and `gopls codeaction` surface the mechanical options available at each site — its day-to-day mechanics (rename, browsing references, call hierarchy) are owned by the `samber/cc-skills-golang@golang-gopls` skill.
+- Workspace symbol search and `gopls codeaction` surface the mechanical options available at each site — its day-to-day mechanics (rename, browsing references, call hierarchy) are owned by the `golang-gopls` skill.
 
 Once the blast radius is mapped, turn it into a **refactoring inventory** — one row per atomic change, so the whole refactor is visible as a single artifact before any PR exists:
 
@@ -41,7 +41,7 @@ Once the blast radius is mapped, turn it into a **refactoring inventory** — on
 - **Never let one PR carry both letters.** A rename and a bug fix touching the same function are two rows, two PRs, two review postures.
 - The same one-row-one-concern discipline holds even within a single letter:
   - the move and the loop-optimization rows above are both marked S, but they still earn two separate rows and two sequential PRs
-  - a move is verified by gopls plus a green build/test run, while an optimization needs benchmarks (→ See `samber/cc-skills-golang@golang-benchmark` skill) and a closer read for subtle correctness changes
+  - a move is verified by gopls plus a green build/test run, while an optimization needs benchmarks (→ See `golang-benchmark` skill) and a closer read for subtle correctness changes
   - bundling them asks one reviewer to do both jobs at once and denies the move the fast review it earns on its own
   - they also touch the same file, so Ordering (b) below puts them in sequence regardless — never split a move-then-optimize pair across parallel worktrees
 - The inventory is not busywork — it is the object every later ordering decision is computed from, and it is what you show the human for sign-off.
@@ -104,7 +104,7 @@ The shape:
    - Have the sub-agent report back a short result (pass/fail, verification output, PR link) and keep that in the orchestrating session's context — not the sub-agent's full working transcript.
 3. A human reviews and merges each of these small PRs into `refactor/<topic>` at their own pace.
    - Structural PRs should move fast; behavioral PRs get full scrutiny (see Beck ordering above).
-   - For any PR that changes code logic rather than just its shape, load `samber/cc-skills-golang@golang-security` (and `golang-safety` for internal-correctness risk) alongside this skill before approving it, since a logic change can introduce a vulnerability or a bug that a purely mechanical refactor never could.
+   - For any PR that changes code logic rather than just its shape, load `golang-security` (and `golang-safety` for internal-correctness risk) alongside this skill before approving it, since a logic change can introduce a vulnerability or a bug that a purely mechanical refactor never could.
 4. Only once every row in the inventory has landed on `refactor/<topic>` — and the TODO-marker sweep in Step 5 is clean — open the **final PR** merging `refactor/<topic>` into `main`, and open this one **as a draft**: unlike the intermediate PRs, it represents the whole completed transformation and deserves a slower, more deliberate final look before it's marked ready.
 
 **Never merge an intermediate PR directly to `main`.** The refactoring branch is the integration point for the entire duration of the refactor; `main` only ever sees the whole, completed transformation in one final merge. An intermediate PR landing directly on `main` defeats the purpose of staging — it exposes a deliberately incomplete state (aliases still in place, shims not yet removed) to every other branch built off `main` in the meantime.
@@ -168,4 +168,4 @@ Structural-only PRs are reversible and low-risk by construction (Beck's separati
 - [go-tooling.md](go-tooling.md) — gopls code actions, CLI invocation, `gofmt -r`, `eg`, `gopatch`, and `go/analysis` fixers referenced throughout the inventory examples above.
 - [safety-net.md](safety-net.md) — the coverage-adaptive strategy and characterization-testing recipes referenced in the Human Checkpoints section.
 - [structural.md](structural.md) — import-cycle breaking, package-boundary design, and the type-alias gradual-repair mechanism referenced in the inventory example above.
-- → See `samber/cc-skills-golang@golang-security` skill (and `golang-safety`) for reviewing any PR that changes code logic, per Step 3 above.
+- → See `golang-security` skill (and `golang-safety`) for reviewing any PR that changes code logic, per Step 3 above.

@@ -1,6 +1,6 @@
 # Common Go Bugs
 
-→ See `samber/cc-skills-golang@golang-safety` skill for in-depth nil, slice, and map safety patterns.
+→ See `golang-safety` skill for in-depth nil, slice, and map safety patterns.
 
 ## Table of Contents
 

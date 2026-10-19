@@ -28,7 +28,7 @@ paths:
 - **Design mode** (new project, new service, or adding a service to an existing DI setup): assess the existing dependency graph and lifecycle needs; recommend manual injection or a library from the decision table; then generate the wiring code.
 - **Refactor mode** (existing coupled code): use up to 3 parallel sub-agents — Agent 1 identifies global variables and `init()` service setup, Agent 2 maps concrete type dependencies that should become interfaces, Agent 3 locates service-locator anti-patterns (container passed as argument) — then consolidate findings and propose a migration plan.
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-dependency-injection` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-dependency-injection` skill takes precedence.
 
 # Dependency Injection in Go
 
@@ -36,7 +36,7 @@ Dependency injection (DI) means passing dependencies to a component rather than 
 
 This skill is not exhaustive. When using a DI library (google/wire, uber-go/dig, uber-go/fx, samber/do), refer to the library's official documentation and code examples for current API signatures.
 
-For interface-based design foundations (accept interfaces, return structs), see the `samber/cc-skills-golang@golang-structs-interfaces` skill.
+For interface-based design foundations (accept interfaces, return structs), see the `golang-structs-interfaces` skill.
 
 ## Best Practices Summary
 
@@ -251,10 +251,10 @@ This is particularly useful for integration tests where you want most services t
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-samber-do` skill for detailed samber/do usage patterns
-- → See `samber/cc-skills-golang@golang-structs-interfaces` skill for interface design and composition
-- → See `samber/cc-skills-golang@golang-testing` skill for testing with dependency injection
-- → See `samber/cc-skills-golang@golang-project-layout` skill for DI initialization placement
+- → See `golang-samber-do` skill for detailed samber/do usage patterns
+- → See `golang-structs-interfaces` skill for interface design and composition
+- → See `golang-testing` skill for testing with dependency injection
+- → See `golang-project-layout` skill for DI initialization placement
 
 ## References
 

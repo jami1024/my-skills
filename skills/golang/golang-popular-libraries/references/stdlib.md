@@ -6,7 +6,7 @@ The Go standard library continues to evolve with v2 packages and experimental fe
 
 **math/rand/v2** (Go 1.22+) Improved random number generation with better algorithms (ChaCha8, PCG). Auto-seeded, no more rand.Seed() needed.
 
-**encoding/json/v2** (default JSON implementation as of Go 1.27; introduced experimental behind `GOEXPERIMENT=jsonv2` in Go 1.25) Next-generation JSON encoding/decoding, now the default underneath `encoding/json`. Stricter than v1: rejects duplicate object keys and invalid UTF-8. → See `samber/cc-skills-golang@golang-modernize` skill for migration guidance and the `GOEXPERIMENT=nojsonv2` rollback.
+**encoding/json/v2** (default JSON implementation as of Go 1.27; introduced experimental behind `GOEXPERIMENT=jsonv2` in Go 1.25) Next-generation JSON encoding/decoding, now the default underneath `encoding/json`. Stricter than v1: rejects duplicate object keys and invalid UTF-8. → See `golang-modernize` skill for migration guidance and the `GOEXPERIMENT=nojsonv2` rollback.
 
 ## New Packages (Promoted from x/exp)
 

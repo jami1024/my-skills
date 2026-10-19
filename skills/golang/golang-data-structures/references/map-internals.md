@@ -53,7 +53,7 @@ Trade-off: pointer maps add GC pressure. For small structs (< 128 bytes), value 
 | `Keys`, `Values`, `All` (1.23+) | Iterators over keys, values, or pairs |
 | `Collect`, `Insert` (1.23+) | Build maps from iterators or insert entries |
 
-See `samber/cc-skills-golang@golang-safety` skill for `Clone`, `Equal`, and sorted iteration patterns.
+See `golang-safety` skill for `Clone`, `Equal`, and sorted iteration patterns.
 
 ## Map Key Requirements
 

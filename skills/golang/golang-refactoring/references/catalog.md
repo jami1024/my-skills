@@ -83,7 +83,7 @@ Editor-integrated as "Rename Symbol" (F2 in most gopls-backed editors).
 
 - **Risk:** Low — but treat any refusal as a real semantic hazard to investigate, not friction to route around by hand-editing instead.
 
-→ See `samber/cc-skills-golang@golang-naming` skill for what to rename identifiers _to_. This entry covers only _how_ to apply the rename safely at scale.
+→ See `golang-naming` skill for what to rename identifiers _to_. This entry covers only _how_ to apply the rename safely at scale.
 
 ## Change Function Declaration (Signature)
 
@@ -104,7 +104,7 @@ eg -t template.go -w ./...   # staged migration for adding/generalizing a parame
 
 - **Risk:** Medium for a single-parameter add/remove with a handful of call sites; High when the signature changes across many callers with no mechanical one-shot action available.
 
-→ See `samber/cc-skills-golang@golang-design-patterns` skill for converting a long parameter list into an options struct rather than just reordering or trimming it.
+→ See `golang-design-patterns` skill for converting a long parameter list into an options struct rather than just reordering or trimming it.
 
 ## Move Function / Move Field / Move Type
 
@@ -124,7 +124,7 @@ Cross-package moves are the manual type-alias/wrapper sequence above — there i
 
 - **Risk:** High.
 
-→ See `samber/cc-skills-golang@golang-project-layout` skill for target package layout. See [structural.md](structural.md) for the full type-alias gradual-repair recipe.
+→ See `golang-project-layout` skill for target package layout. See [structural.md](structural.md) for the full type-alias gradual-repair recipe.
 
 ## Split Package / Merge Package
 
@@ -141,7 +141,7 @@ gopls codeaction -exec -kind=source.splitPackage file.go   # experimental; split
 
 - **Risk:** High.
 
-→ See `samber/cc-skills-golang@golang-project-layout` skill for target package layout.
+→ See `golang-project-layout` skill for target package layout.
 
 ## Replace Nested Conditional with Guard Clauses
 
@@ -156,7 +156,7 @@ gopls codeaction -exec -kind=refactor.rewrite.invertIf file.go:#offset
 
 - **Risk:** Low.
 
-→ See `samber/cc-skills-golang@golang-code-style` skill for the full early-return style rule this refactor works toward.
+→ See `golang-code-style` skill for the full early-return style rule this refactor works toward.
 
 ## Introduce Parameter Object
 
@@ -166,7 +166,7 @@ gopls codeaction -exec -kind=refactor.rewrite.invertIf file.go:#offset
 - **Tool:** No dedicated gopls action yet (golang/go#65552 tracks it). Combine manual struct extraction with the signature-change tooling above.
 - **Risk:** Medium.
 
-→ See `samber/cc-skills-golang@golang-design-patterns` skill for functional options as the alternative when the struct exists to configure construction rather than to group a plain data clump.
+→ See `golang-design-patterns` skill for functional options as the alternative when the struct exists to configure construction rather than to group a plain data clump.
 
 ## Replace Conditional with Polymorphism
 
@@ -176,7 +176,7 @@ gopls codeaction -exec -kind=refactor.rewrite.invertIf file.go:#offset
 - **Tool:** Manual — no mechanical tool performs this transform; use Extract Function/Interface steps to carve out each case's behavior into its own type, then Rename/Inline to clean up the seams.
 - **Risk:** Medium.
 
-→ See `samber/cc-skills-golang@golang-design-patterns` skill for the target interface-dispatch pattern.
+→ See `golang-design-patterns` skill for the target interface-dispatch pattern.
 
 ## Hide Delegate / Remove Middle Man
 
@@ -229,7 +229,7 @@ Divergent Change and Shotgun Surgery point to opposite fixes even though both ar
 - → See [structural.md](structural.md) for the full type-alias gradual-repair recipe used by Move Function/Field/Type, and for breaking import cycles ahead of a package split or merge.
 - → See [safety-net.md](safety-net.md) for the coverage-adaptive strategy that determines when Sprout/Wrap Method should replace an in-place edit.
 - → See [go-tooling.md](go-tooling.md) for the full gopls code-action reference, `gofmt -r`, `eg`, and `gopatch` invocation details.
-- → See `samber/cc-skills-golang@golang-naming` skill for what to rename identifiers _to_.
-- → See `samber/cc-skills-golang@golang-project-layout` skill for target package/directory layout.
-- → See `samber/cc-skills-golang@golang-design-patterns` skill for options structs, consumer-side interfaces, and interface-dispatch patterns referenced throughout this catalog.
-- → See `samber/cc-skills-golang@golang-code-style` skill for the guard-clause/early-return style rule.
+- → See `golang-naming` skill for what to rename identifiers _to_.
+- → See `golang-project-layout` skill for target package/directory layout.
+- → See `golang-design-patterns` skill for options structs, consumer-side interfaces, and interface-dispatch patterns referenced throughout this catalog.
+- → See `golang-code-style` skill for the guard-clause/early-return style rule.

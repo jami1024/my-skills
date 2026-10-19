@@ -48,6 +48,13 @@
     "golang-uber-fx": "Use uber/fx Go application wiring and lifecycle hooks. Use when Fx is adopted or explicitly requested; preserve startup, shutdown and cleanup semantics."
   },
   "replacements": {
+    "golang-gopls/SKILL.md": [
+      {
+        "id": "link-settings-reference",
+        "old": "## Capability → CLI → MCP → native LSP",
+        "new": "## Settings and configuration\n\nPut project-level `gopls` settings (build, formatting, diagnostics, inlay hints) in the LSP client's `initializationOptions` — `gopls` does not read a workspace `gopls.json`. Full list: [references/settings.md](references/settings.md).\n\n## Capability → CLI → MCP → native LSP"
+      }
+    ],
     "golang-documentation/references/project-docs.md": [
       {
         "old": "](./templates/",
@@ -157,6 +164,17 @@
       }
     ]
   },
+  "global_patterns": [
+    {
+      "id": "localize-upstream-skill-identifiers",
+      "paths": [
+        "*/SKILL.md",
+        "*/references/*.md"
+      ],
+      "pattern": "samber/cc-skills-golang@(?=golang-)",
+      "replace": ""
+    }
+  ],
   "assertion_fixes": {
     "golang-project-layout/evals/evals.json": [
       {

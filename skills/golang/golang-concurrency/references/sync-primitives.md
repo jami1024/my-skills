@@ -339,4 +339,4 @@ return g.Wait()
 
 This replaces hand-rolled worker pools for most use cases.
 
-→ See `samber/cc-skills-golang@golang-concurrency` skill for high-level patterns and decision trees.
+→ See `golang-concurrency` skill for high-level patterns and decision trees.

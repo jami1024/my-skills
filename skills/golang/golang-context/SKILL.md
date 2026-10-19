@@ -19,7 +19,7 @@ paths:
   - "**/*.go"
 ---
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-context` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-context` skill takes precedence.
 
 # Go context.Context Best Practices
 
@@ -74,11 +74,11 @@ func (s *OrderService) Create(ctx context.Context, order Order) error {
 
 ## Cross-References
 
-- → See the `samber/cc-skills-golang@golang-concurrency` skill for goroutine cancellation patterns using context
-- → See the `samber/cc-skills-golang@golang-database` skill for context-aware database operations (QueryContext, ExecContext)
-- → See the `samber/cc-skills-golang@golang-observability` skill for trace context propagation with OpenTelemetry
-- → See the `samber/cc-skills-golang@golang-design-patterns` skill for timeout and resilience patterns
+- → See the `golang-concurrency` skill for goroutine cancellation patterns using context
+- → See the `golang-database` skill for context-aware database operations (QueryContext, ExecContext)
+- → See the `golang-observability` skill for trace context propagation with OpenTelemetry
+- → See the `golang-design-patterns` skill for timeout and resilience patterns
 
 ## Enforce with Linters
 
-Many context pitfalls are caught automatically by linters: `govet`, `staticcheck`. → See the `samber/cc-skills-golang@golang-lint` skill for configuration and usage.
+Many context pitfalls are caught automatically by linters: `govet`, `staticcheck`. → See the `golang-lint` skill for configuration and usage.

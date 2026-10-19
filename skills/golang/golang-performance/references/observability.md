@@ -17,7 +17,7 @@ Third-party monitoring tools complement local profiling (pprof, benchmarks) by p
 
 **Setup:** `github.com/prometheus/client_golang` — expose `/metrics` endpoint with `promhttp.Handler()`. Default collectors automatically export Go runtime metrics (`go_goroutines`, `go_memstats_*`, `go_gc_duration_seconds`, `process_cpu_seconds_total`, etc.).
 
-→ See `samber/cc-skills-golang@golang-benchmark` skill (investigation-session.md) for the full runtime metrics table, investigation session setup (scrape interval tuning, env-var toggling), and cost warnings for profiling tools.
+→ See `golang-benchmark` skill (investigation-session.md) for the full runtime metrics table, investigation session setup (scrape interval tuning, env-var toggling), and cost warnings for profiling tools.
 
 ### PromQL Queries for Performance Diagnosis
 
@@ -66,7 +66,7 @@ Third-party monitoring tools complement local profiling (pprof, benchmarks) by p
 
 ### Grafana Dashboards
 
-→ See `samber/cc-skills-golang@golang-observability` skill for recommended community Grafana dashboards that visualize Go runtime metrics out of the box.
+→ See `golang-observability` skill for recommended community Grafana dashboards that visualize Go runtime metrics out of the box.
 
 ## Continuous Profiling
 

@@ -35,8 +35,8 @@ Go 1.18+ library providing type-safe monadic types with zero dependencies. Inspi
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ```bash
@@ -274,8 +274,8 @@ If you encounter a bug or unexpected behavior in samber/mo, open an issue at <ht
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-samber-lo` skill for functional collection transforms (Map, Filter, Reduce on slices) that compose with mo types
-- → See `samber/cc-skills-golang@golang-error-handling` skill for idiomatic Go error handling patterns
-- → See `samber/cc-skills-golang@golang-safety` skill for nil-safety and defensive Go coding
-- → See `samber/cc-skills-golang@golang-database` skill for database access patterns
-- → See `samber/cc-skills-golang@golang-design-patterns` skill for functional options and other Go patterns
+- → See `golang-samber-lo` skill for functional collection transforms (Map, Filter, Reduce on slices) that compose with mo types
+- → See `golang-error-handling` skill for idiomatic Go error handling patterns
+- → See `golang-safety` skill for nil-safety and defensive Go coding
+- → See `golang-database` skill for database access patterns
+- → See `golang-design-patterns` skill for functional options and other Go patterns

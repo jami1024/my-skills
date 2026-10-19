@@ -31,17 +31,17 @@ This workflow writes two independent things to the project's agent-config file(s
 
 ## Always-load directive
 
-Every Go project should carry a one-line directive telling the coding agent to load the `samber/cc-skills-golang@golang-how-to` orchestrator skill before starting Go work, so it in turn routes to whichever other Go skills the task actually needs. Unlike the `## Required Go skills` block below, this directive needs no user confirmation: it costs one skill description (~100 tokens) and is never wrong, since `golang-how-to` only routes to other skills — it does not impose project-specific choices.
+Every Go project should carry a one-line directive telling the coding agent to load the `golang-how-to` orchestrator skill before starting Go work, so it in turn routes to whichever other Go skills the task actually needs. Unlike the `## Required Go skills` block below, this directive needs no user confirmation: it costs one skill description (~100 tokens) and is never wrong, since `golang-how-to` only routes to other skills — it does not impose project-specific choices.
 
 ### Template
 
 ```markdown
-Before any Go coding, review, debugging, troubleshooting, or setup task, load the `samber/cc-skills-golang@golang-how-to` skill first — it routes to whichever other Go skills the task needs.
+Before any Go coding, review, debugging, troubleshooting, or setup task, load the `golang-how-to` skill first — it routes to whichever other Go skills the task needs.
 ```
 
 ### When it gets written
 
-- **At project creation** — the `samber/cc-skills-golang@golang-project-layout` skill writes this directive automatically as part of its Initialization Checklist, without asking the user.
+- **At project creation** — the `golang-project-layout` skill writes this directive automatically as part of its Initialization Checklist, without asking the user.
 - **On demand** — running `/golang-how-to configure` writes it too (if missing), in addition to any `## Required Go skills` block confirmed in Step 3 below.
 
 ### Insertion point
@@ -54,7 +54,7 @@ Before any Go coding, review, debugging, troubleshooting, or setup task, load th
 Grep for the exact sentence before writing:
 
 ```bash
-grep -n 'load the `samber/cc-skills-golang@golang-how-to` skill first' CLAUDE.md
+grep -n 'load the `golang-how-to` skill first' CLAUDE.md
 ```
 
 Skip writing if already present.
@@ -78,7 +78,7 @@ Check which of these exist at the project root. If multiple exist, write to all 
 For the markdown files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`), grep each one for the always-load directive and an existing `## Required Go skills` block before writing:
 
 ```bash
-grep -n 'load the `samber/cc-skills-golang@golang-how-to` skill first' CLAUDE.md
+grep -n 'load the `golang-how-to` skill first' CLAUDE.md
 grep -n "## Required Go skills" CLAUDE.md
 ```
 
@@ -122,15 +122,15 @@ Additional skills to suggest based on codebase context:
 Template:
 
 ```markdown
-Before any Go coding, review, debugging, troubleshooting, or setup task, load the `samber/cc-skills-golang@golang-how-to` skill first — it routes to whichever other Go skills the task needs.
+Before any Go coding, review, debugging, troubleshooting, or setup task, load the `golang-how-to` skill first — it routes to whichever other Go skills the task needs.
 
 ## Required Go skills
 
 The following Go skills from `samber/cc-skills-golang` MUST always be applied when working on this project. Load them at the start of every Go-related task, regardless of whether the user explicitly mentions them.
 
-- `samber/cc-skills-golang@golang-error-handling`
-- `samber/cc-skills-golang@golang-security`
-- `samber/cc-skills-golang@golang-testing`
+- `golang-error-handling`
+- `golang-security`
+- `golang-testing`
 ```
 
 Replace the skill list with the confirmed set from Step 3. Use the fully-qualified `samber/cc-skills-golang@<name>` identifier for each skill. If Step 2 found the always-load directive already present elsewhere in the file, don't duplicate it — write only the `## Required Go skills` block.
@@ -161,12 +161,12 @@ After writing, summarize:
 
 ## Notes on company overrides (⚙️ skills)
 
-Skills marked ⚙️ in the README support company overrides. If the project has a company skill that supersedes a community default (e.g., `acme/cc-skills@golang-error-handling-acme` supersedes `samber/cc-skills-golang@golang-error-handling`), use the company skill FQN in the block instead — do NOT list both.
+Skills marked ⚙️ in the README support company overrides. If the project has a company skill that supersedes a community default (e.g., `acme/cc-skills@golang-error-handling-acme` supersedes `golang-error-handling`), use the company skill FQN in the block instead — do NOT list both.
 
 To declare an override in a company skill body, add near the top:
 
 ```
-> This skill supersedes `samber/cc-skills-golang@golang-error-handling` for [Company] projects.
+> This skill supersedes `golang-error-handling` for [Company] projects.
 ```
 
 Overridable skills: `golang-code-style`, `golang-concurrency`, `golang-context`, `golang-database`, `golang-dependency-injection`, `golang-design-patterns`, `golang-documentation`, `golang-error-handling`, `golang-naming`, `golang-observability`, `golang-structs-interfaces`, `golang-testing`.

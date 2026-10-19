@@ -33,8 +33,8 @@ Reflection-based DI toolkit, designed to power application frameworks (it is the
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ```bash
@@ -58,7 +58,7 @@ What fx adds on top of dig:
 
 **Choose dig** when you need the wiring graph only: CLI tools, libraries exposing a container to callers, test harnesses, or embedding DI into an existing app that manages its own lifecycle.
 
-**Choose fx** for long-running services (HTTP servers, workers, daemons) — lifecycle and signal handling are non-negotiable there. See `samber/cc-skills-golang@golang-uber-fx` skill.
+**Choose fx** for long-running services (HTTP servers, workers, daemons) — lifecycle and signal handling are non-negotiable there. See `golang-uber-fx` skill.
 
 ## Container
 
@@ -186,7 +186,7 @@ func main() {
 func must(err error) { if err != nil { panic(err) } }
 ```
 
-dig has **no built-in lifecycle**. If you need OnStart/OnStop hooks, signal handling, and graceful shutdown, use fx — see `samber/cc-skills-golang@golang-uber-fx` skill.
+dig has **no built-in lifecycle**. If you need OnStart/OnStop hooks, signal handling, and graceful shutdown, use fx — see `golang-uber-fx` skill.
 
 For Decorate, Scopes, optional deps, error helpers, and Visualize, see [advanced.md](./references/advanced.md).
 
@@ -221,11 +221,11 @@ dig containers are cheap — build a fresh one per test, override providers with
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-uber-fx` skill for application lifecycle, modules, and signal-aware Run() built on top of dig
-- → See `samber/cc-skills-golang@golang-dependency-injection` skill for DI concepts and library comparison
-- → See `samber/cc-skills-golang@golang-samber-do` skill for a generics-based alternative without reflection
-- → See `samber/cc-skills-golang@golang-google-wire` skill for compile-time DI (no runtime container)
-- → See `samber/cc-skills-golang@golang-structs-interfaces` skill for interface design patterns
-- → See `samber/cc-skills-golang@golang-testing` skill for general testing patterns
+- → See `golang-uber-fx` skill for application lifecycle, modules, and signal-aware Run() built on top of dig
+- → See `golang-dependency-injection` skill for DI concepts and library comparison
+- → See `golang-samber-do` skill for a generics-based alternative without reflection
+- → See `golang-google-wire` skill for compile-time DI (no runtime container)
+- → See `golang-structs-interfaces` skill for interface design patterns
+- → See `golang-testing` skill for general testing patterns
 
 If you encounter a bug or unexpected behavior in uber-go/dig, open an issue at <https://github.com/uber-go/dig/issues>.

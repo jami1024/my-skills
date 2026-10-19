@@ -149,7 +149,7 @@ Go runtime metrics alone don't show the full picture. Host-level metrics reveal 
 **Profiles and traces are expensive to collect.** Keep them short-term and localized:
 
 - **pprof CPU profiling** — CPU-intensive during the capture window. Don't run 30s profiles back-to-back in production. Space them out.
-- **Pyroscope continuous profiling** — ~2-5% CPU overhead **per instance, always-on**. At scale (hundreds of instances), this adds up in compute cost and backend storage. Enable on a subset of instances or on-demand via environment variable. → See `samber/cc-skills-golang@golang-observability` skill for Pyroscope setup.
+- **Pyroscope continuous profiling** — ~2-5% CPU overhead **per instance, always-on**. At scale (hundreds of instances), this adds up in compute cost and backend storage. Enable on a subset of instances or on-demand via environment variable. → See `golang-observability` skill for Pyroscope setup.
 - **Execution traces** — generate large files quickly (MB/s). Capture 5-10s max. Longer traces are unwieldy and slow to analyze.
 - **Debug log level** — significant throughput impact due to allocation and I/O overhead. Never leave on permanently.
 - **All costly features** SHOULD be toggleable via environment variables for instant on/off without recompile. Design for this from day one.

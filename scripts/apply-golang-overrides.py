@@ -22,6 +22,39 @@ def merge_text_fixes(
     return merged
 
 
+def plan_global_patterns(
+    root: Path, specs: list[dict], texts: dict[Path, str]
+) -> dict[Path, str]:
+    """对全库 Markdown 应用正则替换，例如把上游 skill 标识符改成当前注册名。
+
+    必须在逐文件补丁之后执行：补丁的 `old` 文本抄自上游原文，先替换会失配。
+    正则替换天然幂等（已替换过的文本不再匹配），因此无需 `new` 存在性检查。
+    """
+    planned: dict[Path, str] = dict(texts)
+    for spec in specs:
+        label = spec.get("id", "global pattern")
+        try:
+            pattern = re.compile(spec["pattern"])
+        except (KeyError, re.error) as exc:
+            raise ValueError(f"{label}: invalid global pattern: {exc}") from exc
+        replacement = spec.get("replace", "")
+        for glob in spec.get("paths", []):
+            # 清单是本地可信文件，但仍拒绝越出 skill 根目录的写法，
+            # 避免后续编辑清单时误改仓库其他位置。
+            if Path(glob).is_absolute() or ".." in Path(glob).parts:
+                raise ValueError(f"{label}: paths must stay inside the skill root: {glob}")
+            for path in sorted(root.glob(glob)):
+                if not path.is_file():
+                    continue
+                current = planned.get(path)
+                if current is None:
+                    current = path.read_text(encoding="utf-8")
+                updated = pattern.sub(replacement, current)
+                if updated != current:
+                    planned[path] = updated
+    return planned
+
+
 def plan_local_cases(
     root: Path, local_cases: dict[str, list[dict]], texts: dict[Path, str]
 ) -> dict[Path, str]:
@@ -93,10 +126,15 @@ def apply_overrides(root: Path, manifest: Path = MANIFEST) -> int:
             if count != 1:
                 raise ValueError(f"{relative}: missing inline description")
         for number, patch in enumerate(text_fixes.get(relative, []), 1):
-            if patch["old"] in text:
-                text = text.replace(patch["old"], patch["new"])
-            elif patch["new"] not in text:
-                label = patch.get("id", f"local patch {number}")
+            old, new = patch["old"], patch["new"]
+            label = patch.get("id", f"local patch {number}")
+            # 追加型补丁的 new 包含 old，第二次重放时 old 仍会命中。new 足够长时
+            # 先判定已应用，否则按原逻辑先匹配 old，失配则报错。
+            if len(new) >= 40 and new in text:
+                continue
+            if old in text:
+                text = text.replace(old, new)
+            elif new not in text:
                 raise ValueError(
                     f"{relative}: {label} no longer matches upstream; "
                     "review golang-overrides.json before syncing"
@@ -104,11 +142,18 @@ def apply_overrides(root: Path, manifest: Path = MANIFEST) -> int:
         if text != original:
             updates[path] = text
 
+    updates = plan_global_patterns(root, overrides.get("global_patterns", []), updates)
+
     # 所有失配与结构问题在写入前报错，避免半完成状态；本地用例也先规划后写。
     case_updates = plan_local_cases(root, overrides.get("local_cases", {}), updates)
-    for path, text in {**updates, **case_updates}.items():
+    writes = {
+        path: text
+        for path, text in {**updates, **case_updates}.items()
+        if not path.is_file() or text != path.read_text(encoding="utf-8")
+    }
+    for path, text in writes.items():
         path.write_text(text, encoding="utf-8")
-    return len(set(updates) | set(case_updates))
+    return len(writes)
 
 
 def main() -> None:

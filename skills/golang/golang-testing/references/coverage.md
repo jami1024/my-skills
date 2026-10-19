@@ -45,4 +45,4 @@ go test -cover ./internal/store
 - **Generated code inflates the number.** Exclude it before setting any threshold, otherwise the metric measures the generator.
 - **A covered line is not an asserted line.** A test that calls a function and ignores its result reports 100% coverage and verifies nothing.
 
-→ See `samber/cc-skills-golang@golang-continuous-integration` skill for wiring coverage reporting into CI.
+→ See `golang-continuous-integration` skill for wiring coverage reporting into CI.

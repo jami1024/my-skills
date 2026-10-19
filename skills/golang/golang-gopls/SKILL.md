@@ -28,7 +28,7 @@ paths:
 
 **Dependencies:** `gopls` — `go install golang.org/x/tools/gopls@latest` (v0.20+). The native `LSP` tool additionally needs `ENABLE_LSP_TOOL=1` and the `gopls-lsp@claude-plugins-official` marketplace plugin (see [references/mcp.md](references/mcp.md)).
 
-`gopls` is the official Go language server. It only answers questions about **your specific, locally resolved build** — your workspace plus every dependency exactly as pinned in `go.sum`, including `replace` directives. For a package that isn't part of that build (versions, docs, licenses, CVEs of something you haven't added yet), → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`) instead.
+`gopls` is the official Go language server. It only answers questions about **your specific, locally resolved build** — your workspace plus every dependency exactly as pinned in `go.sum`, including `replace` directives. For a package that isn't part of that build (versions, docs, licenses, CVEs of something you haven't added yet), → See `golang-pkg-go-dev` skill (`godig`) instead.
 
 ## Three ways to reach gopls
 
@@ -39,6 +39,10 @@ Not interchangeable — pick by what you already know and what you need back:
 - **The `gopls` CLI** — same engine, invoked as `gopls <command> <file:line:col>`. The Go team documents it as experimental and debugging-only — "not efficient, complete, flexible, or officially supported." Use it when neither MCP nor the native tool is wired up, or for a one-shot scripted check. Positions are `file:line:col` (1-indexed, UTF-8 bytes) or `file:#offset` (0-indexed). See [references/cli.md](references/cli.md).
 
 **Preference order: MCP → native `LSP` → CLI.** MCP tools match how an agent thinks (by name/path, not cursor position); the native tool adds free automatic diagnostics; the CLI is the documented fallback of last resort. Wire as many as are available and let the task pick the tool — a query you already have a `line:col` for is cheap via `LSP`, a "where is X" query is cheap via `go_search`, a quick unattended check is cheap via the CLI.
+
+## Settings and configuration
+
+Put project-level `gopls` settings (build, formatting, diagnostics, inlay hints) in the LSP client's `initializationOptions` — `gopls` does not read a workspace `gopls.json`. Full list: [references/settings.md](references/settings.md).
 
 ## Capability → CLI → MCP → native LSP
 
@@ -87,8 +91,8 @@ These Read/Edit workflows encode the order that avoids redundant queries and hal
 
 `gopls` only reasons about code present and resolvable in the local build:
 
-- For anything not tied to that build (version history, license, ecosystem-wide importers, CVEs of a package not yet added) → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`) — it queries pkg.go.dev directly, no local checkout needed.
-- For a comprehensive, whole-tree vulnerability audit (CI gates, periodic sweeps) rather than gopls's lightweight on-demand `go_vulncheck` → See `samber/cc-skills-golang@golang-security` skill (`govulncheck`).
+- For anything not tied to that build (version history, license, ecosystem-wide importers, CVEs of a package not yet added) → See `golang-pkg-go-dev` skill (`godig`) — it queries pkg.go.dev directly, no local checkout needed.
+- For a comprehensive, whole-tree vulnerability audit (CI gates, periodic sweeps) rather than gopls's lightweight on-demand `go_vulncheck` → See `golang-security` skill (`govulncheck`).
 - Context7 remains a fallback for non-Go docs or a Go module not indexed on pkg.go.dev.
 
-The full task-to-tool matrix lives in the `samber/cc-skills-golang@golang-how-to` skill's "`godig` vs gopls vs Context7 vs govulncheck" section.
+The full task-to-tool matrix lives in the `golang-how-to` skill's "`godig` vs gopls vs Context7 vs govulncheck" section.

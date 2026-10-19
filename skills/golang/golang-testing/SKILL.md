@@ -36,7 +36,7 @@ paths:
 - **Audit mode** — auditing an existing test suite for gaps, flakiness, or bad patterns (order-dependent tests, missing `t.Parallel()`, implementation-detail coupling). Launch up to 3 parallel sub-agents split by concern: (1) unit test quality and coverage gaps, (2) integration test isolation and build tags, (3) goroutine leaks and race conditions.
 - **Debug mode** — a test is failing or flaky. Work sequentially: reproduce reliably, isolate the failing assertion, trace the root cause in production code or test setup.
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-testing` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-testing` skill takes precedence.
 
 **Dependencies:**
 
@@ -264,7 +264,7 @@ Write benchmarks as sub-benchmarks (`b.Run` per variant) so each variant gets it
 
 → See [Benchmarks in a Test Suite](./references/benchmarks.md) for the code shape and size-parameterized examples.
 
-→ See `samber/cc-skills-golang@golang-benchmark` skill for measurement methodology: `benchstat`, profiling from benchmarks, and CI regression detection.
+→ See `golang-benchmark` skill for measurement methodology: `benchstat`, profiling from benchmarks, and CI regression detection.
 
 ## Go 1.26+: test artifacts
 
@@ -383,16 +383,16 @@ For mock patterns, test fixtures, and time mocking, see [Mocking](./references/m
 
 ## Enforce with Linters
 
-Many test best practices are enforced automatically by linters: `thelper`, `paralleltest`, `testifylint`. See the `samber/cc-skills-golang@golang-lint` skill for configuration and usage.
+Many test best practices are enforced automatically by linters: `thelper`, `paralleltest`, `testifylint`. See the `golang-lint` skill for configuration and usage.
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-stretchr-testify` skill for detailed testify API (assert, require, mock, suite)
-- → See `samber/cc-skills-golang@golang-database` skill (testing.md) for database integration test patterns
-- → See `samber/cc-skills-golang@golang-concurrency` skill for goroutine leak detection with goleak
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for CI test configuration and GitHub Actions workflows
-- → See `samber/cc-skills-golang@golang-lint` skill for testifylint and paralleltest configuration
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines
+- → See `golang-stretchr-testify` skill for detailed testify API (assert, require, mock, suite)
+- → See `golang-database` skill (testing.md) for database integration test patterns
+- → See `golang-concurrency` skill for goroutine leak detection with goleak
+- → See `golang-continuous-integration` skill for CI test configuration and GitHub Actions workflows
+- → See `golang-lint` skill for testifylint and paralleltest configuration
+- → See `golang-continuous-integration` skill for automated AI-driven code review in CI using these guidelines
 
 ## Quick Reference
 

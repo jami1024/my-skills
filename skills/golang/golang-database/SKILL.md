@@ -26,7 +26,7 @@ paths:
 - **Write mode** — generating new repository functions, query helpers, or transaction wrappers: follow the skill's sequential instructions; launch a background agent to grep for existing query patterns and naming conventions in the codebase before generating new code.
 - **Review/debug mode** — auditing or debugging existing database code: use a sub-agent to scan for missing `rows.Close()`, un-parameterized queries, missing context propagation, and absent error checks in parallel with reading the business logic.
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-database` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-database` skill takes precedence.
 
 # Go Database Best Practices
 
@@ -105,7 +105,7 @@ if !allowed[sortCol] {
 query := fmt.Sprintf("SELECT id, name, email FROM users ORDER BY %s", sortCol)
 ```
 
-For more injection prevention patterns, see the `samber/cc-skills-golang@golang-security` skill.
+For more injection prevention patterns, see the `golang-security` skill.
 
 ## Struct Scanning and NULLable Columns
 
@@ -186,7 +186,7 @@ db.Query("SELECT ...")
 db.QueryContext(ctx, "SELECT ...")
 ```
 
-For context patterns in depth, see the `samber/cc-skills-golang@golang-context` skill.
+For context patterns in depth, see the `golang-context` skill.
 
 ## Transactions, Isolation Levels, and Locking
 
@@ -232,10 +232,10 @@ Do not rely on triggers, views, materialized views, stored procedures, or row-le
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-security` skill for SQL injection prevention patterns
-- → See `samber/cc-skills-golang@golang-context` skill for context propagation to database operations
-- → See `samber/cc-skills-golang@golang-error-handling` skill for database error wrapping patterns
-- → See `samber/cc-skills-golang@golang-testing` skill for database integration test patterns
+- → See `golang-security` skill for SQL injection prevention patterns
+- → See `golang-context` skill for context propagation to database operations
+- → See `golang-error-handling` skill for database error wrapping patterns
+- → See `golang-testing` skill for database integration test patterns
 
 ## References
 

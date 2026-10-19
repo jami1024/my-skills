@@ -40,7 +40,7 @@ Before proposing a dependency, evaluate:
 - Are there well-known alternatives?
 - What it does and why it's needed?
 
-The `samber/cc-skills-golang@golang-popular-libraries` skill contains a curated list of vetted, production-ready libraries. Prefer recommending packages from that list. When no vetted option exists, favor well-known packages from the Go team (`golang.org/x/...`) or established organizations over obscure alternatives.
+The `golang-popular-libraries` skill contains a curated list of vetted, production-ready libraries. Prefer recommending packages from that list. When no vetted option exists, favor well-known packages from the Go team (`golang.org/x/...`) or established organizations over obscure alternatives.
 
 ## Key Rules
 
@@ -78,7 +78,7 @@ go get github.com/google/uuid@latest   # Explicitly latest
 go get github.com/google/uuid@<commit> # Specific commit (pseudo-version)
 ```
 
-Before pinning a version, inspect the module's available versions, importers, and known vulnerabilities on pkg.go.dev → See `samber/cc-skills-golang@golang-pkg-go-dev` skill.
+Before pinning a version, inspect the module's available versions, importers, and known vulnerabilities on pkg.go.dev → See `golang-pkg-go-dev` skill.
 
 ### Upgrading
 
@@ -188,9 +188,9 @@ For future Go versions, use the project's intended target version. Do not use AP
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for Dependabot/Renovate CI setup
-- → See `samber/cc-skills-golang@golang-security` skill for vulnerability scanning with govulncheck
-- → See `samber/cc-skills-golang@golang-popular-libraries` skill for vetted library recommendations
+- → See `golang-continuous-integration` skill for Dependabot/Renovate CI setup
+- → See `golang-security` skill for vulnerability scanning with govulncheck
+- → See `golang-popular-libraries` skill for vetted library recommendations
 
 ## Quick Reference
 

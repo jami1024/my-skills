@@ -94,7 +94,7 @@ func safeHandler(next http.Handler) http.Handler {
 }
 ```
 
-For structured panic recovery with `samber/oops`, see the `samber/cc-skills-golang@golang-samber-oops` skill.
+For structured panic recovery with `samber/oops`, see the `golang-samber-oops` skill.
 
 ## Why Use `samber/oops`
 
@@ -135,4 +135,4 @@ When this error is logged, you get the stack trace, user ID, order ID, domain, e
 
 ## Logging Errors with `slog`
 
-→ See `samber/cc-skills-golang@golang-observability` skill for comprehensive structured logging guidance, including `slog` setup, log levels, log handlers, HTTP middleware, and cost considerations.
+→ See `golang-observability` skill for comprehensive structured logging guidance, including `slog` setup, log levels, log handlers, HTTP middleware, and cost considerations.

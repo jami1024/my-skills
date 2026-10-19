@@ -33,8 +33,8 @@ Viper resolves configuration values from multiple sources in a fixed precedence 
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ```bash
@@ -49,7 +49,7 @@ Cobra owns the command tree — subcommands, flags, arg validation, completions.
 - **Viper alone** — config-file daemons.
 - **Both** — bind flags at `PersistentPreRunE` via `BindPFlag`.
 
-→ See `samber/cc-skills-golang@golang-spf13-cobra` for the cobra side of this integration.
+→ See `golang-spf13-cobra` for the cobra side of this integration.
 
 ## The precedence pipeline
 
@@ -183,8 +183,8 @@ For `t.Setenv` interactions and `Reset()` limitations, see [testing-and-isolatio
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-cli` skill for general CLI architecture — project layout, exit codes, signal handling, cobra+viper integration
-- → See `samber/cc-skills-golang@golang-spf13-cobra` skill for the cobra side of this integration (flag definition and binding)
-- → See `samber/cc-skills-golang@golang-testing` skill for general Go testing patterns
+- → See `golang-cli` skill for general CLI architecture — project layout, exit codes, signal handling, cobra+viper integration
+- → See `golang-spf13-cobra` skill for the cobra side of this integration (flag definition and binding)
+- → See `golang-testing` skill for general Go testing patterns
 
 If you encounter a bug or unexpected behavior in spf13/viper, open an issue at <https://github.com/spf13/viper/issues>.

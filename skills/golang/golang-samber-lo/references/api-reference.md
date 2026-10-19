@@ -2,7 +2,7 @@
 
 Complete function catalog for `samber/lo` organized by domain.
 
-For up-to-date signatures, use `godig symbol doc github.com/samber/lo <Symbol>` (→ `samber/cc-skills-golang@golang-pkg-go-dev`) or check [pkg.go.dev/github.com/samber/lo](https://pkg.go.dev/github.com/samber/lo). Context7 is a fallback if a symbol is not indexed there.
+For up-to-date signatures, use `godig symbol doc github.com/samber/lo <Symbol>` (→ `golang-pkg-go-dev`) or check [pkg.go.dev/github.com/samber/lo](https://pkg.go.dev/github.com/samber/lo). Context7 is a fallback if a symbol is not indexed there.
 
 ## Table of Contents
 

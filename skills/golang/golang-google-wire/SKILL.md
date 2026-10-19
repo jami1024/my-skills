@@ -40,8 +40,8 @@ Note: `google/wire` was archived in August 2025 (feature-complete; bug fixes sti
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ```bash
@@ -59,7 +59,7 @@ go get github.com/google/wire
 | Lifecycle hooks   | Not built in              | fx: OnStart/OnStop     |
 | Generated files   | `wire_gen.go` (committed) | None                   |
 
-For lifecycle, lazy loading, and a full matrix see `samber/cc-skills-golang@golang-dependency-injection`.
+For lifecycle, lazy loading, and a full matrix see `golang-dependency-injection`.
 
 ## Providers
 
@@ -225,11 +225,11 @@ Wire generates plain Go constructors, so unit tests use manual injection — no 
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-dependency-injection` skill for DI concepts and library comparison
-- → See `samber/cc-skills-golang@golang-uber-dig` skill for runtime reflection-based DI without lifecycle
-- → See `samber/cc-skills-golang@golang-uber-fx` skill for runtime DI with lifecycle hooks, modules, and signal-aware Run()
-- → See `samber/cc-skills-golang@golang-samber-do` skill for generics-based DI without reflection
-- → See `samber/cc-skills-golang@golang-structs-interfaces` skill for interface design patterns
-- → See `samber/cc-skills-golang@golang-testing` skill for general testing patterns
+- → See `golang-dependency-injection` skill for DI concepts and library comparison
+- → See `golang-uber-dig` skill for runtime reflection-based DI without lifecycle
+- → See `golang-uber-fx` skill for runtime DI with lifecycle hooks, modules, and signal-aware Run()
+- → See `golang-samber-do` skill for generics-based DI without reflection
+- → See `golang-structs-interfaces` skill for interface design patterns
+- → See `golang-testing` skill for general testing patterns
 
 If you encounter a bug or unexpected behavior in google/wire, open an issue at <https://github.com/google/wire/issues>.

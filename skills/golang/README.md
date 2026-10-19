@@ -29,7 +29,7 @@
 
 ## 加载方式
 
-- **pi**：在 `~/.pi/agent/settings.json` 的 `skills` 里指向本目录。46 条精简 description 合计 7295 字符，约为原 27896 字符的 26%；正文按需读取。实测注册本目录在 system prompt 里占 4253 tokens，见[上下文开销实测](../../docs/evals/golang-context-cost.md)。
+- **pi**：在 `~/.pi/agent/settings.json` 的 `skills` 里指向本目录。46 条精简 description 合计 7295 字符，约为原 27896 字符的 26%；正文按需读取。实测注册本目录在 system prompt 里占 4253 tokens，见[上下文开销实测](../../docs/evals/golang-context-cost.md)。pi 遵循 Agent Skills 规范，只读取 `name`、`description`、`license`、`compatibility`、`metadata`、`allowed-tools`；`paths` 与 `user-invocable` 是 Cursor/Claude 侧扩展字段，pi 会忽略。
 - **Claude Code**：本仓库作为项目打开时 `.claude/skills` 指向 `skills/`，递归覆盖本目录。
 - **Cursor**：`rules/golang-always.mdc` 是上游给出的常驻路由规则，需要时复制为项目的 `.cursor/rules/golang-always.mdc`。
 
@@ -64,10 +64,13 @@
 [`apply-golang-overrides.py`](../../scripts/apply-golang-overrides.py) 读取清单，先确认所有正文补丁可匹配，再写入修改。可重复执行，已修正文本不会重复改写：
 
 - 精简 46 条 description，保留任务触发与相邻主题边界，库 skill 仅在已采用或明确要求该库时适用；
+- 通过清单 `global_patterns` 把正文与 references 中的上游引用标识符 `samber/cc-skills-golang@golang-*` 改成本地注册名 `golang-*`，避免模型按上游名查找不存在的 skill；仅保留 `samber/cc-skills-golang@<name>` 这类来源说明。全局替换在逐文件补丁之后执行，其 `old` 文本来自上游原文；
 - `golang-how-to` 接入可选本地蓝图，按需读取主题，使用当前环境注册的名称和路径，路由本身不要求安装 gopls；
 - `golang-project-layout` 允许根目录单包与按业务能力组织；目录、自动化和配置按需要创建，不强制 `cmd/`、`internal/`、`pkg/` 或额外架构/DI 选择，也不擅自修改 agent 配置；
 - `golang-testing` 保留测试独立性、行为断言和竞态检查等正确性要求；文件命名、组织顺序与集成测试选择方式服从项目约定，不强制 build tags；
 - 保留以下文档链接修正：
+
+- `golang-gopls/SKILL.md` 新增 Settings and configuration 一节，链接此前未被引用的 `references/settings.md`；
 
 - `golang-documentation/references/project-docs.md` 的 README、CONTRIBUTING、CHANGELOG 模板链接：`./templates/` → `../assets/templates/`；
 - `golang-documentation/references/library.md` 的 llms.txt 模板链接：`./templates/` → `../assets/templates/`；

@@ -34,8 +34,8 @@ Application framework combining a reflection-based DI container (built on `uber-
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ```bash
@@ -59,7 +59,7 @@ What fx adds on top:
 
 **Choose fx** for long-running services (HTTP servers, workers, daemons) — lifecycle and signal handling are mandatory there, and modules make large service graphs manageable.
 
-**Choose raw dig** when you need wiring without a framework: CLI tools, libraries that expose a container to callers, test harnesses, or embedding DI into an existing app that manages its own lifecycle. See `samber/cc-skills-golang@golang-uber-dig` skill.
+**Choose raw dig** when you need wiring without a framework: CLI tools, libraries that expose a container to callers, test harnesses, or embedding DI into an existing app that manages its own lifecycle. See `golang-uber-dig` skill.
 
 ## The Application
 
@@ -226,12 +226,12 @@ Use `go.uber.org/fx/fxtest` to integrate fx with `*testing.T` (failures call `t.
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-uber-dig` skill for the underlying container, `dig.In`/`dig.Out`, and DI without lifecycle
-- → See `samber/cc-skills-golang@golang-dependency-injection` skill for DI concepts and library comparison
-- → See `samber/cc-skills-golang@golang-samber-do` skill for a generics-based alternative without reflection
-- → See `samber/cc-skills-golang@golang-google-wire` skill for compile-time DI (no runtime container)
-- → See `samber/cc-skills-golang@golang-structs-interfaces` skill for interface design patterns
-- → See `samber/cc-skills-golang@golang-context` skill for context propagation in OnStart/OnStop hooks
-- → See `samber/cc-skills-golang@golang-testing` skill for general testing patterns
+- → See `golang-uber-dig` skill for the underlying container, `dig.In`/`dig.Out`, and DI without lifecycle
+- → See `golang-dependency-injection` skill for DI concepts and library comparison
+- → See `golang-samber-do` skill for a generics-based alternative without reflection
+- → See `golang-google-wire` skill for compile-time DI (no runtime container)
+- → See `golang-structs-interfaces` skill for interface design patterns
+- → See `golang-context` skill for context propagation in OnStart/OnStop hooks
+- → See `golang-testing` skill for general testing patterns
 
 If you encounter a bug or unexpected behavior in uber-go/fx, open an issue at <https://github.com/uber-go/fx/issues>.

@@ -29,7 +29,7 @@ paths:
 - **Review mode** — reviewing a PR's instrumentation changes. Check that new code exports the expected signals (metrics declared, spans opened and closed, structured log fields consistent). Sequential.
 - **Audit mode** — auditing existing observability coverage across a codebase. Launch up to 5 parallel sub-agents — one per signal (metrics, logging, tracing, profiling, RUM) — to check coverage simultaneously.
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-observability` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-observability` skill takes precedence.
 
 # Go Observability Best Practices
 
@@ -55,10 +55,10 @@ When using observability libraries (Prometheus client, OpenTelemetry SDK, vendor
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-error-handling` skill for the single handling rule.
-- → See `samber/cc-skills-golang@golang-troubleshooting` skill for using observability signals to diagnose production issues.
-- → See `samber/cc-skills-golang@golang-security` skill for protecting pprof endpoints and avoiding PII in logs.
-- → See `samber/cc-skills-golang@golang-context` skill for propagating trace context across service boundaries.
+- → See `golang-error-handling` skill for the single handling rule.
+- → See `golang-troubleshooting` skill for using observability signals to diagnose production issues.
+- → See `golang-security` skill for protecting pprof endpoints and avoiding PII in logs.
+- → See `golang-context` skill for propagating trace context across service boundaries.
 - → See `samber/cc-skills@promql-cli` skill for querying and exploring PromQL expressions against Prometheus from the CLI.
 
 ### Go 1.26+: slog multi-handler

@@ -52,7 +52,7 @@ go vet ./...
 golangci-lint run ./...
 ```
 
-Run `golangci-lint` early in your debugging workflow. It catches unchecked errors, suspicious constructs, and many other issues that are easy to miss by reading code. See the `samber/cc-skills-golang@golang-lint` skill for configuration and usage.
+Run `golangci-lint` early in your debugging workflow. It catches unchecked errors, suspicious constructs, and many other issues that are easy to miss by reading code. See the `golang-lint` skill for configuration and usage.
 
 ## Step 3: Isolate the Problem
 

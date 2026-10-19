@@ -34,8 +34,8 @@ Lodash-inspired, generics-first utility library with 500+ type-safe helpers for 
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ## Why samber/lo
@@ -80,7 +80,7 @@ Start with `lo`. Move to other packages only when profiling shows a bottleneck o
 - `lop` is for CPU parallelism, not I/O concurrency — for I/O fan-out, use `errgroup` instead
 - `lom` breaks immutability — only use when allocation pressure is measured, never assumed
 - `loi` eliminates intermediate allocations in chains like `Map → Filter → Take` by evaluating lazily
-- For reactive/streaming pipelines over infinite event streams, → see `samber/cc-skills-golang@golang-samber-ro` skill + `samber/ro` package
+- For reactive/streaming pipelines over infinite event streams, → see `golang-samber-ro` skill + `samber/ro` package
 
 For detailed package comparison and decision flowchart, see [Package Guide](./references/package-guide.md).
 
@@ -183,7 +183,7 @@ If you encounter a bug or unexpected behavior in samber/lo, open an issue at [gi
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-samber-ro` skill for reactive/streaming pipelines over infinite event streams (`samber/ro` package)
-- → See `samber/cc-skills-golang@golang-samber-mo` skill for monadic types (Option, Result, Either) that compose with lo transforms
-- → See `samber/cc-skills-golang@golang-data-structures` skill for choosing the right underlying data structure
-- → See `samber/cc-skills-golang@golang-performance` skill for profiling methodology before switching to `lom`/`lop`
+- → See `golang-samber-ro` skill for reactive/streaming pipelines over infinite event streams (`samber/ro` package)
+- → See `golang-samber-mo` skill for monadic types (Option, Result, Either) that compose with lo transforms
+- → See `golang-data-structures` skill for choosing the right underlying data structure
+- → See `golang-performance` skill for profiling methodology before switching to `lom`/`lop`

@@ -187,4 +187,4 @@ Interfaces live where they are consumed, not where they are implemented. The `us
 
 ## Wiring
 
-All dependency construction happens in `cmd/server/main.go`. → See `samber/cc-skills-golang@golang-dependency-injection` skill for DI library alternatives.
+All dependency construction happens in `cmd/server/main.go`. → See `golang-dependency-injection` skill for DI library alternatives.

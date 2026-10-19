@@ -40,8 +40,8 @@ Cobra is the de facto standard for Go CLI applications. It provides the command/
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ```bash
@@ -61,7 +61,7 @@ These libraries do fundamentally different things and can be used independently.
 
 **Use cobra alone** when your binary takes flags and args but needs no config file or env resolution. **Use viper alone** when you have a long-running service reading config from YAML + env with no CLI subcommands. Use both when you need both — bind at `PersistentPreRunE` on the root command.
 
-→ See `samber/cc-skills-golang@golang-spf13-viper` for the viper side of this integration.
+→ See `golang-spf13-viper` for the viper side of this integration.
 
 ## Command tree
 
@@ -169,8 +169,8 @@ Cobra accumulates flag state across `Execute()` calls — build a fresh command 
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-cli` skill for general CLI architecture — project layout, exit codes, signal handling, I/O patterns
-- → See `samber/cc-skills-golang@golang-spf13-viper` skill for configuration layering alongside cobra (flag → env → file → default precedence)
-- → See `samber/cc-skills-golang@golang-testing` skill for general Go testing patterns
+- → See `golang-cli` skill for general CLI architecture — project layout, exit codes, signal handling, I/O patterns
+- → See `golang-spf13-viper` skill for configuration layering alongside cobra (flag → env → file → default precedence)
+- → See `golang-testing` skill for general Go testing patterns
 
 If you encounter a bug or unexpected behavior in spf13/cobra, open an issue at <https://github.com/spf13/cobra/issues>.

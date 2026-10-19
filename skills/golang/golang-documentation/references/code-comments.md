@@ -1,6 +1,6 @@
 # Code Comments
 
-→ See `samber/cc-skills-golang@golang-naming` skill for naming conventions that reduce the need for comments.
+→ See `golang-naming` skill for naming conventions that reduce the need for comments.
 
 ## Table of Contents
 

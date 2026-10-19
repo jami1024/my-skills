@@ -27,7 +27,7 @@ paths:
   - "**/*.go"
 ---
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-refactoring` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-refactoring` skill takes precedence.
 
 **Persona:** You are a Go refactoring engineer. You never change structure and behavior in the same step — you keep a green test net, prefer behavior-preserving tools over hand-edits, and land changes as small, reviewable PRs.
 
@@ -44,7 +44,7 @@ paths:
 
 **Questions:** Sign-off gates in this skill (Plan mode's initial approval, and every mid-refactor checkpoint below) are asked through the environment's question tool, never as plain-text prose the reader might skim past — a refactor is exactly the kind of workflow where an unnoticed "assumed yes" is expensive to undo. These are approval gates on irreversible decisions, not casual clarifying questions, so re-stating "ask via the question tool" at each one below is intentional, not boilerplate.
 
-**Dependencies:** `gopls` (primary actuator) — `go install golang.org/x/tools/gopls@latest`. Optional: `golangci-lint`, `benchstat`, `deadcode`, `eg`, `gopatch`. Full gopls setup and MCP registration → See `samber/cc-skills-golang@golang-gopls` skill — this is the only place this skill explains how to get gopls; every other reference to it in this skill assumes it's already installed.
+**Dependencies:** `gopls` (primary actuator) — `go install golang.org/x/tools/gopls@latest`. Optional: `golangci-lint`, `benchstat`, `deadcode`, `eg`, `gopatch`. Full gopls setup and MCP registration → See `golang-gopls` skill — this is the only place this skill explains how to get gopls; every other reference to it in this skill assumes it's already installed.
 
 # Go Refactoring — Safe Change at Scale
 
@@ -91,7 +91,7 @@ paths:
 - **Grep for tag and reflection references after any rename.**
   - gopls Rename only guards against _compilation_ breakage — it cannot see a struct tag, a `text/template` field reference, or a `reflect`-driven dispatch that still points at the old name.
   - Renaming a field silently desyncs it from its `json`/`db` tag.
-- **Load `samber/cc-skills-golang@golang-security` (and `golang-safety` for internal-correctness risk) whenever a step changes code logic, not just its shape.**
+- **Load `golang-security` (and `golang-safety` for internal-correctness risk) whenever a step changes code logic, not just its shape.**
   - A mechanical, tool-verified transform can't introduce a vulnerability, but a behavioral change can.
   - Treat "changes what the code does" as the trigger for a security-and-safety pass, not an afterthought reserved for the final review.
 - **Start every step from a clean, committed baseline, and revert rather than debug forward when it goes red.**
@@ -147,13 +147,13 @@ Refactoring is an investment that only pays off if a future change is coming to 
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-naming` skill for what to rename identifiers _to_ — this skill owns _how_ to apply a rename safely at scale.
-- → See `samber/cc-skills-golang@golang-project-layout` skill for target directory/package layout — this skill owns the mechanics of moving code there without breaking callers.
-- → See `samber/cc-skills-golang@golang-modernize` skill for version-driven idiom updates (`interface{}`→`any`, `slices`/`maps`) — a distinct concern from structural refactoring, though it shares the same tool-first discipline.
-- → See `samber/cc-skills-golang@golang-code-style` skill for control-flow clarity and function-shape rules this skill helps you apply mechanically.
-- → See `samber/cc-skills-golang@golang-design-patterns` skill for target patterns (options struct, DI, consumer-side interfaces) this skill helps you migrate toward.
-- → See `samber/cc-skills-golang@golang-testing` skill for the test-writing practices that make the safety net in this skill trustworthy.
-- → See `samber/cc-skills-golang@golang-lint` skill for configuring `golangci-lint`, run here only as a post-step verification gate.
-- → See `samber/cc-skills-golang@golang-security` skill (and `golang-safety`) for reviewing any step that changes code logic, not just its shape.
+- → See `golang-naming` skill for what to rename identifiers _to_ — this skill owns _how_ to apply a rename safely at scale.
+- → See `golang-project-layout` skill for target directory/package layout — this skill owns the mechanics of moving code there without breaking callers.
+- → See `golang-modernize` skill for version-driven idiom updates (`interface{}`→`any`, `slices`/`maps`) — a distinct concern from structural refactoring, though it shares the same tool-first discipline.
+- → See `golang-code-style` skill for control-flow clarity and function-shape rules this skill helps you apply mechanically.
+- → See `golang-design-patterns` skill for target patterns (options struct, DI, consumer-side interfaces) this skill helps you migrate toward.
+- → See `golang-testing` skill for the test-writing practices that make the safety net in this skill trustworthy.
+- → See `golang-lint` skill for configuring `golangci-lint`, run here only as a post-step verification gate.
+- → See `golang-security` skill (and `golang-safety`) for reviewing any step that changes code logic, not just its shape.
 
 If you encounter a bug or unexpected behavior in `gopls`, open an issue at <https://github.com/golang/go/issues>.

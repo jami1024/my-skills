@@ -27,7 +27,7 @@ allowed-tools: Read Edit Write Glob Grep Bash(go:*) Bash(golangci-lint:*) Bash(g
 
 Start with the smallest structure that expresses the required behavior. A single-package service or CLI is a valid initial design. If the user requests a particular architecture, follow it; discuss alternatives only when there is a real unresolved tradeoff. Do not require an architecture selection ceremony for routine setup.
 
-→ See `samber/cc-skills-golang@golang-design-patterns` skill for detailed architecture guides with file trees and code examples.
+→ See `golang-design-patterns` skill for detailed architecture guides with file trees and code examples.
 
 ## Dependency Injection: Ask Next
 
@@ -73,7 +73,7 @@ module utils
 
 ### Package Naming
 
-Packages MUST be lowercase, singular, and match their directory name. → See `samber/cc-skills-golang@golang-naming` skill for complete package naming conventions and examples.
+Packages MUST be lowercase, singular, and match their directory name. → See `golang-naming` skill for complete package naming conventions and examples.
 
 ## Directory Layout
 
@@ -113,10 +113,10 @@ When starting a new Go project:
 
 ## Related Skills
 
-- → See `samber/cc-skills-golang@golang-cli` skill for CLI tool structure and Cobra/Viper patterns.
-- → See `samber/cc-skills-golang@golang-dependency-injection` skill for DI approach comparison and wiring.
-- → See `samber/cc-skills-golang@golang-lint` skill for golangci-lint configuration.
-- → See `samber/cc-skills-golang@golang-continuous-integration` skill for CI/CD pipeline setup.
-- → See `samber/cc-skills-golang@golang-design-patterns` skill for architectural patterns.
-- → See `samber/cc-skills-golang@golang-refactoring` skill for safely moving or splitting existing code into the layout above via type-alias gradual code repair and staged PRs, without a big-bang break.
-- → See `samber/cc-skills-golang@golang-how-to` skill's Configure mode for the always-load directive and optional `## Required Go skills` block written to the project's agent-config file (CLAUDE.md, AGENTS.md, or equivalent).
+- → See `golang-cli` skill for CLI tool structure and Cobra/Viper patterns.
+- → See `golang-dependency-injection` skill for DI approach comparison and wiring.
+- → See `golang-lint` skill for golangci-lint configuration.
+- → See `golang-continuous-integration` skill for CI/CD pipeline setup.
+- → See `golang-design-patterns` skill for architectural patterns.
+- → See `golang-refactoring` skill for safely moving or splitting existing code into the layout above via type-alias gradual code repair and staged PRs, without a big-bang break.
+- → See `golang-how-to` skill's Configure mode for the always-load directive and optional `## Required Go skills` block written to the project's agent-config file (CLAUDE.md, AGENTS.md, or equivalent).

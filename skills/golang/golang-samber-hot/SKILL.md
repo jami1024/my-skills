@@ -33,8 +33,8 @@ Generic, type-safe in-memory caching library for Go 1.22+ with 9 eviction algori
 
 This skill is not exhaustive — refer to library documentation and code examples for more information:
 
-- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
-- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `samber/cc-skills-golang@golang-gopls` skill (`gopls`).
+- For Go package docs, symbols, versions, importers, and known vulnerabilities, → See `golang-pkg-go-dev` skill (`godig`), preferred over Context7 for Go package facts.
+- To navigate this library's usage in your own code (definitions, call sites, diagnostics), → See `golang-gopls` skill (`gopls`).
 - Context7 remains a fallback for docs not indexed on pkg.go.dev.
 
 ```bash
@@ -135,7 +135,7 @@ If you encounter a bug or unexpected behavior in samber/hot, open an issue at <h
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-performance` skill for general caching strategy and when to use in-memory cache vs Redis vs CDN
-- → See `samber/cc-skills-golang@golang-observability` skill for Prometheus metrics integration and monitoring
-- → See `samber/cc-skills-golang@golang-database` skill for database query patterns that pair with cache loaders
+- → See `golang-performance` skill for general caching strategy and when to use in-memory cache vs Redis vs CDN
+- → See `golang-observability` skill for Prometheus metrics integration and monitoring
+- → See `golang-database` skill for database query patterns that pair with cache loaders
 - → See `samber/cc-skills@promql-cli` skill for querying Prometheus cache metrics via CLI

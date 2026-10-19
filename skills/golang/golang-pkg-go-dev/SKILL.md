@@ -40,7 +40,7 @@ Trigger on questions like:
 
 ## Choosing between `godig`, gopls, Context7, and govulncheck
 
-In short: `godig` answers questions about the **published ecosystem** (works even for packages not yet in your `go.mod`); `gopls` reasons about **your locally resolved build** (`go.sum`, including `replace`d forks); Context7 is a fallback for non-Go or unindexed docs; `govulncheck` is the whole-tree vulnerability audit (→ `samber/cc-skills-golang@golang-security`). See the `samber/cc-skills-golang@golang-gopls` skill for wiring `gopls` (MCP server, native `LSP` tool, and CLI) with Claude Code, and the `samber/cc-skills-golang@golang-how-to` skill's "`godig` vs gopls vs Context7 vs govulncheck" section for the full task-to-tool matrix.
+In short: `godig` answers questions about the **published ecosystem** (works even for packages not yet in your `go.mod`); `gopls` reasons about **your locally resolved build** (`go.sum`, including `replace`d forks); Context7 is a fallback for non-Go or unindexed docs; `govulncheck` is the whole-tree vulnerability audit (→ `golang-security`). See the `golang-gopls` skill for wiring `gopls` (MCP server, native `LSP` tool, and CLI) with Claude Code, and the `golang-how-to` skill's "`godig` vs gopls vs Context7 vs govulncheck" section for the full task-to-tool matrix.
 
 ## Setup
 

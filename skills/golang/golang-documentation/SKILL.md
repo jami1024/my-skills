@@ -28,7 +28,7 @@ paths:
 - **Write mode** — generating or filling in missing documentation (doc comments, README, CONTRIBUTING, CHANGELOG, llms.txt). Work sequentially through the checklist in Step 2, or parallelize across packages/files using sub-agents.
 - **Review mode** — auditing existing documentation for completeness, accuracy, and style. Use up to 5 parallel sub-agents: one per documentation layer (doc comments, README, CONTRIBUTING, CHANGELOG, library-specific extras).
 
-> **Community default.** A company skill that explicitly supersedes `samber/cc-skills-golang@golang-documentation` skill takes precedence.
+> **Community default.** A company skill that explicitly supersedes `golang-documentation` skill takes precedence.
 
 # Go Documentation
 
@@ -36,9 +36,9 @@ Write documentation that serves both humans and AI agents. Good documentation ma
 
 ## Cross-References
 
-- See `samber/cc-skills-golang@golang-naming` skill for naming conventions in doc comments.
-- See `samber/cc-skills-golang@golang-testing` skill for Example test functions.
-- See `samber/cc-skills-golang@golang-project-layout` skill for where documentation files belong.
+- See `golang-naming` skill for naming conventions in doc comments.
+- See `golang-testing` skill for Example test functions.
+- See `golang-project-layout` skill for where documentation files belong.
 - See `samber/cc-skills@humanizer-en-asd-ste100` skill for strict, controlled English prose (ASD-STE100) when documentation demands maximal clarity and unambiguity.
 
 ## Writing Principles
@@ -182,7 +182,7 @@ For Go libraries, add these on top of the basics:
 - **Go Playground demos** — create runnable demos and link them in doc comments with `// Play: https://go.dev/play/p/xxx`. Use a Go Playground integration when one is available to create and share playground URLs.
 - **Example test functions** — write `func ExampleXxx()` in `_test.go` files. These are executable documentation verified by `go test`.
 - **Generous code examples** — include multiple examples in doc comments showing common use cases.
-- **godoc** — your doc comments render on [pkg.go.dev](https://pkg.go.dev). Use `go doc` locally to preview; to inspect how a published package renders its docs, symbols, and examples, → See `samber/cc-skills-golang@golang-pkg-go-dev` skill.
+- **godoc** — your doc comments render on [pkg.go.dev](https://pkg.go.dev). Use `go doc` locally to preview; to inspect how a published package renders its docs, symbols, and examples, → See `golang-pkg-go-dev` skill.
 - **Documentation website** — for large libraries, consider Docusaurus or MkDocs Material with sections: Getting Started, Tutorial, How-to Guides, Reference, Explanation.
 - **Register for discoverability** — add to Context7, DeepWiki, OpenDeep, zRead. Even for private libraries.
 

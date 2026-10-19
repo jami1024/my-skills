@@ -132,7 +132,7 @@ Follow these influential Go developers and contributors:
 2. **Follow 10-20 key people** on X/Bluesky who post regularly
 3. **Check Go.dev/blog weekly** for official announcements
 4. **Join Go Slack** for real-time discussions
-5. **Bookmark pkg.go.dev** to discover new libraries — → See `samber/cc-skills-golang@golang-pkg-go-dev` skill to query a module's latest versions, docs, and vulnerabilities from the CLI
+5. **Bookmark pkg.go.dev** to discover new libraries — → See `golang-pkg-go-dev` skill to query a module's latest versions, docs, and vulnerabilities from the CLI
 6. **Attend a GopherCon** (virtual or in-person) yearly
 
 ---

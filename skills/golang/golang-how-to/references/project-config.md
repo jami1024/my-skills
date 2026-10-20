@@ -2,7 +2,7 @@
 
 This workflow writes two independent things to the project's agent-config file(s) (CLAUDE.md, AGENTS.md, or equivalent):
 
-1. An **always-load directive** for `golang-how-to` itself — a single sentence, unconditional, no user confirmation needed.
+1. An **always-load directive** for `golang-how-to` itself — add it only when the user requests persistent Go skill configuration.
 2. An optional `## Required Go skills` block that force-triggers a specific, user-confirmed set of secondary skills.
 
 ## Table of Contents
@@ -24,14 +24,14 @@ This workflow writes two independent things to the project's agent-config file(s
 
 ## When to use
 
-- Any new Go project should get the always-load directive (see below) — this is the common case.
+- The user requests persistent Go skill configuration, for example `/golang-how-to configure`. New Go project creation alone does not trigger this workflow. The remaining cases describe possible configuration needs, not permission to write agent-config files.
 - The project additionally has a hard requirement on specific skills (e.g., `golang-security` must always apply, not just when the user mentions "security").
 - The team has agreed on a fixed set of Go standards to enforce on every AI interaction.
 - A company skill overrides a community default (⚙️ skills) and must always win.
 
 ## Always-load directive
 
-Every Go project should carry a one-line directive telling the coding agent to load the `golang-how-to` orchestrator skill before starting Go work, so it in turn routes to whichever other Go skills the task actually needs. Unlike the `## Required Go skills` block below, this directive needs no user confirmation: it costs one skill description (~100 tokens) and is never wrong, since `golang-how-to` only routes to other skills — it does not impose project-specific choices.
+For a requested persistent routing setup, add one line that loads `golang-how-to` before Go work. This changes future agent behavior, so creating a project is not sufficient authorization. Reuse an explicit configuration request without asking for the same permission again. Registered descriptions and forced body reads have different context costs; do not promise a fixed token cost.
 
 ### Template
 
@@ -41,8 +41,8 @@ Before any Go coding, review, debugging, troubleshooting, or setup task, load th
 
 ### When it gets written
 
-- **At project creation** — the `golang-project-layout` skill writes this directive automatically as part of its Initialization Checklist, without asking the user.
-- **On demand** — running `/golang-how-to configure` writes it too (if missing), in addition to any `## Required Go skills` block confirmed in Step 3 below.
+- **On request** — `/golang-how-to configure` or an equivalent user request writes the directive if missing.
+- **During project creation** — write it only if persistent agent configuration is explicitly included in the request.
 
 ### Insertion point
 
@@ -61,7 +61,7 @@ Skip writing if already present.
 
 ## Step 1 — Detect the project config file(s)
 
-Every harness reads its own agent-config file or directory. None is more "primary" than another — detect and write to whichever exist, and write to all of them if more than one does:
+Use the target file(s) named by the user. Otherwise detect the active harness and existing project conventions; do not update every supported harness merely because its config exists:
 
 | File / directory | Harness(es) | Format |
 | --- | --- | --- |
@@ -71,7 +71,7 @@ Every harness reads its own agent-config file or directory. None is more "primar
 | `.cursor/rules/*.mdc` | Cursor | **Directory** of `.mdc` files, each with its own YAML frontmatter — not a single markdown file to append to |
 | `.github/copilot-instructions.md` | GitHub Copilot | Markdown, single file, appended to |
 
-Check which of these exist at the project root. If multiple exist, write to all of them — different harnesses read different files, and a project may support several. If none exist, ask the user which one(s) to create.
+Check the requested targets and active harness. If the target is still ambiguous, ask one focused question naming the candidate files. Create a missing target only when it is covered by the configuration request.
 
 ## Step 2 — Idempotency check
 
@@ -84,13 +84,13 @@ grep -n "## Required Go skills" CLAUDE.md
 
 For Cursor, check whether `.cursor/rules/golang-skills.mdc` already exists instead — its presence itself is the idempotency signal, since it's a dedicated file rather than a shared section inside a larger document.
 
-Write the always-load directive if it's missing, regardless of what Step 3 decides. If a `## Required Go skills` block (or, for Cursor, the rule file) already exists, read it and confirm with the user whether to update it in place (replace the existing list) or skip.
+Within the requested scope, add the directive only if missing. Read existing rules and preserve unrelated content. If the user already specified an update or skill set, apply it without repeated confirmation; ask only when replacing an existing rule introduces an unresolved conflict.
 
 ## Step 3 — Confirm the skill set with the user
 
-Confirm which skills to always load — one question, one round of confirmation, not a running back-and-forth. Present the ⭐️ recommended skills as the default selection. Remind the user of the token budget (each always-loaded skill adds its description tokens to every session — the 11 recommended skills add ~1,100 tokens at startup).
+Reuse the user's requested skill set. For a routing-only request, add only the orchestrator directive; do not force-load the catalog below. If additional mandatory skills are desired but unspecified, ask once about concrete project requirements. Explain that forced loading reads bodies on each matching task and costs more than registering descriptions.
 
-Recommended ⭐️ set for most projects:
+Optional candidates to discuss only when mandatory topic skills are requested:
 
 ```
 golang-code-style
@@ -133,7 +133,7 @@ The following Go skills from `samber/cc-skills-golang` MUST always be applied wh
 - `golang-testing`
 ```
 
-Replace the skill list with the confirmed set from Step 3. Use the fully-qualified `samber/cc-skills-golang@<name>` identifier for each skill. If Step 2 found the always-load directive already present elsewhere in the file, don't duplicate it — write only the `## Required Go skills` block.
+Include the optional block only for the requested or confirmed set from Step 3. Use names registered in the current harness, such as `golang-security`; do not invent upstream-qualified local names. If Step 2 found the always-load directive already present elsewhere in the file, don't duplicate it — write only the `## Required Go skills` block.
 
 Insertion point:
 
@@ -156,7 +156,7 @@ After writing, summarize:
 - Which file(s) or rule(s) were updated
 - Whether the always-load directive for `golang-how-to` was added or was already present
 - Which skills were added to the always-load list
-- Approximate startup token cost (number of skills × ~100 tokens per description)
+- Context impact: distinguish registered descriptions from forced body reads; report measurements if available, otherwise mark the cost as unmeasured
 - Note: skills marked ⚙️ (overridable) will be superseded if a company skill explicitly declares the override in its body
 
 ## Notes on company overrides (⚙️ skills)

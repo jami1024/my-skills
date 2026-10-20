@@ -14,6 +14,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location(
@@ -269,7 +270,13 @@ class OverrideTests(unittest.TestCase):
             patches = self.manifest["replacements"][f"{name}/SKILL.md"]
             path = write_skill(self.root, name, "\n\n".join(patch["old"] for patch in patches))
             self.assertTrue(path.is_file())
-        self.assertEqual(OVERRIDES.apply_overrides(self.root), len(names))
+        relative = "golang-how-to/references/project-config.md"
+        config = self.root / relative
+        config.parent.mkdir(parents=True, exist_ok=True)
+        config.write_text("\n\n".join(patch["old"] for patch in self.manifest["replacements"][relative]))
+        self.assertEqual(OVERRIDES.apply_overrides(self.root), len(names) + 1)
+        for patch in self.manifest["replacements"][relative]:
+            self.assertIn(patch["new"], config.read_text())
         for name in names:
             text = (self.root / name / "SKILL.md").read_text()
             for patch in self.manifest["replacements"][f"{name}/SKILL.md"]:
@@ -456,6 +463,41 @@ class EvalRunnerTests(unittest.TestCase):
         for value in ("golang-testing:x", "golang-testing:"):
             with self.assertRaises(ValueError):
                 EVAL_RUNNER.parse_skill_argument(value)
+
+    def test_owned_skill_reads_and_baseline_contamination(self) -> None:
+        own = [str(REPO_ROOT / "skills/content/explain/SKILL.md")]
+        other = [str(REPO_ROOT / "skills/content/draft/SKILL.md")]
+        self.assertTrue(EVAL_RUNNER.evaluate_validity("explain", own, False, 0)["valid"])
+        self.assertFalse(EVAL_RUNNER.evaluate_validity("explain", other, False, 0)["valid"])
+        self.assertFalse(EVAL_RUNNER.evaluate_validity(None, own, False, 0)["valid"])
+
+    def test_cli_uses_selected_category_and_keeps_go_default(self) -> None:
+        for skill, category in (("explain", "content"), ("golang-testing", "golang")):
+            with self.subTest(skill=skill), tempfile.TemporaryDirectory() as temp:
+                argv = ["run-skill-eval.py", "--skill", f"{skill}:1", "--out", temp]
+                if category == "content":
+                    argv += ["--skills-root", "skills/content"]
+                output = json.dumps({"type": "message_end", "message": {
+                    "role": "assistant", "content": [{"type": "text", "text": "answer"}],
+                }})
+                response = subprocess.CompletedProcess([], 0, stdout=output, stderr="")
+                with mock.patch.object(EVAL_RUNNER.sys, "argv", argv), \
+                     mock.patch.object(EVAL_RUNNER.subprocess, "run", return_value=response) as run, \
+                     contextlib.redirect_stdout(io.StringIO()):
+                    self.assertEqual(EVAL_RUNNER.main(), 0)
+                treatment, baseline = [call.args[0] for call in run.call_args_list]
+                self.assertEqual(
+                    treatment[treatment.index("--skill") + 1],
+                    str(REPO_ROOT / "skills" / category / skill),
+                )
+                self.assertIn(f"/skill:{skill}\n", treatment[-1])
+                self.assertNotIn("--skill", baseline)
+                results = json.loads((Path(temp) / "results.json").read_text())
+                self.assertEqual(len(results), 2)
+                self.assertTrue(all(entry["valid"] for entry in results))
+                self.assertEqual(results[0]["skill"], skill)
+                self.assertIsNone(results[1]["skill"])
+                self.assertEqual(Path(results[0]["answer_path"]).read_text(), "answer")
 
     def test_invoke_prompt_prefixes_only_when_forced(self) -> None:
         self.assertEqual(EVAL_RUNNER.invoke_prompt("golang-testing", "do it", False), "do it")

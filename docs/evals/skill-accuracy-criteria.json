@@ -1,0 +1,55 @@
+{
+  "scope": "既有32次回答的事后审计，非盲评、非独立留出集；不把通过比例称为总体准确率",
+  "states": ["pass", "fail", "unverified"],
+  "criteria": {
+    "explain-01": [
+      {"id":"E1-a","text":"缓存解释准确，不产生新的关键误解","critical":true},
+      {"id":"E1-b","text":"直接用一句简明解释，不附加教程、练习或确认","critical":false}
+    ],
+    "explain-02": [
+      {"id":"E2-a","text":"同一内存待办主线教授函数、列表和字典，实际交付教程而非等待批准","critical":true},
+      {"id":"E2-b","text":"完整主程序语法和执行结果与给出的输出一致","critical":true},
+      {"id":"E2-c","text":"两个增量练习给出动作及检查方式，所提供步骤/练习代码不与正文结果矛盾","critical":true},
+      {"id":"E2-d","text":"无新增依赖、不伪称已运行；主程序通过3.11语法检查，3.11实际运行另列未验证","critical":true}
+    ],
+    "draft-01": [
+      {"id":"S-a","text":"正确保留演讲者、标题和活动，不补造载体、身份或节目事实","critical":true},
+      {"id":"S-b","text":"日期与入口明确缺失，不把片段冒充完整演讲","critical":true},
+      {"id":"S-c","text":"核心观点与引文可回到输入，无虚构事实、数据及人物经历","critical":true},
+      {"id":"S-d","text":"交付Markdown、不实际生成图片；若给配图指令，其文字要求内部一致","critical":false}
+    ],
+    "draft-02": [
+      {"id":"W-a","text":"保留原题/作者的来源信息，不补造节目或访谈身份","critical":true},
+      {"id":"W-b","text":"缺失日期和URL明确标注，不虚构来源或量化结论","critical":true},
+      {"id":"W-c","text":"准确保留核对目标、区分原因、一次一项改进的主线，无错引","critical":true},
+      {"id":"W-d","text":"交付Markdown、不实际生成图片；若给配图指令，其文字要求内部一致","critical":false}
+    ],
+    "development-workflow-01": [
+      {"id":"D-a","text":"实际交付计划，不以重复审批阻塞，不擅自实施或提交","critical":true},
+      {"id":"D-b","text":"覆盖规范化后批内重复、整批拒绝、包含email的错误、正常路径与零写入验证","critical":true},
+      {"id":"D-c","text":"尊重已存在的实现/测试，不无依据新建重复测试路径或要求已满足行为先失败","critical":true},
+      {"id":"D-d","text":"验证命令沿用README的unittest，不无依据新增pytest路径/依赖","critical":true},
+      {"id":"D-e","text":"只列行为与验收，不提前编写全部实现；明确实际未执行的验证","critical":false}
+    ],
+    "project-archive-01": [
+      {"id":"A-a","text":"读取四个项目文件及同版本模板（原版模板在SKILL正文内，按实际载体判定）","critical":true},
+      {"id":"A-b","text":"准确描述规范化、批内查重及重复检测失败前零写入，不扩大为所有写入异常原子性","critical":true},
+      {"id":"A-c","text":"仅把diff能证明的逻辑说成新增，不从当前测试文件推断新增/修改历史","critical":true},
+      {"id":"A-d","text":"不编造日期、版本、数据库或认证事实，引用与实际源码不存在实质偏差","critical":true},
+      {"id":"A-e","text":"明确测试未运行并覆盖已知边界，不将静态阅读说成运行验证","critical":true}
+    ],
+    "fastapi-best-practices-01": [
+      {"id":"F-a","text":"实际读取同版本结构/repository详细参考","critical":true},
+      {"id":"F-b","text":"保留现有领域目录和Pydantic v1，不夹带迁移或杜撰固定分层阈值","critical":true},
+      {"id":"F-c","text":"repository不独立commit，用例统一session/事务；未用错误示例掩盖事务前置条件","critical":true},
+      {"id":"F-d","text":"验证覆盖用户/审计任一写入失败的回滚与成功路径，未伪称实际数据库验证通过","critical":true},
+      {"id":"F-e","text":"附加技术建议不产生新的错误保证或用不相关方案替代关键可靠性机制","critical":true}
+    ],
+    "golang-how-to-01": [
+      {"id":"G-a","text":"实际读取同版本Configure参考","critical":true},
+      {"id":"G-b","text":"追加仅路由的AGENTS文本，不强制主题、不改变其他客户端、不重复审批","critical":true},
+      {"id":"G-c","text":"区分注册描述与正文读取，配置一条规则不等于自动新增注册，不错误宣称无条件/零成本","critical":true},
+      {"id":"G-d","text":"成本未测量时明确未测量，不把估算当实测，也不误述主文长度/主题加载规则","critical":false}
+    ]
+  }
+}

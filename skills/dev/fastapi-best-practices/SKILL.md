@@ -18,9 +18,11 @@ description: 为 FastAPI/Python API 提供创建、维护、重构和审查指�
 
 不负责固定脚手架或无依据的技术栈迁移。新项目先输出架构决策，再使用官方工具和项目选择的包管理器初始化。
 
-## 项目勘察
+## 开始前
 
-开始修改前，先读取并总结：
+先按本次任务确定读取和验证范围：小修复只检查直接相关的配置、入口及测试；新服务或跨层变更再完成全量勘察。不为局部变更重复扫描整个项目，也不补建无关测试或基础设施。
+
+开始修改前，按需读取：
 
 1. `pyproject.toml`、`requirements*.txt`、lockfile 和 Python 版本；
 2. FastAPI、Pydantic、SQLAlchemy、数据库驱动和认证依赖版本；
@@ -32,7 +34,7 @@ description: 为 FastAPI/Python API 提供创建、维护、重构和审查指�
 
 ## 核心原则
 
-1. **按领域组织**：路由、schema、服务、模型和测试围绕业务功能组织，而不是无限堆在单一文件。
+1. **按变化组织**：多个业务能力独立变化时，按领域聚合路由、schema、服务、模型和测试；小项目或已有稳定分层可沿用按技术职责组织的目录。
 2. **关注点分离**：路由负责 HTTP 边界，服务负责业务逻辑，repository 或数据层负责持久化。
 3. **异步边界清晰**：异步路由使用异步数据库和客户端；同步库不要直接阻塞事件循环。
 4. **显式依赖**：使用 FastAPI dependency injection 管理认证、数据库会话和请求级资源。
@@ -42,7 +44,7 @@ description: 为 FastAPI/Python API 提供创建、维护、重构和审查指�
 
 ## 推荐目录形状
 
-按项目规模和部署方式调整：
+以下是按技术职责组织的示例，适合小型项目或已有稳定分层的服务；多个领域需要独立演进时，可在 `app/<domain>/` 内聚合相应文件，不必同时建立两套目录：
 
 ```text
 app/
@@ -91,7 +93,7 @@ class UserRead(BaseModel):
 
 规则：
 
-- 不在新代码中使用 `@validator`、`class Config` 或 Pydantic v1 的 `regex=`；
+- 使用项目当前主版本的校验 API；Pydantic v2 新代码使用 `field_validator`、`ConfigDict` 和 `pattern=`，维护 v1 项目时保留其兼容写法，不顺带迁移；
 - 请求 schema、响应 schema 和数据库模型分离；
 - 不把密码、令牌或内部字段放入响应 schema；
 - 校验错误应映射为稳定、可理解的 API 响应。
@@ -101,7 +103,8 @@ class UserRead(BaseModel):
 - 使用项目现有的 SQLAlchemy 版本和迁移工具；
 - 异步项目使用 `create_async_engine` 和 `async_sessionmaker`；
 - 每个请求获取并释放自己的 session，不把 session 放入全局可变状态；
-- 事务边界由服务或用例明确管理；
+- 先确定事务所有者：外层请求已有事务时，用例只参与，不自行 commit/rollback；新 session 且用例拥有事务时，才由用例 begin；
+- 查询可能触发 autobegin，活动事务上再次 begin 不会自动复用。涉及多次写入、身份查询或事务调整时，按需读取 [`references/transactions.md`](references/transactions.md) 核对入口条件；
 - 查询只加载需要的字段，避免 N+1；
 - 不在请求处理中执行未检查的阻塞 I/O。
 
@@ -124,7 +127,7 @@ class UserRead(BaseModel):
 
 ## 测试与验证
 
-至少覆盖：
+按本次变更涉及的风险覆盖，不要求每次局部修改运行所有类别：
 
 - schema 边界和业务规则；
 - 路由成功、验证失败、未认证、无权限、404 和冲突；
@@ -151,7 +154,15 @@ API 测试使用项目已有客户端；异步测试通常使用 `httpx.AsyncCli
 
 ## 详细参考
 
-- [`references/architecture-patterns.md`](references/architecture-patterns.md)：架构、技术选型和安全示例；
+架构资料按当前问题选择，不默认读取全部示例：
+
+- [`references/architecture-patterns.md`](references/architecture-patterns.md)：架构索引与评审清单；
+- [`references/architecture-principles.md`](references/architecture-principles.md)：职责、抽象和依赖边界；
+- [`references/project-structure.md`](references/project-structure.md)：目录与分层、repository 的适用条件；
+- [`references/transactions.md`](references/transactions.md)：事务所有权、autobegin 与失败验证；
+- [`references/technology-selection.md`](references/technology-selection.md)：确有选型需求时比较数据库、缓存和队列；
+- [`references/api-decisions.md`](references/api-decisions.md)：认证、版本、错误和上传边界；
+- [`references/performance-and-security.md`](references/performance-and-security.md)：性能与安全示例；
 - [`references/development-workflow.md`](references/development-workflow.md)：需求、实现、测试和审查流程；
 - [`references/testing-and-production-patterns.md`](references/testing-and-production-patterns.md)：测试和生产模式；
 - [`scripts/`](scripts/)：数据库迁移、lint 和 Docker 辅助脚本；

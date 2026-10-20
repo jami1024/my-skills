@@ -1,0 +1,2319 @@
+{
+  "scope": "24次新定向对照的逐项人工判定 + 8次单独 after-v2 回放，不是盲评或总体准确率",
+  "cases_sha256": "76eed0641deeadc9bce318502b93754588a9c7567dfc35490c5d05519513e1a0",
+  "new_case_runs": [
+    {
+      "case_id": "A-inventory",
+      "round": 1,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/after/A-inventory.answer.md",
+      "answer_sha256": "54fdec4a5c35ff3d96d4c19664e9d1356b25a04fc2767461cfa301b693268128",
+      "assertions": [
+        {
+          "id": "A-inventory.1",
+          "assertion": "解释SKU标准化、批次重复拒绝发生在写入之前",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 16,
+              "text": "1. **归一化**：`skus = [row[\"sku\"].strip().upper() for row in rows]` —— 对整个输入批次一次性转换，空白与大小写被抹平。"
+            },
+            {
+              "line": 17,
+              "text": "2. **批量内查重**：`len(skus) != len(set(skus))` 时 `raise ValueError(\"duplicate SKU\")`。"
+            },
+            {
+              "line": 27,
+              "text": "- **写入前校验**：仅覆盖 SKU 归一化 + 批内重复。此阶段失败（步骤 2）时 `destination` 未被触碰。"
+            },
+            {
+              "line": 32,
+              "text": "- **查重范围边界**：只查**本批次内**重复，不检查 `destination` 既有内容。向非空目标重复导入会与既有 SKU 形成重复，函数不会报错。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.2",
+          "assertion": "指出quantity转换在extend生成期间发生，后项转换失败可能保留已写入项，不能承诺所有失败原子",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 30,
+              "text": "  - 结论：**目标容器可能留下部分写入**；`ingest` 无事务、无回滚、无临时缓冲。"
+            },
+            {
+              "line": 42,
+              "text": "- **未变化但易误判的点**：写入中失败的部分写入行为在 diff 中未被触碰，属既有特性，不是本次引入；`destination` 既有数据未参与查重亦为既有语义。"
+            },
+            {
+              "line": 53,
+              "text": "- **部分写入**：无任何用例让 `quantity` 非法以观察中途失败后 `destination` 的状态；因此“失败即无残留”**不被测试支持**，且按代码推断恰恰相反。"
+            },
+            {
+              "line": 61,
+              "text": "1. **原子性缺口（高）**：需在写入前对整个批次完成 `quantity` 转换（先构造完整列表再 `extend`），否则部分写入不可避免。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.3",
+          "assertion": "diff只支持ingest.py查重逻辑为新增，不断言测试文件是本次新增或修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 11,
+              "text": "| 历史证据缺口 | `diff.patch` 仅包含 `ingest.py` 的改动；`test_ingest.py`、`README.md` 的历史状态**未知**，不能据此判断其新增/修改 |"
+            },
+            {
+              "line": 37,
+              "text": "依据 `diff.patch`（唯一可核验的历史证据）："
+            },
+            {
+              "line": 40,
+              "text": "- **本次新增**：仅插入 2 行批内查重断言（`if len(skus) != len(set(skus)): raise ValueError(...)`）。"
+            },
+            {
+              "line": 69,
+              "text": "- 未新增或修改任何文件；未生成 `agent-doc/` 或其他文档路径内容。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.4",
+          "assertion": "测试状态真实，描述范围限定在当前内存实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "> 交付形态：**报告，未写入文件**。本次会话未执行任何验证命令，下文标注“未运行”。"
+            },
+            {
+              "line": 44,
+              "text": "## 5. 测试能证明什么 / 不能证明什么（均未运行）"
+            },
+            {
+              "line": 46,
+              "text": "命令 `python -m unittest test_ingest.py -v`：**本次会话未运行**，以下为静态阅读 `test_ingest.py` 得出的覆盖结论。"
+            },
+            {
+              "line": 53,
+              "text": "- **部分写入**：无任何用例让 `quantity` 非法以观察中途失败后 `destination` 的状态；因此“失败即无残留”**不被测试支持**，且按代码推断恰恰相反。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "A-inventory",
+      "round": 1,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/before/A-inventory.answer.md",
+      "answer_sha256": "a8eb77a6ee5902cfb1bd9570adb52fc6b6ef90de3a8b848184377f1f96ca8983",
+      "assertions": [
+        {
+          "id": "A-inventory.1",
+          "assertion": "解释SKU标准化、批次重复拒绝发生在写入之前",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 12,
+              "text": "1. `ingest.py:2` — 遍历 `rows`，对每行取 `row[\"sku\"]`，执行 `.strip().upper()`，生成 `skus` 列表。"
+            },
+            {
+              "line": 13,
+              "text": "2. `ingest.py:3-4` — 以 `len(skus) != len(set(skus))` 判断规范化后 SKU 是否重复；若重复则抛出 `ValueError(\"duplicate SKU\")`。"
+            },
+            {
+              "line": 14,
+              "text": "3. `ingest.py:5-6` — 仅在无重复后，以 `zip(rows, skus)` 逐行构造 `{\"sku\": sku, \"quantity\": int(row[\"quantity\"])}` 并 `extend` 到 `destination`。"
+            },
+            {
+              "line": 17,
+              "text": "隐含语义：SKU 去重口径是“去首尾空白 + 转大写”后的值，因此 `\"p1\"` 与 `\"P1\"`、`\" p1 \"` 与 `\"P1\"` 视为重复；写入 `destination` 的 `sku` 也是规范化后的值（`test_ingest.py:5` 断言 `{\"sku\": \"P1\", \"quantity\": 3}`）。`quantity` 通过 `int()` 转换，接受 `\"3\"` 这类字符串（`test_ingest.py:3-5`）。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.2",
+          "assertion": "指出quantity转换在extend生成期间发生，后项转换失败可能保留已写入项，不能承诺所有失败原子",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "- `README.md` 明确：`diff.patch` 只记录 `ingest.py` 的本次修改，其他文件的历史未提供。因此，“原有行为”仅限 diff 可核验的部分，其余按当前状态描述。"
+            },
+            {
+              "line": 23,
+              "text": "  - `quantity` 无法被 `int()` 解析（如 `\"3.5\"`、`\"abc\"`、`None`）→ `ValueError`/`TypeError`（`ingest.py:6`）。这是**关键边界**：`destination.extend(generator)` 是惰性消费，若第 k 行转换失败，前 k-1 行可能已被写入 `destination`，即**部分写入**，无回滚。"
+            },
+            {
+              "line": 49,
+              "text": "- 无 `quantity` 非法值的测试，无法证明部分写入边界的行为（`ingest.py:6` 的失败中途写入）。"
+            },
+            {
+              "line": 56,
+              "text": "1. **部分写入**：`quantity` 转换失败会留下前面已追加的行，调用方若无事务/快照将得到不一致状态。建议先全量构造列表再 `extend`，或在文档中明确调用方需负责回滚。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.3",
+          "assertion": "diff只支持ingest.py查重逻辑为新增，不断言测试文件是本次新增或修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "- `README.md` 明确：`diff.patch` 只记录 `ingest.py` 的本次修改，其他文件的历史未提供。因此，“原有行为”仅限 diff 可核验的部分，其余按当前状态描述。"
+            },
+            {
+              "line": 34,
+              "text": "- 本次变更：新增 `ingest.py:3-4` 两行，规范化后做全量重复检测，重复即抛 `ValueError(\"duplicate SKU\")`，从而在写入前阻止重复批次。"
+            },
+            {
+              "line": 36,
+              "text": "- 无法核验：`test_ingest.py` 与 `README.md` 是否有同期改动（`README.md` 称 diff 只含 `ingest.py`），因此不能断定测试是新增还是既有。"
+            },
+            {
+              "line": 64,
+              "text": "本次为只读归档，**未创建或修改任何文件**，上述内容为技术报告而非已落盘文档。若需落盘，建议路径 `agent-doc/reference/库存导入_context.md`（版本未知，未编造版本号）。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.4",
+          "assertion": "测试状态真实，描述范围限定在当前内存实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 8,
+              "text": "- 本次未运行任何命令，下文“验证”均为未执行。"
+            },
+            {
+              "line": 26,
+              "text": "- 空 `rows`：不触发重复检查，`extend` 无操作，返回 `0`。未测试。"
+            },
+            {
+              "line": 36,
+              "text": "- 无法核验：`test_ingest.py` 与 `README.md` 是否有同期改动（`README.md` 称 diff 只含 `ingest.py`），因此不能断定测试是新增还是既有。"
+            },
+            {
+              "line": 38,
+              "text": "## 测试能证明与不能证明什么"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "A-inventory",
+      "round": 2,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/after/A-inventory.answer.md",
+      "answer_sha256": "e73fdefc367897351484330c95c9c561f9f2e2c2c70496238242b89361bbe79d",
+      "assertions": [
+        {
+          "id": "A-inventory.1",
+          "assertion": "解释SKU标准化、批次重复拒绝发生在写入之前",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 20,
+              "text": "1. **归一化 + 全量预扫描**：`skus = [row[\"sku\"].strip().upper() for row in rows]`（`ingest.py:2`）"
+            },
+            {
+              "line": 22,
+              "text": "2. **重复校验**：`len(skus) != len(set(skus))` 时抛 `ValueError(\"duplicate SKU\")`（`ingest.py:3-4`）"
+            },
+            {
+              "line": 23,
+              "text": "   - 基于归一化后的 SKU 判重，因此 `\"p1\"` 与 `\"P1\"`、`\" p1 \"` 与 `\"p1\"` 视为重复。"
+            },
+            {
+              "line": 25,
+              "text": "   - 逐行生成 `{\"sku\": sku, \"quantity\": int(row[\"quantity\"])}`，SKU 使用第 1 步的归一化结果，`quantity` 在此处才做 `int()` 转换。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.2",
+          "assertion": "指出quantity转换在extend生成期间发生，后项转换失败可能保留已写入项，不能承诺所有失败原子",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 35,
+              "text": "| 步骤 3 转换/写入 | 缺 `quantity` → `KeyError`；`quantity` 不可转 `int`（如 `\"abc\"`、`None`）→ `ValueError`/`TypeError` | **可能已部分写入**：`list.extend` 逐个消费生成器并追加，中途异常不会回滚已追加的元素 |"
+            },
+            {
+              "line": 40,
+              "text": "- **重复校验是\"写入前全量校验\"，具备前置失败保证**：判重发生在任何写入之前，重复时不产生部分数据。这一点有测试 `test_duplicate` 支撑。"
+            },
+            {
+              "line": 67,
+              "text": "- **未验证数量错误时的部分写入**：无 `quantity=\"abc\"` 等用例，因此\"写入中途失败会留下部分数据\"这一风险未被测试锁定，也未被否定。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.3",
+          "assertion": "diff只支持ingest.py查重逻辑为新增，不断言测试文件是本次新增或修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 14,
+              "text": "| 历史状态 | `test_ingest.py`、`README.md` 是否本次新增/修改 **未知**；diff 未包含它们 |"
+            },
+            {
+              "line": 49,
+              "text": "- **新增**：`ingest.py:3-4` 的重复校验与 `ValueError(\"duplicate SKU\")`。"
+            },
+            {
+              "line": 70,
+              "text": "- **未验证容器类型**：仅用 `list` 作为 `destination`；非 list 或自定义对象行为未知。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.4",
+          "assertion": "测试状态真实，描述范围限定在当前内存实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "> 说明：本次未写入任何文件，以下为建议文档内容；验证命令均**未运行**。"
+            },
+            {
+              "line": 11,
+              "text": "| 测试 | `test_ingest.py` |"
+            },
+            {
+              "line": 36,
+              "text": "| 步骤 3 容器行为 | `destination` 若不是 `list`/`extend` 语义不同的对象 | 行为未定义，未测试 |"
+            },
+            {
+              "line": 40,
+              "text": "- **重复校验是\"写入前全量校验\"，具备前置失败保证**：判重发生在任何写入之前，重复时不产生部分数据。这一点有测试 `test_duplicate` 支撑。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "A-inventory",
+      "round": 2,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/before/A-inventory.answer.md",
+      "answer_sha256": "589bf9292cb4cba244c06a12ec8ee46bc07bd370bd6dbe1af144500b0779f9d8",
+      "assertions": [
+        {
+          "id": "A-inventory.1",
+          "assertion": "解释SKU标准化、批次重复拒绝发生在写入之前",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 9,
+              "text": "| ① 归一化 | `ingest.py:2` | 一次性列表推导，逐行取 `row[\"sku\"]`，`.strip().upper()`；此时**不写入** `destination` |"
+            },
+            {
+              "line": 10,
+              "text": "| ② 重复校验 | `ingest.py:3-4` | `len(skus) != len(set(skus))` 时 `raise ValueError(\"duplicate SKU\")`；此时**不写入** |"
+            },
+            {
+              "line": 14,
+              "text": "设计要点：SKU 先全部归一化再比较，故 `\"p1\"`、`\" p1 \"`、`\"P1\"` 视为同一 SKU（`test_ingest.py:8-11` 覆盖）。"
+            },
+            {
+              "line": 18,
+              "text": "- **步骤 ①② 失败 → destination 零写入，强一致**：`KeyError`（缺 `sku` 字段）、`ValueError`（重复 SKU）都发生在 `extend` 之前。重复 SKU 的“空 destination”保证有测试（`test_ingest.py:12`）。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.2",
+          "assertion": "指出quantity转换在extend生成期间发生，后项转换失败可能保留已写入项，不能承诺所有失败原子",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 19,
+              "text": "- **步骤 ③ 失败 → 部分写入，无回滚**：`extend` 消费生成器时逐条执行 `int(row[\"quantity\"])`；若第 k 行 quantity 非数值（如 `\"abc\"`、`None`、`\"3.5\"`），前 k-1 条已 append 到 `destination`，异常抛出后函数不返回。这是当前实现最重要的非原子边界，异常类型取决于输入（`ValueError`/`TypeError`）。"
+            },
+            {
+              "line": 30,
+              "text": "- **未变**：函数签名、SKU 归一化规则、quantity 的 `int` 转换、写入形态 `{\"sku\", \"quantity\"}`、返回值语义、无回滚特性、不校验 destination。"
+            },
+            {
+              "line": 42,
+              "text": "- **未覆盖部分写入**：无 quantity 非法/中途失败的用例，故③的原子性缺失未被测试发现，也没有断言失败后 destination 的残留。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.3",
+          "assertion": "diff只支持ingest.py查重逻辑为新增，不断言测试文件是本次新增或修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "**范围**：仅 `ingest()` 一个函数。`README.md` 明确：仅标准库；`diff.patch` 只覆盖 `ingest.py` 的本次改动，其他文件历史未知。"
+            },
+            {
+              "line": 26,
+              "text": "依据 `diff.patch`（hunk 仅 2 行新增，`ingest.py:3-4`）："
+            },
+            {
+              "line": 29,
+              "text": "- **本次新增**：批次内归一化后重复即 `ValueError(\"duplicate SKU\")`，且因校验前置于写入，失败批次不污染 destination。"
+            },
+            {
+              "line": 31,
+              "text": "- 归一化早于重复检查这一顺序是 patch 前的既有结构，diff 只在其后插入断言；历史“为何如此排序”无注释/ADR 依据，属推断。"
+            }
+          ]
+        },
+        {
+          "id": "A-inventory.4",
+          "assertion": "测试状态真实，描述范围限定在当前内存实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 18,
+              "text": "- **步骤 ①② 失败 → destination 零写入，强一致**：`KeyError`（缺 `sku` 字段）、`ValueError`（重复 SKU）都发生在 `extend` 之前。重复 SKU 的“空 destination”保证有测试（`test_ingest.py:12`）。"
+            },
+            {
+              "line": 33,
+              "text": "### 4. 测试能证明什么"
+            },
+            {
+              "line": 40,
+              "text": "### 5. 测试不能证明什么"
+            },
+            {
+              "line": 42,
+              "text": "- **未覆盖部分写入**：无 quantity 非法/中途失败的用例，故③的原子性缺失未被测试发现，也没有断言失败后 destination 的残留。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "A-labels",
+      "round": 1,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/after/A-labels.answer.md",
+      "answer_sha256": "8e4cd69056ec2e8e1ff5dd1edbfc191a2f5bc416950f8c5f499ee99b16222531",
+      "assertions": [
+        {
+          "id": "A-labels.1",
+          "assertion": "规范化及去重先完成，ASCII编码和append按项发生",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 17,
+              "text": "1. **规范化**（`labels.py:2`）"
+            },
+            {
+              "line": 18,
+              "text": "   - 对 `labels` 逐项执行 `strip()`，生成 `names`。"
+            },
+            {
+              "line": 41,
+              "text": "  -> strip 规范化"
+            },
+            {
+              "line": 54,
+              "text": "| `labels` 不可迭代 / 为 `None` | `labels.py:2` 列表推导 | 不发生写入，保持原状 | 规范化在循环写入之前 |"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.2",
+          "assertion": "指出编码失败可能发生在已有append之后，无回滚保证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 57,
+              "text": "| 某个名称含非 ASCII 字符 | `labels.py:6` 的 `encode(\"ascii\")` | **可能部分写入**：该名称之前已成功追加的项会保留，当前项不会追加，后续项不会处理 | 编码发生在循环内，且每个 `append` 独立执行 |"
+            },
+            {
+              "line": 58,
+              "text": "| `storage.append` 自身抛异常（如自定义容器、内存错误） | `labels.py:6` | **可能部分写入**：此前成功的追加不会撤销 | 无事务、无补偿逻辑；普通 `list.append` 通常不抛业务异常，但实现未对此作保证 |"
+            },
+            {
+              "line": 64,
+              "text": "- 不能据此推断：**所有异常都能保证 `storage` 不变**。非 ASCII 编码失败或中途 `append` 失败时，属于“逐项写入、无原子性”的部分提交。"
+            },
+            {
+              "line": 97,
+              "text": "- 非 ASCII 标签：未验证 `UnicodeEncodeError` 及可能的部分写入。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.3",
+          "assertion": "说明没有历史或diff不能区分新增/旧实现，不能虚构版本或测试变更状态",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 10,
+              "text": "- 历史证据限制：`README.md:2` 明确写着“当前只提供快照，无 Git 历史、diff 或新增文件清单”。因此本报告只描述当前代码事实，**无法可靠区分旧实现与本次新增**（详见第 4 节）。"
+            },
+            {
+              "line": 11,
+              "text": "- 本次未运行任何命令、未执行测试、未读取 Git 历史；以下测试结论均来自静态阅读。"
+            },
+            {
+              "line": 73,
+              "text": "- `README.md:2` 明确说明只有当前快照，没有 Git 历史、diff 或新增文件清单。"
+            },
+            {
+              "line": 79,
+              "text": "> 当前存在，历史状态未知；无法核实其是否属于原有实现或本次变更。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.4",
+          "assertion": "测试未执行且其成功用例不足以证明异常路径",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 11,
+              "text": "- 本次未运行任何命令、未执行测试、未读取 Git 历史；以下测试结论均来自静态阅读。"
+            },
+            {
+              "line": 102,
+              "text": "验证限制：**测试未运行**，不能报告“测试通过”；以上仅为对测试代码覆盖范围的静态判断。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "A-labels",
+      "round": 1,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/before/A-labels.answer.md",
+      "answer_sha256": "95846852632534c1c5d197d8e9823bda130226532ae0fbd9bfdac108b67fe660",
+      "assertions": [
+        {
+          "id": "A-labels.1",
+          "assertion": "规范化及去重先完成，ASCII编码和append按项发生",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 9,
+              "text": "把一组标签名做规范化与去重校验后，以 UTF-8 无关的 **ASCII 字节串** 形式追加到调用方传入的 `storage` 列表，并返回成功发布的数量。"
+            },
+            {
+              "line": 19,
+              "text": "| 1 | `labels.py:2` | 列表推导 `label.strip()`，逐个去首尾空白，得到 `names` |"
+            },
+            {
+              "line": 26,
+              "text": "    A[labels] --> B[\"strip 每个元素 → names (L2)\"]"
+            },
+            {
+              "line": 38,
+              "text": "- 判重针对 **strip 之后** 的名字：`\"a\"` 与 `\" a \"` 被视为重复（`labels.py:2-3`）。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.2",
+          "assertion": "指出编码失败可能发生在已有append之后，无回滚保证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 48,
+              "text": "| `UnicodeEncodeError`（非 ASCII 标签，如中文/emoji） | `labels.py:6` 的 `encode(\"ascii\")` | **可能部分写入**：出错元素之前的标签已 append，之后的不再写入，且无回滚 | ❌ 非原子 |"
+            },
+            {
+              "line": 50,
+              "text": "| `storage.append` 自身抛错（如自定义容器、`frozen`/不可变、容量限制） | `labels.py:6` | 同样可能部分写入 | ❌ 非原子 |"
+            },
+            {
+              "line": 64,
+              "text": "| 错误契约 | 重复 → `ValueError(\"duplicate label\")`；非 ASCII → `UnicodeEncodeError` 透出 |"
+            },
+            {
+              "line": 72,
+              "text": "- **未覆盖**：重复标签的 `ValueError`、`strip` 归一化冲突、非 ASCII 的 `UnicodeEncodeError` 及部分写入行为、空列表、`storage` 已含数据的追加场景、并发。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.3",
+          "assertion": "说明没有历史或diff不能区分新增/旧实现，不能虚构版本或测试变更状态",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 77,
+              "text": "**无法区分，此结论有明确证据支撑：**"
+            },
+            {
+              "line": 79,
+              "text": "- `README.md:2`：「当前只提供快照，无 Git 历史、diff 或新增文件清单。」"
+            },
+            {
+              "line": 81,
+              "text": "- skill 的取证规则要求：只有存在可核验的 diff、历史版本或会话记录时才能区分“原有实现”与“本次变更”；否则只描述当前状态。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.4",
+          "assertion": "测试未执行且其成功用例不足以证明异常路径",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "> 归档方式：**只读报告**，未写入任何文件、未运行命令、未执行测试"
+            },
+            {
+              "line": 73,
+              "text": "- **验证状态**：本会话为只读，未运行 `unittest`，因此上述用例“存在”而**未验证是否通过**。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "A-labels",
+      "round": 2,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/after/A-labels.answer.md",
+      "answer_sha256": "b45dd651f903a7f8bcab07623e6f03396785a8ec330cc11a09711ddb4cfd15f6",
+      "assertions": [
+        {
+          "id": "A-labels.1",
+          "assertion": "规范化及去重先完成，ASCII编码和append按项发生",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 22,
+              "text": " 1. names = [label.strip() for label in labels]        # 归一化：去首尾空白"
+            },
+            {
+              "line": 31,
+              "text": "- **归一化先于判重**：判重比较的是 `strip()` 之后的值，因此 `[\"a\", \" a \"]` 会被判为重复并抛 `ValueError`；写入的也是去空白后的值。"
+            },
+            {
+              "line": 41,
+              "text": "| 输入元素无 `.strip()`（如 `None`、`int`） | 阶段 1，构建 `names` | 无修改；抛 `AttributeError` | `labels.py:2` |"
+            },
+            {
+              "line": 58,
+              "text": "| `strip` 归一化行为 | **未覆盖** | 同上 |"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.2",
+          "assertion": "指出编码失败可能发生在已有append之后，无回滚保证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 43,
+              "text": "| 某元素含非 ASCII 字符（如 `\"标签\"`、`\"café\"`） | 阶段 3，循环中途 | **部分写入**：异常前已 `append` 的元素永久留在调用方 list 中，无回滚 | `labels.py:5-6` |"
+            },
+            {
+              "line": 44,
+              "text": "| 调用方传入不可 `append` 的对象 | 阶段 3 | 已写入部分不可撤销（同上），抛 `AttributeError` | `labels.py:5-6` |"
+            },
+            {
+              "line": 57,
+              "text": "| 非 ASCII 中途失败导致部分写入 | **未覆盖** | 同上 |"
+            },
+            {
+              "line": 87,
+              "text": "1. **失败非原子（最高优先级）**：非 ASCII 或中途异常会留下部分写入，调用方难以察觉已写入几条（`labels.py:5-6`）。调用方若在异常后重试，需先自行判断是否清理。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.3",
+          "assertion": "说明没有历史或diff不能区分新增/旧实现，不能虚构版本或测试变更状态",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 4,
+              "text": "> 证据基线：`labels/` 快照，读取了 `README.md`、`labels.py`、`test_labels.py`。**当前目录没有 Git 历史、diff 或新增文件清单**（`README.md:2`）。"
+            },
+            {
+              "line": 60,
+              "text": "| 是否实际执行通过 | **未运行，未知** | 本次为只读会话，未执行 `python -m unittest` |"
+            },
+            {
+              "line": 68,
+              "text": "- `README.md:2` 明确「当前只提供快照，无 Git 历史、diff 或新增文件清单」。"
+            },
+            {
+              "line": 69,
+              "text": "- 本会话未获取任何历史版本、提交说明、ADR 或先前代码。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.4",
+          "assertion": "测试未执行且其成功用例不足以证明异常路径",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "> 交付形式：报告（未写文件、未运行命令、未提交）。"
+            },
+            {
+              "line": 60,
+              "text": "| 是否实际执行通过 | **未运行，未知** | 本次为只读会话，未执行 `python -m unittest` |"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "A-labels",
+      "round": 2,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/before/A-labels.answer.md",
+      "answer_sha256": "9d6945e102f635927531a947553438b97aaba0c28522a3fd0b4f0a5a3320b417",
+      "assertions": [
+        {
+          "id": "A-labels.1",
+          "assertion": "规范化及去重先完成，ASCII编码和append按项发生",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 22,
+              "text": "1. **规范化**：`labels.py:2` 列表推导，对每个元素执行 `label.strip()`，得到 `names`。"
+            },
+            {
+              "line": 29,
+              "text": "    A[调用方传入 labels, storage] --> B[逐项 strip 生成 names]"
+            },
+            {
+              "line": 59,
+              "text": "| 元素不是字符串（如 `None`、`int`） | `labels.py:2` 的 `.strip()` | **完全不变**：尚未进入写入循环 | 安全失败 |"
+            },
+            {
+              "line": 68,
+              "text": "- **空字符串可通过**：`\"\".strip()` 为 `\"\"`，`\"\" .encode(\"ascii\")` 合法，会被写入；若 `labels` 中出现两个空串，反而会命中重复异常。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.2",
+          "assertion": "指出编码失败可能发生在已有append之后，无回滚保证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 39,
+              "text": "    F -. UnicodeEncodeError .-> K[异常上抛, 前序项已写入]"
+            },
+            {
+              "line": 55,
+              "text": "**该函数没有事务、回滚或预校验编码能力，`storage` 的最终状态取决于异常发生的阶段。** `labels.py:5-6` 的“编码 + 追加”在同一循环体内逐项执行，这是部分写入的根因。"
+            },
+            {
+              "line": 61,
+              "text": "| 非 ASCII 标签（如 `\"标签\"`） | `labels.py:6` 的 `encode(\"ascii\")` | **部分写入**：失败项之前的标签已 append，失败项本身未写入 | ⚠️ 非原子，调用方会拿到“半批数据” |"
+            },
+            {
+              "line": 62,
+              "text": "| `storage.append` 自身抛错（如非 list/只读容器、自定义容器） | `labels.py:6` | **部分写入**：取决于容器已接受的追加次数 | ⚠️ 非原子，且函数未提前校验 `storage` 类型 |"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.3",
+          "assertion": "说明没有历史或diff不能区分新增/旧实现，不能虚构版本或测试变更状态",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 13,
+              "text": "- **业务背景/历史定位**：⚠️ 无依据。`README.md:2` 明确说明“当前只提供快照，无 Git 历史、diff 或新增文件清单”，因此本报告只归档**当前代码事实**。"
+            },
+            {
+              "line": 80,
+              "text": "- `README.md:2` 明确：仅有快照，**无 Git 历史、无 diff、无新增文件清单**。"
+            },
+            {
+              "line": 81,
+              "text": "- 目录中可读到的实现只有 `labels.py` 一个版本，无历史副本、无迁移脚本、无注释标注变更来源。"
+            },
+            {
+              "line": 147,
+              "text": "1. 旧实现与本次新增的边界（无 diff/历史，`README.md:2`）。"
+            }
+          ]
+        },
+        {
+          "id": "A-labels.4",
+          "assertion": "测试未执行且其成功用例不足以证明异常路径",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 133,
+              "text": "验证状态说明：**本次仅做静态阅读，未运行 `unittest`**，因此“测试通过”不属本报告可断言内容。"
+            },
+            {
+              "line": 156,
+              "text": "- 本报告为**只读归档报告**，未创建或修改任何文件，未运行任何命令。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "D-format",
+      "round": 1,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/after/D-format.answer.md",
+      "answer_sha256": "5701949d570f2b7cf338aafd58105b2ded2fbe72b1b94ce6f71f82529a5b0af9",
+      "assertions": [
+        {
+          "id": "D-format.1",
+          "assertion": "识别None当前调用strip会失败、现有测试不覆盖，此处确有缺口",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 5,
+              "text": "| `format_label(None)` 返回 `\"\"` | **缺实现**：`formatter.py:2` 直接调用 `value.strip()`，对 `None` 会抛 `AttributeError` |"
+            },
+            {
+              "line": 32,
+              "text": "| T1 完成后、T2 之前 | 新增的 `None` 用例**失败**，报 `AttributeError: 'NoneType' object has no attribute 'strip'`；`test_trims` 仍通过。此失败即缺陷已复现的证据。 |"
+            }
+          ]
+        },
+        {
+          "id": "D-format.2",
+          "assertion": "新增None回归在修复前预期失败且已有trims应保持通过，修复后同时通过",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 32,
+              "text": "| T1 完成后、T2 之前 | 新增的 `None` 用例**失败**，报 `AttributeError: 'NoneType' object has no attribute 'strip'`；`test_trims` 仍通过。此失败即缺陷已复现的证据。 |"
+            },
+            {
+              "line": 39,
+              "text": "- 不做 Git `add/commit/push`，不重构、不扩展其他输入校验（如数字、列表的显式处理仍保持现状）。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.3",
+          "assertion": "复用README标准库unittest及现有测试路径，不扩大为框架改造",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 8,
+              "text": "| 测试路径与命令 | 已明确：根目录 `test_formatter.py`，`python -m unittest test_formatter.py -v`（见 `README.md`） |"
+            },
+            {
+              "line": 18,
+              "text": "  - 沿用 `unittest` + 现有导入，不新建测试文件、不引入 pytest 或其他框架。"
+            },
+            {
+              "line": 25,
+              "text": "  - `python -m unittest test_formatter.py -v`"
+            },
+            {
+              "line": 34,
+              "text": "| T3 | `unittest` 输出 `OK`，退出码 0；无需改动 `README.md`（无签名文档可同步），不涉及配置、依赖或对外接口。 |"
+            }
+          ]
+        },
+        {
+          "id": "D-format.4",
+          "assertion": "不把缺口说成已满足、不要求所有测试先失败、不伪称已执行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 12,
+              "text": "## 最小实施计划"
+            },
+            {
+              "line": 40,
+              "text": "- 本轮仅交付计划，未修改代码、未运行测试。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "D-format",
+      "round": 1,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/before/D-format.answer.md",
+      "answer_sha256": "52c94e3c0b5b719f7a01802343afa7f73d4c4b7b32cc4bf5e5f67a922b8b3ca4",
+      "assertions": [
+        {
+          "id": "D-format.1",
+          "assertion": "识别None当前调用strip会失败、现有测试不覆盖，此处确有缺口",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 31,
+              "text": "1. **T2 先行（若按红-绿顺序）**：新增 `None` 用例时 `format_label(None)` 抛 `AttributeError: 'NoneType' object has no attribute 'strip'`，仅该新用例失败，原 `test_trims` 通过 —— 证明用例确实覆盖了缺口。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.2",
+          "assertion": "新增None回归在修复前预期失败且已有trims应保持通过，修复后同时通过",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 11,
+              "text": "- [ ] T1 `formatter.py`：在 `format_label` 开头加 `None` 早返回，返回 `\"\"`；其余路径保持原 `return value.strip()`，一行判断 + 一行返回，不新增辅助函数。"
+            },
+            {
+              "line": 31,
+              "text": "1. **T2 先行（若按红-绿顺序）**：新增 `None` 用例时 `format_label(None)` 抛 `AttributeError: 'NoneType' object has no attribute 'strip'`，仅该新用例失败，原 `test_trims` 通过 —— 证明用例确实覆盖了缺口。"
+            },
+            {
+              "line": 32,
+              "text": "2. **T1 完成后**：`None` 用例转绿，其余空白相关用例保持绿，无新增告警或行为变化。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.3",
+          "assertion": "复用README标准库unittest及现有测试路径，不扩大为框架改造",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 1,
+              "text": "已读取：`README.md`（标准库 unittest，运行 `python -m unittest test_formatter.py -v`）、`formatter.py`（`return value.strip()`）、`test_formatter.py`（仅 `test_trims`）。以下是计划，不含代码改动、测试执行或 Git 操作。"
+            },
+            {
+              "line": 13,
+              "text": "- [ ] T3 运行 `python -m unittest test_formatter.py -v`，确认新旧用例全部通过。"
+            },
+            {
+              "line": 33,
+              "text": "3. **T3 结果预期**：`python -m unittest test_formatter.py -v` 退出码 0，用例数 = 原有 1 + 新增数，全部 `ok`；无 `skip`/`error`。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.4",
+          "assertion": "不把缺口说成已满足、不要求所有测试先失败、不伪称已执行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 1,
+              "text": "已读取：`README.md`（标准库 unittest，运行 `python -m unittest test_formatter.py -v`）、`formatter.py`（`return value.strip()`）、`test_formatter.py`（仅 `test_trims`）。以下是计划，不含代码改动、测试执行或 Git 操作。"
+            },
+            {
+              "line": 9,
+              "text": "## 实施计划（小任务，用回复内 checklist，不建 tasks 文件）"
+            },
+            {
+              "line": 39,
+              "text": "- 是否要求 `format_label(None)` 与 `format_label(\"\")` 完全等价（含返回值类型为 `str`）—— 本计划按“是”处理，若你希望保留 `None` 直通语义需在实施前说明，否则按上表执行。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": "任务编号先实现后测试，正文再说若按红绿顺序应先运行 T2，顺序不够一致。"
+    },
+    {
+      "case_id": "D-format",
+      "round": 2,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/after/D-format.answer.md",
+      "answer_sha256": "92e6fc7751ce7cae268e828abb91a244af26e8749c8f71a9ed930290b2a327d7",
+      "assertions": [
+        {
+          "id": "D-format.1",
+          "assertion": "识别None当前调用strip会失败、现有测试不覆盖，此处确有缺口",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 5,
+              "text": "| `formatter.py` | 仅 `format_label(value): return value.strip()`；`None` 会抛 `AttributeError` |"
+            },
+            {
+              "line": 8,
+              "text": "| 缺口 | 无 `None` 输入行为，无对应测试；去空白逻辑本身已满足验收 |"
+            },
+            {
+              "line": 19,
+              "text": "  预期：在 T3 之前运行该用例失败，错误为 `AttributeError: 'NoneType' object has no attribute 'strip'`——以此证明测试确实覆盖了本次缺口，而非恒真。"
+            },
+            {
+              "line": 42,
+              "text": "1. **T1 后**：1 通过 / 1 失败（`AttributeError`），失败原因与需求缺口一致。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.2",
+          "assertion": "新增None回归在修复前预期失败且已有trims应保持通过，修复后同时通过",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 12,
+              "text": "在 `format_label` 开头加一处短路返回：`value is None` 时返回 `\"\"`，其余分支保持 `value.strip()` 原样。用 `is None` 而非 `if not value`，避免顺带改变 `\"\"`、`0`、`False` 等输入的既有行为（超出本次范围）。"
+            },
+            {
+              "line": 19,
+              "text": "  预期：在 T3 之前运行该用例失败，错误为 `AttributeError: 'NoneType' object has no attribute 'strip'`——以此证明测试确实覆盖了本次缺口，而非恒真。"
+            },
+            {
+              "line": 42,
+              "text": "1. **T1 后**：1 通过 / 1 失败（`AttributeError`），失败原因与需求缺口一致。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.3",
+          "assertion": "复用README标准库unittest及现有测试路径，不扩大为框架改造",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "| 运行方式 | `python -m unittest test_formatter.py -v`（README 已确认，不新增框架/依赖） |"
+            },
+            {
+              "line": 37,
+              "text": "  命令：`python -m unittest test_formatter.py -v`"
+            }
+          ]
+        },
+        {
+          "id": "D-format.4",
+          "assertion": "不把缺口说成已满足、不要求所有测试先失败、不伪称已执行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 50,
+              "text": "- 若实施中发现除 `None` 外的调用点也传入空值，先记录再评估，不在本计划内扩范围。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "D-format",
+      "round": 2,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/before/D-format.answer.md",
+      "answer_sha256": "568dfb17ec3c48fd2554910de0576e12c3e1a1e04895c0fbd92fcc56889f19af",
+      "assertions": [
+        {
+          "id": "D-format.1",
+          "assertion": "识别None当前调用strip会失败、现有测试不覆盖，此处确有缺口",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "- `formatter.py`：`format_label(value)` 直接返回 `value.strip()`，传入 `None` 会抛 `AttributeError`。"
+            },
+            {
+              "line": 26,
+              "text": "阶段预期：仅加测试时，用例因 `AttributeError: 'NoneType' object has no attribute 'strip'` 失败，`test_trims` 仍通过（Ran 2 tests, FAILED）。此阶段失败即为问题可复现的证据。"
+            },
+            {
+              "line": 46,
+              "text": "3. 上述测试全绿；未覆盖项仅为“其他非 `str` 输入仍抛 `AttributeError`”，属本次刻意保留的现状。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.2",
+          "assertion": "新增None回归在修复前预期失败且已有trims应保持通过，修复后同时通过",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 24,
+              "text": "在 `FormatterTests` 内新增一条独立用例，断言 `format_label(None) == \"\"`，与 `test_trims` 分开，便于定位失败原因。"
+            },
+            {
+              "line": 26,
+              "text": "阶段预期：仅加测试时，用例因 `AttributeError: 'NoneType' object has no attribute 'strip'` 失败，`test_trims` 仍通过（Ran 2 tests, FAILED）。此阶段失败即为问题可复现的证据。"
+            },
+            {
+              "line": 30,
+              "text": "在 `format_label` 开头对 `None` 做显式判定并提前返回 `\"\"`，其余路径保持 `value.strip()` 原样。"
+            },
+            {
+              "line": 40,
+              "text": "预期：Ran 2 tests，全部 `ok`（`test_trims`、新增 None 用例），退出码 0。若 T1 用例仍失败或 `test_trims` 回归，回到 T2 检查分支位置。"
+            }
+          ]
+        },
+        {
+          "id": "D-format.3",
+          "assertion": "复用README标准库unittest及现有测试路径，不扩大为框架改造",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 4,
+              "text": "- `test_formatter.py`：仅 `test_trims` 一条用例，用 `unittest` 运行。"
+            },
+            {
+              "line": 5,
+              "text": "- `README.md`：标准库，命令 `python -m unittest test_formatter.py -v`。"
+            },
+            {
+              "line": 38,
+              "text": "命令：`python -m unittest test_formatter.py -v`"
+            }
+          ]
+        },
+        {
+          "id": "D-format.4",
+          "assertion": "不把缺口说成已满足、不要求所有测试先失败、不伪称已执行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "这属于“明确的单文件修复”，因此不建 tasks 文件，直接给轻量计划。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "D-stock",
+      "round": 1,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/after/D-stock.answer.md",
+      "answer_sha256": "b26f3668b9f0e21d83aee43a70f9649eab45f24f55b16e312277f4a257aa7591",
+      "assertions": [
+        {
+          "id": "D-stock.1",
+          "assertion": "识别quantity=0已被拒绝且test_zero存在，允许无需生产修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "| `quantity=0` 被拒绝 | `stock.py` 中 `quantity <= 0` 抛 `ValueError(\"quantity must be positive\")` | 已实现 |"
+            },
+            {
+              "line": 8,
+              "text": "| 拒绝有回归覆盖 | `test_zero` 用 `assertRaisesRegex(..., \"positive\")` | 已覆盖 |"
+            },
+            {
+              "line": 21,
+              "text": "- [ ] T2 记录证据：退出码、用例数、`test_zero`/`test_valid`/`test_over_limit` 的 PASS 行"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.2",
+          "assertion": "先验证现有行为，不能断言既有用例必须红灯或强制重写去重式实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 1,
+              "text": "## 结论：需求实际已满足，缺口是“未验证”而非“未实现”"
+            },
+            {
+              "line": 7,
+              "text": "| `quantity=0` 被拒绝 | `stock.py` 中 `quantity <= 0` 抛 `ValueError(\"quantity must be positive\")` | 已实现 |"
+            },
+            {
+              "line": 9,
+              "text": "| 正常预订 | `reserve(5, 2) == 3`，`test_valid` 覆盖 | 已满足 |"
+            },
+            {
+              "line": 10,
+              "text": "| 库存不足 | `quantity > available` 抛 `\"insufficient stock\"`，`test_over_limit` 覆盖 | 已满足 |"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.3",
+          "assertion": "沿用根目录test_stock.py和unittest，无pytest/重复测试目录",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "对照 `README.md`、`stock.py`、`test_stock.py`："
+            },
+            {
+              "line": 22,
+              "text": "- [ ] T3（可选，需你确认）仅在希望锁定负数与边界行为时，新增两个用例，沿用现有 `unittest` 与 `assertRaisesRegex` 风格；`stock.py` 不改"
+            },
+            {
+              "line": 29,
+              "text": "python -m unittest test_stock.py -v"
+            },
+            {
+              "line": 37,
+              "text": "- 不引入 pytest 或新目录（README 明确只用标准库 unittest）"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.4",
+          "assertion": "交付可验证计划且不请求重复授权、不伪称已运行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": []
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "D-stock",
+      "round": 1,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/before/D-stock.answer.md",
+      "answer_sha256": "9ad712d40ddd819076bfc36dc6593e9c7374dc75f07bceac57e974e77a3d12dd",
+      "assertions": [
+        {
+          "id": "D-stock.1",
+          "assertion": "识别quantity=0已被拒绝且test_zero存在，允许无需生产修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 5,
+              "text": "`stock.py` 的 `reserve` 第一分支是 `if quantity <= 0: raise ValueError(\"quantity must be positive\")`，因此 `quantity = 0`（以及负数）已经被拒绝，且拒绝发生在库存检查之前 —— `reserve(0, 0)` 会因“非正数”而报错，而不是因“库存不足”报错，这个优先级正是期望的。"
+            },
+            {
+              "line": 11,
+              "text": "| 拒绝 `quantity=0` | 已有 | `test_zero` 已覆盖 |"
+            },
+            {
+              "line": 27,
+              "text": "- [ ] T2 在 `test_stock.py` 增加负数用例：`reserve(5, -1)` 抛 `ValueError`，正则匹配 `positive`，复用 `test_zero` 的 `assertRaisesRegex` 写法。"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.2",
+          "assertion": "先验证现有行为，不能断言既有用例必须红灯或强制重写去重式实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "**生产代码的行为已满足需求**，真正的缺口在验证层，不在实现层。"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.3",
+          "assertion": "沿用根目录test_stock.py和unittest，无pytest/重复测试目录",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 27,
+              "text": "- [ ] T2 在 `test_stock.py` 增加负数用例：`reserve(5, -1)` 抛 `ValueError`，正则匹配 `positive`，复用 `test_zero` 的 `assertRaisesRegex` 写法。"
+            },
+            {
+              "line": 28,
+              "text": "- [ ] T3 在 `test_stock.py` 增加边界优先级用例：`reserve(0, 0)` 期望报 `positive`（而非 `insufficient`），用正则 `positive` 断言。"
+            },
+            {
+              "line": 31,
+              "text": "约束：只动 `test_stock.py`；不重构 `reserve`，不引入 pytest/新依赖，不改错误消息文案（测试已依赖 `positive` 与 `insufficient` 子串）。"
+            },
+            {
+              "line": 36,
+              "text": "python -m unittest test_stock.py -v"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.4",
+          "assertion": "交付可验证计划且不请求重复授权、不伪称已运行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 44,
+              "text": "- 若 T1 核查发现 `quantity <= 0` 已被改为其他条件，则需求从“补测试”升级为“恢复拒绝语义”，需重新出计划，不在本计划覆盖范围内。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": "把负数及边界测试列成必须补齐的任务，超出本次已覆盖的三个验收行为。"
+    },
+    {
+      "case_id": "D-stock",
+      "round": 2,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/after/D-stock.answer.md",
+      "answer_sha256": "84fdbf53f1f8d4aacafe4e51ae0235d038c17f656f6e3b9a05fc81b438c4cebd",
+      "assertions": [
+        {
+          "id": "D-stock.1",
+          "assertion": "识别quantity=0已被拒绝且test_zero存在，允许无需生产修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "`reserve` 拒绝 `quantity=0` 的行为**已经实现且有测试覆盖**，正常预订和库存不足的行为也都存在。当前唯一真实缺口是**负数数量没有测试**（实现用 `<= 0` 已拦截，但回归未锁定）。因此无需修改 `stock.py`。"
+            },
+            {
+              "line": 9,
+              "text": "| `quantity=0` 抛错且信息含 `positive` | 满足：`quantity <= 0` → `ValueError(\"quantity must be positive\")` | 满足：`test_zero` | 已满足 |"
+            },
+            {
+              "line": 32,
+              "text": "判定标准：退出码 0；原 3 个用例保持通过；新增负数用例（及可选边界用例）通过。因行为已实现，新测试**预期直接通过、不出现先红后绿**，这是正常结果，不修改正确实现去制造失败。"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.2",
+          "assertion": "先验证现有行为，不能断言既有用例必须红灯或强制重写去重式实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 9,
+              "text": "| `quantity=0` 抛错且信息含 `positive` | 满足：`quantity <= 0` → `ValueError(\"quantity must be positive\")` | 满足：`test_zero` | 已满足 |"
+            },
+            {
+              "line": 10,
+              "text": "| 正常预订扣减 | 满足：返回 `available - quantity` | 满足：`test_valid`（5,2→3） | 已满足 |"
+            },
+            {
+              "line": 11,
+              "text": "| 库存不足抛错含 `insufficient` | 满足：`quantity > available` → `ValueError(\"insufficient stock\")` | 满足：`test_over_limit`（1,2） | 已满足 |"
+            },
+            {
+              "line": 14,
+              "text": "| 错误信息与项目风格一致 | 与现有 `ValueError` 风格一致 | — | 已满足 |"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.3",
+          "assertion": "沿用根目录test_stock.py和unittest，无pytest/重复测试目录",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "| 验收行为 | 实现 `stock.py` | 测试 `test_stock.py` | 状态 |"
+            },
+            {
+              "line": 19,
+              "text": "- [ ] **T2 补回归**：在 `test_stock.py` 的 `ReserveTests` 中新增负数用例，断言 `ValueError` 且匹配 `\"positive\"`，沿用现有 `assertRaisesRegex` 写法；不新建测试文件、不引入 pytest"
+            },
+            {
+              "line": 29,
+              "text": "python -m unittest test_stock.py -v"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.4",
+          "assertion": "交付可验证计划且不请求重复授权、不伪称已运行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 38,
+              "text": "待你确认后我再实施 T2–T4；本轮仅计划，未修改任何文件。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": "虽明确不改生产和不强造红灯，仍把负数覆盖称为唯一真实缺口，范围判断偏宽。"
+    },
+    {
+      "case_id": "D-stock",
+      "round": 2,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/before/D-stock.answer.md",
+      "answer_sha256": "dbc09accd02325001d6fe7c087d780a2b09cc9711ac48536d3fc659e4f40e4fb",
+      "assertions": [
+        {
+          "id": "D-stock.1",
+          "assertion": "识别quantity=0已被拒绝且test_zero存在，允许无需生产修改",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "`stock.py` 的 `reserve` **已经**拒绝 `quantity=0`（`if quantity <= 0: raise ValueError(\"quantity must be positive\")`），并且正常的预订和库存不足这两条路径看起来都符合需求。因此本次实施计划的核心是：**先确认没有实现缺口，再用测试固定住这一行为**，不需要修改生产代码；如果验证发现例外情况，只需最小范围的改动。"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.2",
+          "assertion": "先验证现有行为，不能断言既有用例必须红灯或强制重写去重式实现",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "`stock.py` 的 `reserve` **已经**拒绝 `quantity=0`（`if quantity <= 0: raise ValueError(\"quantity must be positive\")`），并且正常的预订和库存不足这两条路径看起来都符合需求。因此本次实施计划的核心是：**先确认没有实现缺口，再用测试固定住这一行为**，不需要修改生产代码；如果验证发现例外情况，只需最小范围的改动。"
+            },
+            {
+              "line": 15,
+              "text": "`README.md` 只说明测试命令由标准库 `unittest` 执行，因此不需要引入 pytest。"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.3",
+          "assertion": "沿用根目录test_stock.py和unittest，无pytest/重复测试目录",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 15,
+              "text": "`README.md` 只说明测试命令由标准库 `unittest` 执行，因此不需要引入 pytest。"
+            },
+            {
+              "line": 20,
+              "text": "- [ ] **T2** 补充测试（唯一预计要改的文件是 `test_stock.py`）："
+            },
+            {
+              "line": 33,
+              "text": "python -m unittest test_stock.py -v"
+            },
+            {
+              "line": 41,
+              "text": "**完成标准**：`python -m unittest test_stock.py -v` 全部通过，且输出中能看到 0、负数、边界成功、库存不足这四类用例；生产代码保持不变，除非 T1 明确发现缺口。"
+            }
+          ]
+        },
+        {
+          "id": "D-stock.4",
+          "assertion": "交付可验证计划且不请求重复授权、不伪称已运行",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "`stock.py` 的 `reserve` **已经**拒绝 `quantity=0`（`if quantity <= 0: raise ValueError(\"quantity must be positive\")`），并且正常的预订和库存不足这两条路径看起来都符合需求。因此本次实施计划的核心是：**先确认没有实现缺口，再用测试固定住这一行为**，不需要修改生产代码；如果验证发现例外情况，只需最小范围的改动。"
+            },
+            {
+              "line": 43,
+              "text": "按你的要求，本次只提供计划，不修改文件，也不执行 Git 操作。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": "仍增加错误优先级和负数/边界的覆盖要求，未完全按最小验收收口。"
+    },
+    {
+      "case_id": "F-outer",
+      "round": 1,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/after/F-outer.answer.md",
+      "answer_sha256": "41692e23afdbcc56d616b4e7558297fbb0519eda9abeec9eefcadb61dbac187a",
+      "assertions": [
+        {
+          "id": "F-outer.1",
+          "assertion": "外层请求已拥有活动事务，业务只调用repo及flush，不重复begin也不提前commit",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 1,
+              "text": "## 结论：该用例不应再次调用 `begin`，也不应调用 `commit` 或 `rollback`"
+            },
+            {
+              "line": 49,
+              "text": "3. **事务所有权**：断言调用链中只有 `entry.py` 的 `begin()` 一次；在用例内再调用 `begin()` 应能复现 `InvalidRequestError`，以此证明没有重复 begin。"
+            },
+            {
+              "line": 50,
+              "text": "4. **没有提前提交**：在用例返回后、外层 `__aexit__` 之前，查询不应在被其他 session 观测到（受隔离级别影响，可做相应断言）。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.2",
+          "assertion": "异常向外传播由外层回滚，不在内层吞错或以in_transaction为由跳过业务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 10,
+              "text": "- 如果用例自行调用 `rollback()`，就会悄悄撤销外层事务，包括身份查询之后的上下文，并且吞掉真实的异常语义。"
+            },
+            {
+              "line": 26,
+              "text": "    return order.id                   # 不 begin / 不 commit / 不 rollback / 不吞异常"
+            },
+            {
+              "line": 36,
+              "text": "关键点：`use_case` 内**没有任何** `begin`、`commit` 或 `rollback`；也不使用 `try/except` 把异常转成正常返回值，最多只做不改变控制流的领域错误包装，然后继续向上抛出。"
+            },
+            {
+              "line": 38,
+              "text": "## 异常如何传递、谁结束事务"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.3",
+          "assertion": "两个repo共享session，成功和中途失败均可验证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "`entry.py` 中已有 `async with session.begin()`；身份查询也在这个外层事务内执行，`use_case` 收到的是**同一个** `session`。因此，按当前“请求级事务”约定，事务的所有权在入口层，而不在用例层。"
+            },
+            {
+              "line": 41,
+              "text": "- `async with session.begin()` 在 `__aexit__` 看到异常时，会自动对同一事务执行 `rollback`，然后异常继续向上传播给 FastAPI 的异常处理层或全局 handler。"
+            },
+            {
+              "line": 42,
+              "text": "- 正常退出 `async with` 时，由它自动执行一次 `commit`；提交成功后 `endpoint` 才返回到路由或客户端。返回标量 `id`，可以避免提交后访问过期 ORM 属性而触发隐式 I/O。"
+            },
+            {
+              "line": 47,
+              "text": "1. **原子性正向用例**：订单写入和审计写入共享同一个 session，成功时两者都可见。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.4",
+          "assertion": "不把savepoint描述成自动复用或声称新事务会自动加入活动事务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "- 活动事务上再次调用 `session.begin()` 会抛出 `InvalidRequestError`；它不会复用现有事务，也不是嵌套事务。"
+            },
+            {
+              "line": 8,
+              "text": "- `begin_nested()` 只是 SAVEPOINT（嵌套事务点），不等于提交外层事务，也无法弥补外层提前提交造成的原子性缺失。"
+            },
+            {
+              "line": 49,
+              "text": "3. **事务所有权**：断言调用链中只有 `entry.py` 的 `begin()` 一次；在用例内再调用 `begin()` 应能复现 `InvalidRequestError`，以此证明没有重复 begin。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "F-outer",
+      "round": 1,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/before/F-outer.answer.md",
+      "answer_sha256": "eef3ddd151adb9bf34e51b250ee725712eff0c128fdc6ad23b6b075af87f9703",
+      "assertions": [
+        {
+          "id": "F-outer.1",
+          "assertion": "外层请求已拥有活动事务，业务只调用repo及flush，不重复begin也不提前commit",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "**用例不应再次 `begin()`、`commit()` 或 `rollback()`。**  "
+            },
+            {
+              "line": 21,
+              "text": "如果将来确实需要“部分失败但保留部分写入”，那应作为显式的 SAVEPOINT 需求单独设计；当前需求下不应引入。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.2",
+          "assertion": "异常向外传播由外层回滚，不在内层吞错或以in_transaction为由跳过业务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 4,
+              "text": "当前约定是“请求级事务由入口拥有”，用例只是事务参与者：它写入订单和审计，必要时 `flush()`，然后正常返回或抛出异常。事务的提交或回滚由 `endpoint` 中的 `async with session.begin()` 统一结束。"
+            },
+            {
+              "line": 10,
+              "text": "| `endpoint` | 唯一事务边界：进入时开始，正常退出提交，异常退出回滚 |"
+            },
+            {
+              "line": 23,
+              "text": "## 异常如何传递、谁结束事务"
+            },
+            {
+              "line": 25,
+              "text": "- 业务校验失败、`flush()` 失败、数据库约束错误等，都应让异常自然穿过 `async with session.begin()`。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.3",
+          "assertion": "两个repo共享session，成功和中途失败均可验证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 12,
+              "text": "| `use_case` | 在同一 `session` 上 `add` / `flush`，不 `begin` / `commit` / `rollback` / `close` |"
+            },
+            {
+              "line": 37,
+              "text": "        await authorize(session)         # 身份查询，同一 session"
+            },
+            {
+              "line": 55,
+              "text": "`flush()` 只是把 SQL 发给数据库，不是提交；订单和审计仍在同一外层事务中，任一步失败都会整体回滚。"
+            },
+            {
+              "line": 60,
+              "text": "2. **成功路径**：订单和审计都落库；审计正确关联订单；整个请求只由外层完成一次提交。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.4",
+          "assertion": "不把savepoint描述成自动复用或声称新事务会自动加入活动事务",
+          "verdict": "fail",
+          "reason": "回答把活动事务上重复 begin 说成会形成嵌套事务/SAVEPOINT，实测应直接报 InvalidRequestError。",
+          "evidence": [
+            {
+              "line": 17,
+              "text": "- 在外层活动事务上再 `begin()` 会形成嵌套事务或 SAVEPOINT 语义，改变回滚粒度；一旦内层单独回滚，外层仍可能继续提交，违反“订单和审计同成同败”。"
+            },
+            {
+              "line": 21,
+              "text": "如果将来确实需要“部分失败但保留部分写入”，那应作为显式的 SAVEPOINT 需求单独设计；当前需求下不应引入。"
+            },
+            {
+              "line": 64,
+              "text": "6. **无嵌套事务**：确认没有出现额外的 `begin()` / SAVEPOINT 行为，避免改变回滚范围。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "F-outer",
+      "round": 2,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/after/F-outer.answer.md",
+      "answer_sha256": "928a5809e809ddf81868714a20db8ffcef6ca55fd602258035909582b3b29564",
+      "assertions": [
+        {
+          "id": "F-outer.1",
+          "assertion": "外层请求已拥有活动事务，业务只调用repo及flush，不重复begin也不提前commit",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "用例**不应**再次 `begin()`，也**不应**自己 `commit`/`rollback`。它只负责业务写入和必要的 `flush`，事务边界完全由 `entry.py` 的 `async with session.begin()` 拥有。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.2",
+          "assertion": "异常向外传播由外层回滚，不在内层吞错或以in_transaction为由跳过业务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 32,
+              "text": "## 异常如何传递 / 谁结束事务"
+            },
+            {
+              "line": 34,
+              "text": "- 用例**不写 try/except 去吞异常**，也不做 `except IntegrityError: rollback`。任何 flush 失败、DB 错误、业务校验异常都原样抛给 `entry.py`。"
+            },
+            {
+              "line": 35,
+              "text": "- 异常穿出 `async with session.begin()` 时，SQLAlchemy 负责回滚，订单与审计一起消失；然后异常继续向上给 FastAPI，由全局异常处理器映射成稳定的 HTTP 错误（不要把 SQL/约束细节暴露出去）。"
+            },
+            {
+              "line": 41,
+              "text": "1. **原子性**：构造审计写入失败（如约束冲突）的路径，断言订单表与审计表都没有记录（不是只断言抛了异常）。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.3",
+          "assertion": "两个repo共享session，成功和中途失败均可验证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 6,
+              "text": "- `authorize(session)` 在同一个 session 上执行身份查询，SQLAlchemy 2.x 的 autobegin 已让事务处于 active 状态。此时用例里再调 `session.begin()` 会抛 `InvalidRequestError`——不是在已有事务上复用或加入。"
+            },
+            {
+              "line": 15,
+              "text": "        await authorize(session)       # 这里触发 autobegin（同一事务）"
+            },
+            {
+              "line": 42,
+              "text": "2. **成功路径**：两处写入在同一事务内可见，且只发生一次提交。"
+            },
+            {
+              "line": 46,
+              "text": "6. **入口覆盖**：分别覆盖\"已有请求事务\"和\"新 session 由用例拥有\"的入口；若将来给该用例单独开 session，才由它自己 `begin`，两者不要混用同一份代码路径。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.4",
+          "assertion": "不把savepoint描述成自动复用或声称新事务会自动加入活动事务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 6,
+              "text": "- `authorize(session)` 在同一个 session 上执行身份查询，SQLAlchemy 2.x 的 autobegin 已让事务处于 active 状态。此时用例里再调 `session.begin()` 会抛 `InvalidRequestError`——不是在已有事务上复用或加入。"
+            },
+            {
+              "line": 7,
+              "text": "- 用 `begin_nested()` 也不能替代：那是 SAVEPOINT，外层提前提交时救不回原子性，反而掩盖所有权问题。"
+            },
+            {
+              "line": 43,
+              "text": "3. **无重复 begin**：在 `authorize` 之后进入用例，断言不出现 `InvalidRequestError`；可加日志/计数确认 `begin()` 只被调用一次。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": "主职责正确，但把显式 begin 内的查询误称为触发 autobegin。此后只补清这一语义，结果保留，另做 after-v2 回放。"
+    },
+    {
+      "case_id": "F-outer",
+      "round": 2,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/before/F-outer.answer.md",
+      "answer_sha256": "b25195b1f50a10ccc009d15d71da3446c7e8711d820ddb3cb13892d45953d3f1",
+      "assertions": [
+        {
+          "id": "F-outer.1",
+          "assertion": "外层请求已拥有活动事务，业务只调用repo及flush，不重复begin也不提前commit",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "**用例不应该再次 `begin`、`commit` 或 `rollback`。** 你现在的形状（外层 `async with session.begin()` 包住 authorize + use_case）就是正确约定，保持不动。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.2",
+          "assertion": "异常向外传播由外层回滚，不在内层吞错或以in_transaction为由跳过业务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "在 SQLAlchemy 2.x 的 `AsyncSession` 中，`authorize()` 的查询已经触发 autobegin，session 上已有一个活动事务。此时用例内部再调用 `session.begin()` 会抛 `InvalidRequestError`（事务已开始）；即使改成 `begin_nested()` 也是引入 savepoint，会把「订单 + 审计同成同败」降级成「审计可单独失败回滚」，语义被你改掉了。同理，用例内 `commit()` 会提前结束外层上下文，导致外层退出时对已结束事务再操作，`rollback()` 则会连带吞掉 authorize 之后本应向外传播的错误。三种都是越权。"
+            },
+            {
+              "line": 9,
+              "text": "### 异常如何传递、谁结束事务"
+            },
+            {
+              "line": 11,
+              "text": "- 用例**只写不决策**：`add` / `flush`，让约束错误、DB 错误原样抛给外层。不要 `except` 后 `rollback` 再 `raise`，也不要把领域异常包成「已回滚」的假象。"
+            },
+            {
+              "line": 12,
+              "text": "- 订单 `flush` 与审计 `flush` 必须在同一事务内；任一处 `flush` 抛错（含唯一约束、外键）→ 异常穿出 `use_case` → 异常穿出 `async with` 块 → `session.begin()` 的上下文管理器自动 `rollback`，authorize 之后的全部写入一并丢弃。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.3",
+          "assertion": "两个repo共享session，成功和中途失败均可验证",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 12,
+              "text": "- 订单 `flush` 与审计 `flush` 必须在同一事务内；任一处 `flush` 抛错（含唯一约束、外键）→ 异常穿出 `use_case` → 异常穿出 `async with` 块 → `session.begin()` 的上下文管理器自动 `rollback`，authorize 之后的全部写入一并丢弃。"
+            },
+            {
+              "line": 38,
+              "text": "1. **成功路径**：订单与审计都落库，且 `use_case` 返回后、`endpoint` 返回前只有一次 commit（可用事件监听 / echo 日志确认只有一对 BEGIN…COMMIT）。"
+            },
+            {
+              "line": 42,
+              "text": "5. **authorize 之后的查询可见性**：用例内的读取能看到 authorize 已 flush 的改动（同一事务，非新 session）。"
+            }
+          ]
+        },
+        {
+          "id": "F-outer.4",
+          "assertion": "不把savepoint描述成自动复用或声称新事务会自动加入活动事务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 7,
+              "text": "在 SQLAlchemy 2.x 的 `AsyncSession` 中，`authorize()` 的查询已经触发 autobegin，session 上已有一个活动事务。此时用例内部再调用 `session.begin()` 会抛 `InvalidRequestError`（事务已开始）；即使改成 `begin_nested()` 也是引入 savepoint，会把「订单 + 审计同成同败」降级成「审计可单独失败回滚」，语义被你改掉了。同理，用例内 `commit()` 会提前结束外层上下文，导致外层退出时对已结束事务再操作，`rollback()` 则会连带吞掉 authorize 之后本应向外传播的错误。三种都是越权。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": "同样把显式 begin 内身份查询说成触发 autobegin，且将 SAVEPOINT 的效果说得过于绝对。"
+    },
+    {
+      "case_id": "F-owner",
+      "round": 1,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/after/F-owner.answer.md",
+      "answer_sha256": "662724540c08646581e139cbb8f271b1401bae3d70e0d801ba4de234f1c979ed",
+      "assertions": [
+        {
+          "id": "F-owner.1",
+          "assertion": "新session前置条件明确，使用一次begin或等价明确commit/rollback保证订单审计同事务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 1,
+              "text": "## 1. 适用场景与示例（入口条件：新 session，尚未执行任何 SQL）"
+            },
+            {
+              "line": 3,
+              "text": "**适用场景**：调用方用 `async_sessionmaker` 建好 session 后直接进入 use case；此时 `session.in_transaction()` 为 `False`，没有 autobegin，**use case 是事务所有者**。两个 repository 共享同一个 session，只调用 `add`/`flush`，自身绝不 commit/rollback。"
+            },
+            {
+              "line": 8,
+              "text": "    async with session.begin():          # 本例唯一的事务边界"
+            },
+            {
+              "line": 16,
+              "text": "- 业务唯一性查询也必须放在 `begin()` 内，否则会在进入 `begin()` 前触发 autobegin。"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.2",
+          "assertion": "说明已有autobegin再begin会抛InvalidRequestError，不声称自动复用",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 3,
+              "text": "**适用场景**：调用方用 `async_sessionmaker` 建好 session 后直接进入 use case；此时 `session.in_transaction()` 为 `False`，没有 autobegin，**use case 是事务所有者**。两个 repository 共享同一个 session，只调用 `add`/`flush`，自身绝不 commit/rollback。"
+            },
+            {
+              "line": 16,
+              "text": "- 业务唯一性查询也必须放在 `begin()` 内，否则会在进入 `begin()` 前触发 autobegin。"
+            },
+            {
+              "line": 21,
+              "text": "## 2. 若身份查询先触发 autobegin，这段代码不能原样使用"
+            },
+            {
+              "line": 23,
+              "text": "**原因**：身份/权限查询一旦执行，session 已处于活动事务中（autobegin）。此时再进 `async with session.begin()` 会抛 `InvalidRequestError`；`begin()` 不会复用或“加入”已有事务。session 存在或 `in_transaction()` 为真，都不代表当前函数有权提交/回滚它。"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.3",
+          "assertion": "改变入口时明确外层接管或用例拥有当前事务的契约，不用隐式分支掩盖提交/回滚责任",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 25,
+              "text": "**必须显式调整所有权，二选一（按调用链现状，而不是靠 `if session.in_transaction()` 自动判断）：**"
+            },
+            {
+              "line": 27,
+              "text": "| 方案 | 做法 | 约束 |"
+            },
+            {
+              "line": 36,
+              "text": "1. **入口资格验证（autobegin 冲突）**：模拟“身份查询已执行、事务已活动”的 session，调用 use case，断言抛出 `InvalidRequestError`（而不是静默复用或重复 begin）。这证明当前代码只适用于“新 session、无先前 SQL”的入口，也证明需要按方案 A/B 调整，而不是靠 `in_transaction()` 分支自动决定归属。"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.4",
+          "assertion": "用户/订单写入成功后审计失败及成功路径有验证，不伪称实测",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 17,
+              "text": "- 正常退出即提交；写入/flush/审计任一失败抛异常，由上下文回滚，不要吞掉。"
+            },
+            {
+              "line": 23,
+              "text": "**原因**：身份/权限查询一旦执行，session 已处于活动事务中（autobegin）。此时再进 `async with session.begin()` 会抛 `InvalidRequestError`；`begin()` 不会复用或“加入”已有事务。session 存在或 `in_transaction()` 为真，都不代表当前函数有权提交/回滚它。"
+            },
+            {
+              "line": 29,
+              "text": "| A. 把 begin 提到最早查询之前（推荐，若 use case 仍拥有事务） | 在身份查询之前就 `async with session.begin():` 把这些查询和订单/审计写入一起包住 | 身份查询必须能进入该边界；边界内一切共享 session，异常整体回滚 |"
+            },
+            {
+              "line": 30,
+              "text": "| B. 让外层拥有请求事务 | 外层 `async with session.begin()` 覆盖身份查询 + 本用例；本用例改为只做 `orders.create` + `audits.record` + 必要 `flush`，不 begin、不 commit/rollback、不吞异常 | 需要外层明确负责最终提交/回滚；本用例不得因“已有活动事务”跳过业务或提前返回 |"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "F-owner",
+      "round": 1,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-1/before/F-owner.answer.md",
+      "answer_sha256": "39dd55dc84e22b0b8926875a6478107b6ba76a9f6dd83da5b892918bfad591fe",
+      "assertions": [
+        {
+          "id": "F-owner.1",
+          "assertion": "新session前置条件明确，使用一次begin或等价明确commit/rollback保证订单审计同事务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 5,
+              "text": "前提：调用方用 `sessionmaker()` 建 session，进入用例前无 SQL、无活动事务（无 autobegin，`session.in_transaction()` 为 `False`）。repository 只 `add` / `flush`，不 commit、不 rollback。"
+            },
+            {
+              "line": 18,
+              "text": "        async with self.session.begin():        # 此处才真正 BEGIN（此时会话尚无事务）"
+            },
+            {
+              "line": 43,
+              "text": "- `async with session.begin()` 是**唯一**入口；repository 里出现 `commit()`/`begin()` 就要删掉。"
+            },
+            {
+              "line": 48,
+              "text": "## 2. 将来身份查询先触发 autobegin"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.2",
+          "assertion": "说明已有autobegin再begin会抛InvalidRequestError，不声称自动复用",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 5,
+              "text": "前提：调用方用 `sessionmaker()` 建 session，进入用例前无 SQL、无活动事务（无 autobegin，`session.in_transaction()` 为 `False`）。repository 只 `add` / `flush`，不 commit、不 rollback。"
+            },
+            {
+              "line": 48,
+              "text": "## 2. 将来身份查询先触发 autobegin"
+            },
+            {
+              "line": 50,
+              "text": "**结论：这段代码不能原样使用。** 若在进入用例前（例如 `get_current_user` 依赖）已 `await session.execute(...)`，SQLAlchemy 2.x 的 autobegin 已隐式开启事务，此时："
+            },
+            {
+              "line": 52,
+              "text": "- `session.in_transaction()` 为 `True`，`async with session.begin()` 会抛 `InvalidRequestError: A transaction is already begun on this Session`（`begin()` 拒绝在已有事务上再开一层，除非用 `begin_nested()`）。"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.3",
+          "assertion": "改变入口时明确外层接管或用例拥有当前事务的契约，不用隐式分支掩盖提交/回滚责任",
+          "verdict": "fail",
+          "reason": "调整建议把同事务身份查询与 begin_nested 绑定，并称必须显式提交而不能依赖上下文，混淆可选入口和最终事务所有者；另一个上移边界方案本身可行。",
+          "evidence": [
+            {
+              "line": 53,
+              "text": "- 或者有人为了绕过而改成 `session.commit()`，那身份依赖读到的状态和订单写入就不再是一个明确边界，所有权实际上落到\"谁先发 SQL\"这种隐式规则上，出现\"独立 commit 把只有读的部分也提交了\"的情况。"
+            },
+            {
+              "line": 55,
+              "text": "应如何明确调整所有权（按优先级）："
+            },
+            {
+              "line": 58,
+              "text": "2. **次选：用例显式声明\"事务可能已由调用方开启\"**，让所有权上移或下移，二选一并写清楚："
+            },
+            {
+              "line": 59,
+              "text": "   - 所有权上移到外层（例如请求级中间件/依赖用 `async with session.begin()` 包住整个请求）：用例内**删除** `begin()`，只做 `add/flush`，并在文档中标注\"调用方必须已有活动事务\"，同时校验 `assert session.in_transaction()`；"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.4",
+          "assertion": "用户/订单写入成功后审计失败及成功路径有验证，不伪称实测",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 17,
+              "text": "        # 事务所有者 = 本用例：唯一开始、唯一提交、唯一回滚"
+            },
+            {
+              "line": 45,
+              "text": "- 审计写入必须在同一 session/同一事务内：否则订单回滚时审计会残留（或反之）。"
+            },
+            {
+              "line": 73,
+              "text": "## 3. 两个失败验证点"
+            },
+            {
+              "line": 75,
+              "text": "1. **事务所有权冲突验证（autobegin 场景）**"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "F-owner",
+      "round": 2,
+      "version": "after",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/after/F-owner.answer.md",
+      "answer_sha256": "65e8ce18d5a34eba0655850986cfcb62cd0f211ddf250fa53ae8650657092fec",
+      "assertions": [
+        {
+          "id": "F-owner.1",
+          "assertion": "新session前置条件明确，使用一次begin或等价明确commit/rollback保证订单审计同事务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 1,
+              "text": "已读 `README.md`。其前提是：**新 session、进入 use case 前未执行 SQL、无活动事务；use case 拥有订单与审计的一次提交；repository 不提交。**"
+            },
+            {
+              "line": 7,
+              "text": "    # 前置条件：新 session，尚未执行任何 SQL；"
+            },
+            {
+              "line": 9,
+              "text": "    async with session.begin():"
+            },
+            {
+              "line": 19,
+              "text": "- `async with session.begin()` 是唯一事务边界，use case 是事务所有者。"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.2",
+          "assertion": "说明已有autobegin再begin会抛InvalidRequestError，不声称自动复用",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 24,
+              "text": "## 2. 身份查询先触发 autobegin 时，不能原样使用"
+            },
+            {
+              "line": 29,
+              "text": "actor = await identities.get_current(session, ...)  # 这里已触发 autobegin"
+            },
+            {
+              "line": 33,
+              "text": "这段代码**不能原样使用**。SQLAlchemy 查询会触发 autobegin；活动事务上再次调用 `session.begin()` 会抛出 `InvalidRequestError`，不会自动复用当前事务。`begin_nested()` 只是 SAVEPOINT，也不能替代外层事务边界。"
+            },
+            {
+              "line": 81,
+              "text": "2. **身份查询已 autobegin 时不得重复 begin**  "
+            }
+          ]
+        },
+        {
+          "id": "F-owner.3",
+          "assertion": "改变入口时明确外层接管或用例拥有当前事务的契约，不用隐式分支掩盖提交/回滚责任",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 35,
+              "text": "必须明确调整所有权，二选一："
+            },
+            {
+              "line": 37,
+              "text": "### 方案 A：仍由 use case 拥有事务"
+            },
+            {
+              "line": 54,
+              "text": "### 方案 B：事务所有权上移到请求/上层边界"
+            },
+            {
+              "line": 74,
+              "text": "不要用 `if session.in_transaction(): ...` 自动决定谁来提交或回滚；这会把所有权变成隐式行为。应通过明确的函数契约、命名或调用层约定区分“事务所有者”和“事务参与者”。"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.4",
+          "assertion": "用户/订单写入成功后审计失败及成功路径有验证，不伪称实测",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 20,
+              "text": "- 正常退出提交；订单写入、flush 或审计写入失败时异常向外传播，由上下文回滚。"
+            },
+            {
+              "line": 74,
+              "text": "不要用 `if session.in_transaction(): ...` 自动决定谁来提交或回滚；这会把所有权变成隐式行为。应通过明确的函数契约、命名或调用层约定区分“事务所有者”和“事务参与者”。"
+            },
+            {
+              "line": 76,
+              "text": "## 3. 两个失败验证点"
+            },
+            {
+              "line": 79,
+              "text": "   让 `audits.record(...)` 或随后的 flush 抛错，断言异常向外传播；回滚后订单和审计都不存在。验证两次写入共享同一事务，且 repository 没有提前提交。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    },
+    {
+      "case_id": "F-owner",
+      "round": 2,
+      "version": "before",
+      "answer": ".tmp/skill-accuracy-repair/runs/round-2/before/F-owner.answer.md",
+      "answer_sha256": "c63f5c10b5cb05170d7eac22a797d6afba7d63a109323e39915e830795f88086",
+      "assertions": [
+        {
+          "id": "F-owner.1",
+          "assertion": "新session前置条件明确，使用一次begin或等价明确commit/rollback保证订单审计同事务",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 17,
+              "text": "        async with self._session.begin():          # 开始事务；正常退出 commit，异常 rollback"
+            },
+            {
+              "line": 39,
+              "text": "- repository 只 `add` / `flush`，**不 commit**；唯一提交点是用例里的 `async with session.begin()`。"
+            },
+            {
+              "line": 43,
+              "text": "## 2. 身份查询先触发 autobegin 后能否原样使用"
+            },
+            {
+              "line": 47,
+              "text": "SQLAlchemy 2.x `AsyncSession` 默认 autobegin：只要先执行了身份查询（如 `select(User)...`），session 就已处于活动事务中。此时再进入用例执行 `async with session.begin()` 会抛："
+            }
+          ]
+        },
+        {
+          "id": "F-owner.2",
+          "assertion": "说明已有autobegin再begin会抛InvalidRequestError，不声称自动复用",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 43,
+              "text": "## 2. 身份查询先触发 autobegin 后能否原样使用"
+            },
+            {
+              "line": 47,
+              "text": "SQLAlchemy 2.x `AsyncSession` 默认 autobegin：只要先执行了身份查询（如 `select(User)...`），session 就已处于活动事务中。此时再进入用例执行 `async with session.begin()` 会抛："
+            },
+            {
+              "line": 50,
+              "text": "InvalidRequestError: A transaction is already begun on this Session."
+            },
+            {
+              "line": 78,
+              "text": "1. **入口契约被破坏时快速失败**：先用同一 session 执行一次身份 `SELECT`，再调用 `create_order`，断言抛出 `InvalidRequestError`（或断言入口处 `session.in_transaction()` 为真并被显式拒绝）。这验证“原代码不能原样用于 autobegin 之后的 session”，也防止未来有人悄悄改成隐式提交。"
+            }
+          ]
+        },
+        {
+          "id": "F-owner.3",
+          "assertion": "改变入口时明确外层接管或用例拥有当前事务的契约，不用隐式分支掩盖提交/回滚责任",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 53,
+              "text": "即代码的隐含前提是“入口无活动事务”，身份查询已破坏该前提。`begin_nested()` 也不是替代方案：它只是 savepoint，外层事务未提交时订单和审计仍不会持久化。"
+            },
+            {
+              "line": 55,
+              "text": "## 3. 如何明确调整所有权（择一，不建议静默判断后 commit）"
+            },
+            {
+              "line": 57,
+              "text": "**方案 A（推荐，保持“用例拥有事务”）：** 身份查询不要复用写 session。用独立只读 session/依赖先解析出 `actor_id` 等普通值，再创建干净 session 进入用例，示例代码可保持不变。"
+            },
+            {
+              "line": 59,
+              "text": "**方案 B（把所有权上移到组合根）：** 在身份查询之前由调用方开启事务，用例改为“加入已有事务”的契约："
+            }
+          ]
+        },
+        {
+          "id": "F-owner.4",
+          "assertion": "用户/订单写入成功后审计失败及成功路径有验证，不伪称实测",
+          "verdict": "pass",
+          "reason": "人工核对与夹具、实际读取及相应段落一致；该项通过不代表整篇无错误。",
+          "evidence": [
+            {
+              "line": 40,
+              "text": "- 订单与审计在同一次 commit 中，任一失败整体回滚。"
+            },
+            {
+              "line": 76,
+              "text": "## 4. 两个失败验证点"
+            },
+            {
+              "line": 78,
+              "text": "1. **入口契约被破坏时快速失败**：先用同一 session 执行一次身份 `SELECT`，再调用 `create_order`，断言抛出 `InvalidRequestError`（或断言入口处 `session.in_transaction()` 为真并被显式拒绝）。这验证“原代码不能原样用于 autobegin 之后的 session”，也防止未来有人悄悄改成隐式提交。"
+            },
+            {
+              "line": 79,
+              "text": "2. **原子性/回滚**：让审计写入失败（如构造 FK/唯一约束冲突，或在 flush 后注入异常），然后用**新的 session** 查询，断言订单行数为 0、审计行数为 0。验证订单与审计确实是一次提交、失败时一起回滚，且 repository 没有提前 commit。"
+            }
+          ]
+        }
+      ],
+      "additional_issue": null
+    }
+  ],
+  "separate_replay_runs": [
+    {
+      "case_id": "F-outer",
+      "round": 1,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-1/F-outer.answer.md",
+      "answer_sha256": "15517d99beae437bae9753c7a79b92520018fd42249b8281cdb4afd02b109ff7",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "首轮新增的 autobegin 误归因未再现：外层显式事务语境得到保留，未声称内部查询重新 autobegin。",
+      "additional_issue": null
+    },
+    {
+      "case_id": "F-outer",
+      "round": 2,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-2/F-outer.answer.md",
+      "answer_sha256": "f5d621135608ddcee3fc4c5caf942d4d87b22069db98379414af2298443e50ce",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "首轮新增的 autobegin 误归因未再现：外层显式事务语境得到保留，未声称内部查询重新 autobegin。",
+      "additional_issue": "末尾把无活动事务写成没有已提交事务，术语仍不准确；同段下一句正确说明查询已触发 autobegin 时 begin 会失败。"
+    },
+    {
+      "case_id": "development-workflow-01",
+      "round": 1,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-1/development-workflow-01.answer.md",
+      "answer_sha256": "ba5e9fa08ec0dad94a1d8a98602eaf4c4cd71c135610a0b68046227bb40d4fab",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "已知计划错误未再现：已识别现有实现和根目录测试，不再要求该行为先失败或换用 pytest。",
+      "additional_issue": null
+    },
+    {
+      "case_id": "development-workflow-01",
+      "round": 2,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-2/development-workflow-01.answer.md",
+      "answer_sha256": "296d1c32f74b1d205e80b380a28950ab7b0492bc0a7bda12e8f1a2eeee948e25",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "已知计划错误未再现：已识别现有实现和根目录测试，不再要求该行为先失败或换用 pytest。",
+      "additional_issue": "验收表仍用了无未覆盖分支的绝对化措辞，计划条件下不能据现有两个测试证明完整覆盖；补实现段也应限定为重复校验失败。"
+    },
+    {
+      "case_id": "fastapi-best-practices-01",
+      "round": 1,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-1/fastapi-best-practices-01.answer.md",
+      "answer_sha256": "be65a0fc532e05cd4991ac16392a72641e734954bd4f62f51b2bfeb926cb5a8b",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "已知 begin 自动复用错误未再现：说明新 session/外层所有权及已有事务重复 begin 会报错。",
+      "additional_issue": null
+    },
+    {
+      "case_id": "fastapi-best-practices-01",
+      "round": 2,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-2/fastapi-best-practices-01.answer.md",
+      "answer_sha256": "f4bc94e9bf4a49f8deab7bcfb543b46d40756910e4326769aa5bc6c94bf07553",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "已知 begin 自动复用错误未再现：说明新 session/外层所有权及已有事务重复 begin 会报错。",
+      "additional_issue": null
+    },
+    {
+      "case_id": "project-archive-01",
+      "round": 1,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-1/project-archive-01.answer.md",
+      "answer_sha256": "ac794e3c2a2795068d08b49200a7f2e585965564f65d67a327e8f8bee178e0a2",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "已知归档错误未再现：区分查重失败与写入中途失败，未把测试历史标为已确认变更。",
+      "additional_issue": null
+    },
+    {
+      "case_id": "project-archive-01",
+      "round": 2,
+      "answer": ".tmp/skill-accuracy-repair/replay/runs/round-2/project-archive-01.answer.md",
+      "answer_sha256": "3bde41a164c935a3ebdcdb476fb348e6066230e469f87fcdbcef4c8396db6fe6",
+      "known_target_error_reproduced": false,
+      "manual_target_verdict": "已知归档错误未再现：区分查重失败与写入中途失败，未把测试历史标为已确认变更。",
+      "additional_issue": null
+    }
+  ]
+}

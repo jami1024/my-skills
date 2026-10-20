@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run a skill's upstream eval cases through pi and keep the evidence.
+"""Run a skill's eval cases through pi and keep the evidence.
 
 每个用例跑两个条件：只注册目标 skill 与完全不注册（基线）。脚本只负责可复现地
 产生证据——pi 日志、最终回答、逐例耗时与读取路径；断言判定仍需人工阅读回答，
@@ -7,7 +7,7 @@
 
 用法：
   python3 scripts/run-skill-eval.py --skill golang-project-layout --case 1 --case 3
-  python3 scripts/run-skill-eval.py --skill golang-testing --report docs/evals/golang-testing-report.md
+  python3 scripts/run-skill-eval.py --skills-root skills/content --skill explain
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = REPO_ROOT / "skills/golang"
-NAME_RE = re.compile(r"golang-[a-z0-9-]+")
+NAME_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 DEFAULT_OUT = REPO_ROOT / ".tmp/skill-eval"
 DEFAULT_MODEL = "deepseek/deepseek-v4-flash-vision-exp"
 PROMPT_SUFFIX = (
@@ -128,11 +128,12 @@ def normalise_read(path: str) -> str:
 
 def skill_file_reads(reads: list[str], skill: str | None = None) -> list[str]:
     """读取事件里命中的 skill 正文路径；给 skill 时只看该 skill 目录。"""
-    prefix = f"skills/golang/{skill}/" if skill else "skills/"
+    prefix = "skills/"
     return [
         normalised
         for normalised in (normalise_read(raw) for raw in reads)
-        if normalised.startswith(prefix) and normalised.endswith("SKILL.md")
+        if normalised.startswith(prefix) and normalised.endswith("/SKILL.md")
+        and (skill is None or Path(normalised).parent.name == skill)
     ]
 
 
@@ -169,7 +170,7 @@ def run_case(
         "--tools", args.tools, "--model", args.model, "--thinking", args.thinking,
     ]
     if skill:
-        command += ["--skill", str(SKILLS_ROOT / skill)]
+        command += ["--skill", str(args.skills_root / skill)]
     command += ["--", invoke_prompt(skill, prompt + PROMPT_SUFFIX, args.invoke_skill)]
 
     started = time.monotonic()
@@ -204,7 +205,7 @@ def run_case(
         "elapsed": round(elapsed, 1),
         "reads": reads,
         "answer_chars": len("\n".join(answer)),
-        "answer_path": str(answer_path.relative_to(REPO_ROOT)),
+        "answer_path": str(answer_path.relative_to(REPO_ROOT)) if answer_path.is_relative_to(REPO_ROOT) else str(answer_path),
         "workdir": str(workdir.relative_to(REPO_ROOT)) if workdir.is_relative_to(REPO_ROOT) else str(workdir),
         "forced_invocation": bool(skill and args.invoke_skill),
     }
@@ -214,8 +215,10 @@ def run_case(
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--skills-root", type=Path, default=SKILLS_ROOT,
+                        help="仓库内的 skill 分类目录，默认 skills/golang")
     parser.add_argument("--skill", action="append", required=True,
-                        help="skills/golang 下的 skill 名，可写作 name:1,2 指定用例；可重复")
+                        help="分类目录下的 skill 名，可写作 name:1,2 指定用例；可重复")
     parser.add_argument("--case", action="append", type=int,
                         help="未在 --skill 里指定序号时使用的默认用例序号，可重复；默认全部")
     parser.add_argument("--variant", default="skill,none", help="skill,none 的子集")
@@ -235,6 +238,9 @@ def main() -> int:
     if not variants or set(variants) - {"skill", "none"}:
         parser.error("--variant 只接受 skill 与 none")
 
+    args.skills_root = (REPO_ROOT / args.skills_root).resolve()
+    if not args.skills_root.is_relative_to(REPO_ROOT / "skills") or not args.skills_root.is_dir():
+        parser.error("--skills-root 必须是仓库 skills/ 内存在的分类目录")
     args.out = args.out if args.out.is_absolute() else REPO_ROOT / args.out
     if args.report and not args.report.is_absolute():
         args.report = REPO_ROOT / args.report
@@ -248,9 +254,12 @@ def main() -> int:
         except ValueError as exc:
             parser.error(str(exc))
         if not NAME_RE.fullmatch(skill):
-            parser.error(f"--skill 只接受 skills/golang 下的目录名：{skill}")
-        skill_dir = SKILLS_ROOT / skill
-        cases = select_cases(load_cases(skill_dir), indices or args.case)
+            parser.error(f"--skill 只接受分类目录下的 skill 名：{skill}")
+        skill_dir = args.skills_root / skill
+        try:
+            cases = select_cases(load_cases(skill_dir), indices or args.case)
+        except ValueError as exc:
+            parser.error(str(exc))
         skill_entries: list[dict] = []
         for index, case in cases:
             base = f"{skill.removeprefix('golang-')}-{index:02d}"

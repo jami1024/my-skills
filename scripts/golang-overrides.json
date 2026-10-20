@@ -75,6 +75,16 @@
     ],
     "golang-how-to/SKILL.md": [
       {
+        "id": "configure-questions-only-for-unresolved-choices",
+        "old": "**Questions:** In Configure mode, ask the user through the environment's question tool — never as plain-text prose. One question at a time, wait for the answer. If the environment has no question tool, ask in prose with the same options.",
+        "new": "**Questions:** In Configure mode, reuse the requested targets and skill set. Ask only about unresolved choices that affect the write; use an available question tool or concise prose. A complete configuration request needs no extra approval round."
+      },
+      {
+        "id": "configure-only-when-requested",
+        "old": "`golang-project-layout` writes the always-load directive automatically at project creation, with no user confirmation needed — it costs one skill description and never imposes project-specific choices. Running `/golang-how-to configure` writes it too if missing, and additionally lets the user confirm a `## Required Go skills` block for skills that must always apply beyond routing. Follow [project-config.md](references/project-config.md).",
+        "new": "Modify agent-config files only when the user requests agent configuration, such as `/golang-how-to configure`. Creating a Go project alone does not authorize persistent skill-loading rules. Reuse the requested targets and skill set without asking again; ask only about unresolved choices that affect the write. Follow [project-config.md](references/project-config.md)."
+      },
+      {
         "old": "    requires:\n      bins:\n        - go\n        - gopls\n    install:\n      - kind: go\n        package: golang.org/x/tools/gopls@latest\n        bins: [gopls]",
         "new": "    requires:\n      bins:\n        - git"
       },
@@ -105,6 +115,52 @@
       {
         "old": "All skill identifiers above are short forms of `samber/cc-skills-golang@<name>`.",
         "new": "Load skills by their names and paths in the current harness's inventory. `samber/cc-skills-golang@<name>` identifies upstream provenance; this local collection registers bare names such as `golang-testing`. `golang-best-practices` is an optional local skill, not part of the upstream catalog."
+      }
+    ],
+    "golang-how-to/references/project-config.md": [
+      {
+        "old": "An **always-load directive** for `golang-how-to` itself — a single sentence, unconditional, no user confirmation needed.",
+        "new": "An **always-load directive** for `golang-how-to` itself — add it only when the user requests persistent Go skill configuration."
+      },
+      {
+        "old": "- Any new Go project should get the always-load directive (see below) — this is the common case.",
+        "new": "- The user requests persistent Go skill configuration, for example `/golang-how-to configure`. New Go project creation alone does not trigger this workflow. The remaining cases describe possible configuration needs, not permission to write agent-config files."
+      },
+      {
+        "old": "Every Go project should carry a one-line directive telling the coding agent to load the `golang-how-to` orchestrator skill before starting Go work, so it in turn routes to whichever other Go skills the task actually needs. Unlike the `## Required Go skills` block below, this directive needs no user confirmation: it costs one skill description (~100 tokens) and is never wrong, since `golang-how-to` only routes to other skills — it does not impose project-specific choices.",
+        "new": "For a requested persistent routing setup, add one line that loads `golang-how-to` before Go work. This changes future agent behavior, so creating a project is not sufficient authorization. Reuse an explicit configuration request without asking for the same permission again. Registered descriptions and forced body reads have different context costs; do not promise a fixed token cost."
+      },
+      {
+        "old": "- **At project creation** — the `golang-project-layout` skill writes this directive automatically as part of its Initialization Checklist, without asking the user.\n- **On demand** — running `/golang-how-to configure` writes it too (if missing), in addition to any `## Required Go skills` block confirmed in Step 3 below.",
+        "new": "- **On request** — `/golang-how-to configure` or an equivalent user request writes the directive if missing.\n- **During project creation** — write it only if persistent agent configuration is explicitly included in the request."
+      },
+      {
+        "old": "Every harness reads its own agent-config file or directory. None is more \"primary\" than another — detect and write to whichever exist, and write to all of them if more than one does:",
+        "new": "Use the target file(s) named by the user. Otherwise detect the active harness and existing project conventions; do not update every supported harness merely because its config exists:"
+      },
+      {
+        "old": "Check which of these exist at the project root. If multiple exist, write to all of them — different harnesses read different files, and a project may support several. If none exist, ask the user which one(s) to create.",
+        "new": "Check the requested targets and active harness. If the target is still ambiguous, ask one focused question naming the candidate files. Create a missing target only when it is covered by the configuration request."
+      },
+      {
+        "old": "Write the always-load directive if it's missing, regardless of what Step 3 decides. If a `## Required Go skills` block (or, for Cursor, the rule file) already exists, read it and confirm with the user whether to update it in place (replace the existing list) or skip.",
+        "new": "Within the requested scope, add the directive only if missing. Read existing rules and preserve unrelated content. If the user already specified an update or skill set, apply it without repeated confirmation; ask only when replacing an existing rule introduces an unresolved conflict."
+      },
+      {
+        "old": "Confirm which skills to always load — one question, one round of confirmation, not a running back-and-forth. Present the ⭐️ recommended skills as the default selection. Remind the user of the token budget (each always-loaded skill adds its description tokens to every session — the 11 recommended skills add ~1,100 tokens at startup).",
+        "new": "Reuse the user's requested skill set. For a routing-only request, add only the orchestrator directive; do not force-load the catalog below. If additional mandatory skills are desired but unspecified, ask once about concrete project requirements. Explain that forced loading reads bodies on each matching task and costs more than registering descriptions."
+      },
+      {
+        "old": "Recommended ⭐️ set for most projects:",
+        "new": "Optional candidates to discuss only when mandatory topic skills are requested:"
+      },
+      {
+        "old": "Replace the skill list with the confirmed set from Step 3. Use the fully-qualified `samber/cc-skills-golang@<name>` identifier for each skill.",
+        "new": "Include the optional block only for the requested or confirmed set from Step 3. Use names registered in the current harness, such as `golang-security`; do not invent upstream-qualified local names."
+      },
+      {
+        "old": "Approximate startup token cost (number of skills × ~100 tokens per description)",
+        "new": "Context impact: distinguish registered descriptions from forced body reads; report measurements if available, otherwise mark the cost as unmeasured"
       }
     ],
     "golang-testing/SKILL.md": [
@@ -165,6 +221,12 @@
     ]
   },
   "global_patterns": [
+    {
+      "id": "compact-go-router-details",
+      "paths": ["golang-how-to/SKILL.md"],
+      "pattern": "(?s)## Code navigation with gopls\\n.*?(?=## Configure mode\\n)",
+      "replace": "## Tool and boundary guidance\\n\\nUse existing harness tools first; routing does not require installation. Load the owning topic only when its details are needed:\\n\\n| Need | Guidance |\\n| --- | --- |\\n| Local definitions, references, diagnostics or refactoring | `golang-gopls` |\\n| Published package docs, versions, importers or licenses | `golang-pkg-go-dev` |\\n| Whole-module reachable vulnerability audit | `golang-security` |\\n| Non-Go documentation | Official documentation or an available documentation tool |\\n\\nRead [disambiguation.md](references/disambiguation.md) only for overlapping intents; read [by-category.md](references/by-category.md) only to browse the full catalog. Do not preload both references for an already clear task.\\n\\n"
+    },
     {
       "id": "localize-upstream-skill-identifiers",
       "paths": [

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "A-inventory",
+    "skill": "session/project-archive",
+    "fixture": "inventory",
+    "prompt": "请读取当前目录 README.md、ingest.py、test_ingest.py 和 diff.patch，只归档库存导入功能，在回复给出简明技术文档。说明当前处理顺序、失败与数据写入边界、原有行为与本次变化、测试能证明什么及不能证明什么。只读，不落盘，未运行的验证明确标注，不需要确认范围。",
+    "assertions": [
+      "解释SKU标准化、批次重复拒绝发生在写入之前",
+      "指出quantity转换在extend生成期间发生，后项转换失败可能保留已写入项，不能承诺所有失败原子",
+      "diff只支持ingest.py查重逻辑为新增，不断言测试文件是本次新增或修改",
+      "测试状态真实，描述范围限定在当前内存实现"
+    ]
+  },
+  {
+    "id": "A-labels",
+    "skill": "session/project-archive",
+    "fixture": "labels",
+    "prompt": "为当前 labels.py 的标签发布功能补一份技术归档，读取 README.md、实现和测试。说明执行链路、异常对storage的影响，哪些可以说是旧实现、哪些是本次新增，并给出证据。报告直接在回复交付，不写文件、不运行命令；无须再确认。",
+    "assertions": [
+      "规范化及去重先完成，ASCII编码和append按项发生",
+      "指出编码失败可能发生在已有append之后，无回滚保证",
+      "说明没有历史或diff不能区分新增/旧实现，不能虚构版本或测试变更状态",
+      "测试未执行且其成功用例不足以证明异常路径"
+    ]
+  },
+  {
+    "id": "D-stock",
+    "skill": "dev/development-workflow",
+    "fixture": "stock",
+    "prompt": "请先读 README.md、stock.py 和 test_stock.py，再给一个简明实施计划：保证reserve拒绝quantity=0，且保留正常预订和库存不足行为。需求已明确，不需设计审批，只做计划，不修改文件、不提交。请写清实际缺口、任务及验证命令，不预写完整代码。",
+    "assertions": [
+      "识别quantity=0已被拒绝且test_zero存在，允许无需生产修改",
+      "先验证现有行为，不能断言既有用例必须红灯或强制重写去重式实现",
+      "沿用根目录test_stock.py和unittest，无pytest/重复测试目录",
+      "交付可验证计划且不请求重复授权、不伪称已运行"
+    ]
+  },
+  {
+    "id": "D-format",
+    "skill": "dev/development-workflow",
+    "fixture": "label_format",
+    "prompt": "请先读取当前README、formatter.py和test_formatter.py，给format_label增加None输入返回空串的最小实施计划，其他去空白行为不变。只交付计划，方案已确定，不改代码、不运行测试、不提交Git；写明应该新增的回归和各阶段预期。",
+    "assertions": [
+      "识别None当前调用strip会失败、现有测试不覆盖，此处确有缺口",
+      "新增None回归在修复前预期失败且已有trims应保持通过，修复后同时通过",
+      "复用README标准库unittest及现有测试路径，不扩大为框架改造",
+      "不把缺口说成已满足、不要求所有测试先失败、不伪称已执行"
+    ]
+  },
+  {
+    "id": "F-outer",
+    "skill": "dev/fastapi-best-practices",
+    "fixture": "outer_transaction",
+    "prompt": "阅读README.md和entry.py，只评审事务职责并给最小伪代码。身份查询已在外层session.begin中执行；同一session传给订单用例，用例写订单和审计，两者必须同成同败。用例应该再次begin、提交或回滚吗？请说明异常如何传递、谁结束事务，以及验证要点。保持当前请求级事务约定，不安装依赖、不改代码、不声称已执行。",
+    "assertions": [
+      "外层请求已拥有活动事务，业务只调用repo及flush，不重复begin也不提前commit",
+      "异常向外传播由外层回滚，不在内层吞错或以in_transaction为由跳过业务",
+      "两个repo共享session，成功和中途失败均可验证",
+      "不把savepoint描述成自动复用或声称新事务会自动加入活动事务"
+    ]
+  },
+  {
+    "id": "F-owner",
+    "skill": "dev/fastapi-best-practices",
+    "fixture": "own_transaction",
+    "prompt": "先读README.md。请为订单写入+审计写入给一个短SQLAlchemy异步事务示例，明确use case是事务所有者，目前入口为未执行SQL的新session。再说明将来如果身份查询先触发autobegin，这段代码可否原样使用、应如何明确调整所有权，并给两个失败验证点。只输出建议，不运行或修改项目。",
+    "assertions": [
+      "新session前置条件明确，使用一次begin或等价明确commit/rollback保证订单审计同事务",
+      "说明已有autobegin再begin会抛InvalidRequestError，不声称自动复用",
+      "改变入口时明确外层接管或用例拥有当前事务的契约，不用隐式分支掩盖提交/回滚责任",
+      "用户/订单写入成功后审计失败及成功路径有验证，不伪称实测"
+    ]
+  }
+]

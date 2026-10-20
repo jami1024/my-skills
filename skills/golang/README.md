@@ -65,7 +65,8 @@
 
 - 精简 46 条 description，保留任务触发与相邻主题边界，库 skill 仅在已采用或明确要求该库时适用；
 - 通过清单 `global_patterns` 把正文与 references 中的上游引用标识符 `samber/cc-skills-golang@golang-*` 改成本地注册名 `golang-*`，避免模型按上游名查找不存在的 skill；仅保留 `samber/cc-skills-golang@<name>` 这类来源说明。全局替换在逐文件补丁之后执行，其 `old` 文本来自上游原文；
-- `golang-how-to` 接入可选本地蓝图，按需读取主题，使用当前环境注册的名称和路径，路由本身不要求安装 gopls；
+- `golang-how-to` 接入可选本地蓝图，按需读取主题，使用当前环境注册的名称和路径，路由本身不要求安装 gopls；主文仅保留路由表与简短工具分工，完整边界资料按需读取；
+- `golang-how-to` 及其 Configure 参考与布局 skill 统一：只有用户明确请求持久化 agent 配置时才写入指定配置文件；复用已给定目标和主题，不默认跨 harness 修改或强制加载 11 个主题，也不重复询问已有授权；
 - `golang-project-layout` 允许根目录单包与按业务能力组织；目录、自动化和配置按需要创建，不强制 `cmd/`、`internal/`、`pkg/` 或额外架构/DI 选择，也不擅自修改 agent 配置；
 - `golang-testing` 保留测试独立性、行为断言和竞态检查等正确性要求；文件命名、组织顺序与集成测试选择方式服从项目约定，不强制 build tags；
 - 保留以下文档链接修正：

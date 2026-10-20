@@ -36,11 +36,13 @@ status: captured
 title: 条目标题
 topic: ai-agents
 source:
-  - ../raw/ai-agents/example.md
+  - ../../raw/ai-agents/example.md
 status: draft
 updated_at: 2026-01-01
 ---
 ```
+
+`source` 中的相对路径以当前 wiki 条目所在目录为基准。例如 `wiki/ai-agents/example.md` 指向 `raw/ai-agents/example.md` 时使用 `../../raw/ai-agents/example.md`。写入后解析实际路径并核对文件存在。
 
 推荐正文顺序：一句话摘要、核心判断、证据与引用、概念解释、关联条目、未解决问题、来源。
 

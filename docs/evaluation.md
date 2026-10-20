@@ -11,7 +11,7 @@
 3. 对照“必须满足”和“失败信号”记录结果；
 4. 修改 `SKILL.md` 或参考资料后，重新运行受影响的用例。
 
-上游 `evals.json` 用例（需调用模型，会消耗额度）：
+JSON 对照用例（需调用模型，会消耗额度；默认使用 `skills/golang`，其他分类通过 `--skills-root` 选择）：
 
 ```bash
 # 7 个用例 × 有/无 skill 两个条件，证据落在 .tmp/skill-eval/
@@ -23,11 +23,24 @@ python3 scripts/run-skill-eval.py --skill golang-project-layout:1,2,3,5,11 \
 python3 scripts/run-skill-eval.py --skill golang-project-layout:12 \
   --skill golang-testing:15 --out .tmp/skill-eval-local
 
+# 自有 skill 正文对照，输入素材已包含在用例中
+python3 scripts/run-skill-eval.py --skills-root skills/content \
+  --skill explain --skill draft --out .tmp/skill-quality-content \
+  --report .tmp/skill-quality-content/report.md
+
 # 实测注册 skill 的 prompt token 与耗时
 python3 scripts/measure-skill-context.py --repeat 3 --skill-dir skills/golang
 ```
 
 `run-skill-eval.py` 只产生证据（pi 日志、最终回答、逐例耗时、真实读取路径与有效性判定），断言判定仍需人工阅读回答后填写，不自动判分；本地用例带 `fixture` 字段时会以 [`docs/evals/fixtures/`](evals/fixtures) 里的项目为工作目录。有效性口径（处理组必须加载正文、基线不得接触 skill）导致的问题见[本地断言与区分度](evals/golang-assertion-review.md#本地断言与区分度)。
+
+## 本地质量回归
+
+新增 5 个自包含 JSON 对照用例（explain 2、draft 2、development-workflow 1），以及 Go 持久化配置、局部修改、入库幂等与中断恢复等 9 个手工边界场景。输入、运行命令、记录指标和判定方法见 [质量优化回归](evals/skill-quality.md)。其中 5 个 JSON 用例已参与 [原版／优化版对照](evals/skill-version-comparison.md)，加上归档、FastAPI 和 Go 配置共完成 32 次真实运行；观察到上下文用量下降，也保留了事实与计划错误。Q1–Q9 的完整回归及有／无 skill 效果对照仍未完成，工具测试通过不代表正文有效或完成率提高。
+
+针对准确性审计发现的问题，另做 [定向修复与复测](evals/skill-accuracy-repair.md)：6 个新场景的修复前后对照 24 次，加上单独的旧失败输入/事务精度回放 8 次。旧关键错误在最终两轮回放未再现，但附加措辞和范围问题仍保留；不将核心断言通过当作整体准确性无损。逐项证据见 [判定记录](evals/skill-accuracy-repair-verdicts.json)。
+
+正文效果与自动触发分开测：默认强制调用用于比较正文；触发测试需要关闭强制调用，并同时检查正例、近邻请求和反例的实际读取行为。有效对照使用相同模型、工具和输入，比较正确性、额外确认、无关读取与输出负担。
 
 ## 通过标准
 
@@ -38,9 +51,9 @@ python3 scripts/measure-skill-context.py --repeat 3 --skill-dir skills/golang
 
 ## 当前覆盖
 
-| 分类 | Skill | 用例 |
+| 分类 | Skill | 手工用例 |
 | --- | --- | ---: |
-| 开发 | `development-workflow` | 3 |
+| 开发 | `development-workflow` | 4 |
 | 开发 | `fastapi-best-practices` | 3 |
 | 开发 | `golang-best-practices` | 12 |
 | 开发 | `react-best-practices` | 6 |

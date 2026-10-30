@@ -32,4 +32,4 @@ skills/
 
 ## 兼容入口
 
-当前仓库保留 `.claude/skills -> ../skills` 软链接，便于 Claude Code 在本仓库作为项目打开时发现 skills。pi 使用 settings 指向具体分类目录。全局配置不纳入本仓库的版本控制。
+当前仓库的 `.claude/skills/` 是平铺目录，每个 skill 一条相对软链接指向 `skills/<分类>/<名称>`，便于 Claude Code 在本仓库作为项目打开时发现 skills。Claude Code 的 skill 发现不是递归的，因此不能把该目录替换成指向 `skills/` 的单条软链接。pi 使用 settings 指向具体分类目录。全局配置不纳入本仓库的版本控制。

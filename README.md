@@ -14,11 +14,11 @@ my-skills/
 ├── template/                   # 新 skill 的起点模板
 ├── scripts/                    # 仓库校验、同步与评估脚本
 ├── docs/                       # 架构说明、Docker 指南、优化记录和历史归档
-├── .claude/skills -> ../skills  # Claude Code 项目级兼容入口
+├── .claude/skills/             # Claude Code 项目级入口，每个 skill 一条相对软链接
 └── README.md
 ```
 
-`skills/` 是唯一源码目录。`.claude/skills` 是软链接，不要在里面再创建第二份 skill。
+`skills/` 是唯一源码目录。`.claude/skills/` 下每个 skill 各有一条相对软链接指向 `skills/<分类>/<名称>`，不要在里面再创建第二份 skill 副本。Claude Code 的 skill 发现不是递归的，因此该目录必须平铺 skill 目录，不能改成指向 `skills/` 的单条软链接。
 
 ## Skill 一览
 
@@ -69,7 +69,7 @@ my-skills/
 
 ### Claude Code
 
-在本仓库作为项目打开时，`.claude/skills` 会指向 `skills/`。如果要在其他项目复用，优先使用 Claude Code 的 plugin/skill 配置；不要复制目录产生分叉。
+在本仓库作为项目打开时，`.claude/skills/` 下的每条相对软链接会被识别为一个独立 skill。注意 Claude Code 不递归扫描子目录：把 `.claude/skills` 整体指向 `skills/` 会导致一个 skill 都发现不了。如果要在其他项目复用，优先使用 Claude Code 的 plugin/skill 配置；不要复制目录产生分叉。
 
 ## 创建新 skill
 

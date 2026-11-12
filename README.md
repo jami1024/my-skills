@@ -39,7 +39,7 @@ my-skills/
 ### 内容类 `skills/content/`
 
 - `library`：来源材料入库、Wiki 查询与质量检查
-- `explain`：概念解释与项目驱动学习教程
+- `explain`：概念解释、项目驱动学习教程与互动陪练
 - `draft`：播客或访谈素材转中文公众号 Markdown
 
 ### 会话类 `skills/session/`
